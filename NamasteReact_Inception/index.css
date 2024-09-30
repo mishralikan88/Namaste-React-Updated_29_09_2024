@@ -1,0 +1,22 @@
+#heading {
+    color: red
+}
+
+
+/* 
+
+Applying Styles to an h1 Element in React -
+
+In app.js file, an h1 element is created using React.createElement.This h1 element has an id attribute set to "heading", which will be used to target it for CSS styling.The text content of the h1 element is "Hello world from React".
+
+Then h1 element is appended to the DOM using root.render(), which places it inside the <div> with the id="root".
+
+In the index.css file , the h1 element with the id="heading" is targeted using below CSS.
+
+#heading {
+    color: red;
+}
+
+Once the page is rendered, the h1 element with the text "Hello world from React" will appear in the browser, and the text will be styled in red.
+
+*/
