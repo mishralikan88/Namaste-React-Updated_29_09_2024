@@ -1,0 +1,23 @@
+{
+  "name": "namastereact_igniting_our_app",
+  "version": "1.0.0",
+  "description": "Learn React",
+  "scripts": {
+    "test": "jest",
+    "start": "parcel index.html"
+  },
+  "author": "Amarnath Mishra",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
+    "styled-components": "^6.1.13"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0",
+    "postcss": "^8.4.48",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.4.14"
+  }
+}
