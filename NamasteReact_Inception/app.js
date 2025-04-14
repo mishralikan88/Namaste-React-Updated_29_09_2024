@@ -5,12 +5,8 @@ const heading = React.createElement("h1", {
     xyz: "abc"
 }, "Hello world from React")
 
-// creating a root
+const root = ReactDOM.createRoot(document.getElementById('root')) // creating a root
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
-
-// appending the h1 react element inside the root using render()
-
-root.render(heading)
+root.render(heading) // appending the h1 react element inside the root using render()
 
 console.log(heading) // heading is a react element
