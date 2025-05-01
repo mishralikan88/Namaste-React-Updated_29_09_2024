@@ -1,8 +1,9 @@
 
 // Replace <script type="module" src="./AppComponent.js"></script> with <script type="module" src="./useEffectUseCases1.js"></script> in index.html.
 
-// case 1 - Data Fetching on Initial Load - 
+// Case 1 - Data Fetching on Initial Load - 
 // Fetch data from an API when the component first loads by using an empty dependency array, ensuring the API call runs only once.
+
 
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
