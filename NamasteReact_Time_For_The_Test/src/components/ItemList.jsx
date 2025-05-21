@@ -14,6 +14,7 @@ const ItemList = ({ items }) => {
         <div className="p-6 bg-gray-50">
             {items.map((item) => (
                 <div
+                    data-testid="foodItems"
                     key={item?.card?.info?.id}
                     className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm flex hover:shadow-lg transition-shadow duration-200"
                 >
@@ -25,7 +26,7 @@ const ItemList = ({ items }) => {
                         />
                         <button
                             className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-md shadow hover:bg-green-600 transition-colors duration-200"
-                            onClick={()=>handleAddItem(item)}
+                            onClick={() => handleAddItem(item)}
                         >
                             Add +
                         </button>

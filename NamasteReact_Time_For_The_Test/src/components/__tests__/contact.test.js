@@ -2,8 +2,20 @@ import { render, screen } from "@testing-library/react"
 import Contact from "../Contact";
 import "@testing-library/jest-dom";
 
-
 describe("Contact us Component test cases", () => {
+    beforeAll(() => {
+        console.log("Executed before all test cases.")
+    });
+    beforeEach(() => {
+        console.log("Executed before each test case.")
+    });
+    afterAll(() => {
+        console.log("Executed after all test cases.")
+    });
+    afterEach(() => {
+        console.log("Executed after each test case.")
+    });
+
     test("should load contact us component", () => {
         render(<Contact />);
         const heading = screen.getByRole("heading");
@@ -37,7 +49,6 @@ describe("Contact us Component test cases", () => {
     test("should load 2  input text elements inside contact us component", () => {
         render(<Contact />)
         const inputelements = screen.getAllByRole("textbox")
-        console.log(inputelements)
         expect(inputelements.length).toBe(2)
     })
 })
