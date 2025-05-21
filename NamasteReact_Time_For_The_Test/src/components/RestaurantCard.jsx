@@ -7,7 +7,7 @@ const RestaurantCard = ({ cloudinaryImageId, name, cuisines, avgRating, sla }) =
     const { loggedInUser } = useContext(userContext)
 
     return (
-        <div className="bg-white rounded-lg shadow-lg transition-shadow hover:shadow-xl p-4 max-w-sm mx-auto">
+        <div  data-testid= "resCard"  className="bg-white rounded-lg shadow-lg transition-shadow hover:shadow-xl p-4 max-w-sm mx-auto">
             <img
                 className="w-full h-40 rounded-t-lg object-cover"
                 alt="Restaurant food"

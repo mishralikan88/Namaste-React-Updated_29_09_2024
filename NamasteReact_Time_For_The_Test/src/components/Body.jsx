@@ -16,6 +16,7 @@ const Body = () => {
     const [listOfRestaurants, setListOfRestaurants] = useState([]);
     const [listOffilteredRestaurants, setListOffilteredRestaurants] = useState([]);
     const [searchText, setSearchText] = useState("");
+    console.log("listOfRestaurants",listOfRestaurants)
 
     const { loggedInUser, setUserName } = useContext(userContext)
 
@@ -45,6 +46,7 @@ const Body = () => {
             <div className="m-4 p-4 bg-white rounded-lg shadow-lg flex items-center space-x-4">
                 <input
                     type="text"
+                    data-testid="searchInput"
                     className="w-full pl-4 pr-4 py-3 rounded-full bg-gray-100 border border-gray-300 shadow-sm focus:outline-none"
                     placeholder="Search a restaurant"
                     value={searchText}
