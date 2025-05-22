@@ -11,7 +11,6 @@ import Cart from "../Cart";
 global.fetch = jest.fn(() => {
     return Promise.resolve({
         json: () => Promise.resolve(mockResMenuData)
-
     })
 })
 
@@ -38,7 +37,6 @@ it("When the first accordion header is clicked, 15 food items should be displaye
 
 
 it("When Cart - (2 items) in header is clicked, Cart component should render 2 item cards in addition to the 15 menu items", async () => {
-
     render(
         <BrowserRouter>
             <Provider store={appStore}>

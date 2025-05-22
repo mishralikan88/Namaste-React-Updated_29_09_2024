@@ -4,6 +4,7 @@
   "description": "Learn React",
   "scripts": {
     "test": "jest",
+    "watch-test":"jest --watch",
     "start": "parcel index.html"
   },
   "author": "Amarnath Mishra",
