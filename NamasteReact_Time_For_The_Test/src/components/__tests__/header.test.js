@@ -55,13 +55,22 @@ it("should change Log in button to log out on click", () => {
         </BrowserRouter>
     )
 
-    const logInButton = screen.getByRole("button", { name: "Login" })
+    screen.debug();
 
+    // Step 1: Click "Login"
+    const logInButton = screen.getByRole("button", { name: "Login" })
     fireEvent.click(logInButton)
+
+    // Step 2: Verify "Logout" is visible
     const logOutButton = screen.getByRole("button", { name: "Logout" });
     expect(logOutButton).toBeInTheDocument()
 
+    // Step 3: Click "Logout"
     fireEvent.click(logOutButton)
-    expect(logInButton).toBeInTheDocument()
-    
+
+    // Step 4: Re-query and verify "Login" is visible again
+    const logInButtonAfterLogout = screen.getByRole("button", { name: "Login" });
+    expect(logInButtonAfterLogout).toBeInTheDocument();
+
+    screen.logTestingPlaygroundURL();
 })

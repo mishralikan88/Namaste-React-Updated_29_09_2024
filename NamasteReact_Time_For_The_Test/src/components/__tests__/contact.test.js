@@ -18,6 +18,8 @@ describe("Contact us Component test cases", () => {
 
     test("should load contact us component", () => {
         render(<Contact />);
+        screen.debug(); // 🔍 Outputs the rendered DOM in your test terminal
+        // screen.logTestingPlaygroundURL(); // 🌐 Gives a browser-based playground URL
         const heading = screen.getByRole("heading");
         expect(heading).toBeInTheDocument()
     })
