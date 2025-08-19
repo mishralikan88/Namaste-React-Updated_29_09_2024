@@ -651,7 +651,7 @@ Now, let’s create a React element using React.createElement.
 
 ```js
 
-// creating h1 react element
+// Creating h1 react element
 
 const heading = React.createElement("h1", {
     id: "heading",
@@ -675,12 +675,13 @@ We can see that these attributes are applied to the <h1> element in the DOM.
 ![createElementDOM](./assets/createElementDOM.jpg "createElementDOM")
 
 
-
 # What is ReactDOM.createRoot ?
 
-createRoot is a method from the ReactDOM API that initializes a root container where the React application will be rendered.
+-> createRoot is a method from the ReactDOM API.
 
-It returns a root object with two main methods: .render() and .unmount().
+-> It initializes a root container where your React app will be rendered.
+
+-> It returns a root object with two key methods render(element) & unmount()
 
 Syntax: const root = ReactDOM.createRoot(document.getElementById("<rootID>"));
 
@@ -716,7 +717,7 @@ root.unmount();  // Removes <App /> from the DOM
 ```
 
 
-# How do you represent two levels of nested elements in HTML?
+# How do you represent 2 levels of nested elements in HTML?
 
 
 <div id="parent">
@@ -726,7 +727,7 @@ root.unmount();  // Removes <App /> from the DOM
 </div>
 
 
-# How do you represent two levels of nested elements using React?
+# How do you represent 2 levels of nested elements using React?
 
 ```js
 
@@ -764,13 +765,11 @@ root.render(parent);
 -> Renders the parent element into the root DOM node.
 
 
-# How to Represent Sibling Elements in HTML ? 
+# How to represent sibling elements in HTML ? 
 
 <div id="parent">
-    <div id="child">
         <h1>I am an h1 tag</h1>
         <h2>I am an h2 tag</h2>
-    </div>
 </div>
 
 
@@ -893,8 +892,7 @@ We’ll explore JSX in more detail in the upcoming chapters.
 
 1. The order of the <script> tags matters.
 
-If we move our custom script above the React CDN scripts, the browser tries to run our code before React is loaded, resulting in an error like React is not defined.
-This happens because we're referencing the React object before the browser has had a chance to fetch and load it from the CDN.
+If we move our custom script above the React CDN scripts, the browser tries to run our code before React is loaded, resulting in an error like React is not defined.This happens because we're referencing the React object before the browser has had a chance to fetch and load it from the CDN.
 
 ```js
 
@@ -917,10 +915,9 @@ Once React is loaded, it replaces that initial content with the React element, w
 
 
 
-3. We can use React in specific parts of our application.
-For example, we might use React only for the main content area, while keeping the header and footer as plain HTML.
-This is one of the reasons React is considered a library (not a full framework) — it gives developers the flexibility to integrate it gradually, without needing to rewrite the whole app.
-You can introduce React step by step into your app, without the need to rebuild everything from scratch.
+3. We can use React in specific parts of an application.
+For example, React might be used only for the main content area, while the header and footer remain plain HTML.
+This flexibility is one of the reasons React is considered a library (not a full framework) - it allows developers to integrate react gradually without rewriting the entire app.You can introduce React step by step into your project, without needing to rebuild everything from scratch.
 
 <!DOCTYPE html>
 <html>
@@ -961,16 +958,20 @@ You can introduce React step by step into your app, without the need to rebuild 
 
 🔧 Development Stage:
 
--> The application is not yet public and is mainly used for internal development and testing.
+-> The app is not public — used for coding, testing, and debugging.
 
 -> Frequent code changes are made to enable fast iteration and experimentation.
 
--> The development build includes debugging tools and detailed error messages, which can make it slower than a production build.
+-> Build includes debugging tools, warnings, and detailed error messages.
+
+-> Usually slower than production because performance is not the priority.
 
 🚀 Production Stage:
 
--> This is the public-facing version of the application, intended for end users.
+-> The public-facing version of the app, used by end users.
 
 -> The code is optimized for performance and security.
 
--> The production build is faster and more efficient, as it excludes debugging tools and non-essential features.It is typically minified and bundled to reduce file size, decrease load times, and enhance the overall user experience.
+-> Debugging tools and extra error messages are removed.
+
+-> Build is minified and bundled → smaller file size, faster load time, better user experience.
