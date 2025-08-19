@@ -1,17 +1,15 @@
 # JSX useCases
 
-# Variables in JSX
+# 1.Variables in JSX
 
 ```js
 const name = "Likan";
 const element = <h1>Hello, {name}!</h1>; // Outputs: Hello, Likan!
 ```
 
-# JSX Attributes vs HTML Attributes
+# 2.JSX Attributes vs HTML Attributes
 
 **Naming Convention**: 
-
-// Use camelCase for multi-word attributes to avoid conflicts with JavaScript keywords.
 
 ```js
 const element = <div 
@@ -29,8 +27,6 @@ const element = <div
 
 // JSX attributes can take different types of values: strings, objects, or expressions.
 
-// Example of passing a string to attributes:
-
 const imageElement = <img 
   src="logo.png" // 'src' specifies the image source (string value)
   alt="Logo" // 'alt' provides alternative text for the image (string value)
@@ -38,41 +34,21 @@ const imageElement = <img
 
 ```
 
-# Specifying Children.You can nest elements within other elements, just like in HTML.
+# 3.Specifying Children.You can nest elements within other elements, just like in HTML.
 
 ```js
 
 const element = (
   <div>
-    <h1>Heading</h1>  // A heading element
-    <p>This is a paragraph.</p>  // A paragraph element
+    <h1>Heading</h1>  
+    <p>This is a paragraph.</p> 
   </div>
 );
 
 ```
 
-# JSX in Function Components: Function components use JSX to return UI elements.
 
-```js
-
-// Function component using JSX
-function Greeting() {
-  return <h1>Hello, world!</h1>;  // JSX creates a <h1> element
-}
-
-const element = <Greeting />;  // JSX tag that calls the Greeting component and stores it in the 'element' constant
-
-// 'element' acts as a reference to the Greeting function component. 
-// When rendered, React will call the Greeting function and display the JSX it returns.
-const root = ReactDOM.createRoot(document.getElementById("root"));
-
-// Rendering 'element' triggers the Greeting component and displays the <h1> element on the UI
-root.render(element);  // Renders the Greeting component inside the root DOM element
-
-
-```
-
-# Conditional Rendering: You can use JavaScript logic to conditionally display elements.
+# 4.Conditional Rendering: You can use JavaScript logic to conditionally display elements.
 
 ```js
 
@@ -93,7 +69,7 @@ const element = (
 
 ```
 
-# Handling Events: You can manage events, like clicks, by passing event handler functions.
+# 5.Handling Events: You can manage events, like clicks, by passing event handler functions.
 
 ```js
 // Handling events in JSX
@@ -110,7 +86,7 @@ const element = (
 ```
 
 
-# Passing Props to Components: Props allow you to pass dynamic data into components.
+# 6.Passing Props to Components: Props allow you to pass dynamic data into components.
 
 ```js
 
@@ -123,7 +99,7 @@ const element = <Greeting name="Likan" />;  // Passing the 'name' prop with valu
 ```
 
 
-# Fragments: Fragments let you group multiple elements without adding extra nodes to the DOM.
+# 7.Fragments: Fragments let you group multiple elements without adding extra nodes to the DOM.
 
 ```js
 
@@ -139,14 +115,14 @@ const element = (
 ```
 
 
-# JSX with Arrays: You can render lists by mapping over arrays and generating JSX for each item.
+# 8.JSX with Arrays: You can render lists by mapping over arrays and generating JSX for each item.
 
 ```js
 
 const items = ['Item 1', 'Item 2', 'Item 3'];  // Array of items
 
 const element = (
-  <ul>  // Unordered list to contain the list items
+  <ul>  
     {items.map((item, index) => 
       <li key={index}>{item}</li>  // For each item, create an <li> element with a unique key
     )}
@@ -157,7 +133,7 @@ const element = (
 ```
 
 
-# JSX Spread Attributes: You can use the spread operator (...) to pass all properties of an object at once.
+# 9.JSX Spread Attributes: You can use the spread operator (...) to pass all properties of an object at once.
 
 ```js
 
@@ -169,12 +145,12 @@ const element = <h1 {...props}>Hello!</h1>;  // Spread operator copies all prope
 ```
 
 
-# Using Functions in JSX: You can embed functions in JSX to compute or manipulate data.
+# 10.Using Functions in JSX: You can embed functions in JSX to compute or manipulate data.
 
 ```js
 
 // Define a user object with first and last name
-const user = { firstName: 'Likan', lastName: 'Doe' };
+const user = { firstName: 'Likan', lastName: 'Mishra' };
 
 // Function that formats the name of the user
 function formatName(user) {
@@ -187,7 +163,7 @@ const element = <h1>Hello, {formatName(user)}!</h1>;  // Function 'formatName' i
 ```
 
 
-# JSX Comments: You can add comments inside JSX using curly braces and the /* comment */ syntax.
+# 11.JSX Comments: You can add comments inside JSX using curly braces and the /* comment */ syntax.
 
 ```js
 
@@ -202,7 +178,7 @@ const element = (
 ```
 
 
-# JSX in Loops: You can loop over arrays and return JSX for each item.
+# 12.JSX in Loops: You can loop over arrays and return JSX for each item.
 
 ```js
 
@@ -221,7 +197,7 @@ const element = (
 ```
 
 
-# Embedding Objects in JSX: You can pass JavaScript objects as content or props.
+# 13.Embedding Objects in JSX: You can pass JavaScript objects as content or props.
 
 ```js
 
@@ -233,7 +209,7 @@ const element = <div>{user.name} is {user.age} years old.</div>;  // Embeds 'nam
 
 ```
 
-# Combining Comments with Conditional Statements: You can mix JavaScript conditionals and comments inside JSX.
+# 14.Combining Comments with Conditional Statements: You can mix JavaScript conditionals and comments inside JSX.
 
 ```js
 // Boolean flag to control the rendering of the title
@@ -248,7 +224,7 @@ const element = (
 
 ```
 
-# Using Functional Components Directly in JSX" or "Directly Using Components in JSX
+# 15.Using Functional Components directly in JSX" or "Directly Using Components in JSX
 
 You can use functional components directly as JSX elements.
 
@@ -271,7 +247,7 @@ root.render(headerJSX);  // Rendering the headerJSX which includes the Header co
 
 ```
 
-# Directly Nesting JSX Elements Within Each Other.
+# 16.Directly Nesting JSX Elements Within Each Other.
 
 You can directly nest one JSX element inside another.
 
@@ -296,7 +272,7 @@ root.render(combinedJSX);  // Rendering the combinedJSX, which includes both ele
 ```
 
 
-# Organizing JSX by Using Components
+# 17.Organizing JSX by Using Components
 
 You can define a functional component that returns JSX and use it inside another JSX structure.
 
@@ -316,8 +292,8 @@ const mainJSX = (
   </div>
 );
 
-// Creating a React root and rendering the main JSX into the DOM
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(mainJSX);  // Rendering the mainJSX, which includes both components (WelcomeMessage and Instructions)
+root.render(mainJSX);  
 
 ```
