@@ -1,0 +1,4 @@
+Default props 
+passing functions as props 
+passing components as props
+Data updater setUpdate(count + 1)  or setUpdate(prev => prev + 1) 
