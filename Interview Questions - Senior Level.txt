@@ -1,0 +1,348 @@
+1️⃣ Core React Fundamentals
+
+What problem does React solve compared to manipulating the DOM manually?
+
+Explain the difference between elements, components, and instances in React.
+
+What is the Virtual DOM and how does it differ from the real DOM?
+
+What is reconciliation in React?
+
+Why must React components be pure functions of props and state?
+
+What is the difference between controlled and uncontrolled components?
+
+How does React decide when to re-render a component?
+
+What are keys in lists and why are they important?
+
+What happens if you use array index as key? When is it okay vs harmful?
+
+What is the difference between props and state conceptually?
+
+2️⃣ JSX & Rendering
+
+What is JSX actually compiled to?
+
+Why must components start with a capital letter?
+
+Can you return multiple JSX elements without a wrapper? How?
+
+What are fragments and when do you use <></> vs <React.Fragment>?
+
+How does conditional rendering work in React? Pros/cons of &&, ternary, early returns.
+
+Why is it a bad idea to put heavy computations directly inside JSX?
+
+Explain what happens internally when a component returns null.
+
+3️⃣ Component Design & Patterns
+
+Explain presentational vs container components. Do you still use this pattern?
+
+What is lifting state up and when is it required?
+
+How do you share logic between components? (Custom hooks vs HOCs vs render props)
+
+What is a controlled input? Example?
+
+What is an uncontrolled input? When would you prefer it?
+
+How do you design reusable Button / Modal / Form components?
+
+Explain the compound components pattern (e.g. <Dropdown><Dropdown.Item /></Dropdown>).
+
+How do you handle cross-cutting concerns (logging, analytics, auth) in React?
+
+4️⃣ Hooks – Rules & Basics
+
+What are the Rules of Hooks? What breaks if you violate them?
+
+Why can’t hooks be called inside loops, conditions, or nested functions?
+
+Difference between useState and useReducer – when choose which?
+
+Why is setState async? What is batching?
+
+Why is setCount(count + 1) sometimes wrong and setCount(prev => prev + 1) safer?
+
+Explain how dependency arrays work in useEffect, useMemo, and useCallback.
+
+What is the difference between mount and update behavior in useEffect?
+
+How do you run an effect only once? Why is that tricky with dependencies?
+
+What is the correct way to clean up side effects in useEffect?
+
+5️⃣ Advanced Hooks
+
+Explain stale closures in React with examples.
+
+Why might useEffect see old state/props values?
+
+Difference between useLayoutEffect and useEffect.
+
+When would you use useImperativeHandle and forwardRef?
+
+When is useRef better than useState?
+
+Explain an advanced use case of useReducer with complex state.
+
+When is useCallback useful, and when is it over-optimization?
+
+Why does useMemo not guarantee performance benefits?
+
+How would you implement a custom hook like useDebounce, useInfiniteScroll, or usePrevious?
+
+6️⃣ Context & Global State
+
+What problem does Context solve?
+
+Why can heavy use of Context cause performance issues?
+
+How do you avoid Context re-render bombs?
+
+How can you combine Context + useReducer to build a mini-state store?
+
+When would you choose Context vs Redux vs Zustand vs React Query?
+
+7️⃣ Performance Optimization
+
+What causes unnecessary re-renders in React?
+
+How do you detect and debug unnecessary re-renders?
+
+Where would you use React.memo? When does it not help?
+
+Explain how useCallback + React.memo work together.
+
+What are expensive renders and how do you profile them?
+
+What is list virtualization? When do you use react-window or react-virtualized?
+
+How do you optimize very large lists?
+
+How would you handle expensive calculations in render?
+
+What is the impact of key on re-renders and DOM reuse?
+
+How do you lazy load components with React.lazy + Suspense?
+
+8️⃣ React 18 & Concurrency
+
+What is Concurrent Rendering in React 18?
+
+Difference between render phase and commit phase.
+
+What are transitions and when do you use startTransition?
+
+Difference between urgent updates (like typing) and transitions (like filter/search).
+
+How does React interrupt and resume rendering?
+
+How does this improve perceived performance?
+
+Explain useTransition and its use cases.
+
+Explain useDeferredValue and how it differs from debounce.
+
+How does concurrency affect how you think about state updates?
+
+9️⃣ Suspense & Data Fetching
+
+What is Suspense in React?
+
+What can Suspense handle today (2025) and what can’t it?
+
+Explain how Suspense boundaries work.
+
+How do you show different fallbacks for different UI sections?
+
+What happens if a Suspense boundary fails to resolve?
+
+How does Suspense interact with server-side data fetching libraries?
+
+Compare Suspense with manual loading state (isLoading flags).
+
+🔟 Error Handling & Error Boundaries
+
+What is an Error Boundary?
+
+What kinds of errors can Error Boundaries catch and what can’t they?
+
+How do you implement a global Error Boundary?
+
+How do you combine Error Boundaries + Suspense for robust UX?
+
+How do you handle errors inside async data fetching?
+
+1️⃣1️⃣ Routing (React Router / Next.js)
+
+How does client-side routing differ from server-side routing?
+
+Explain how React Router works under the hood.
+
+What’s the difference between <Link> and <a> tags?
+
+How do you handle protected routes?
+
+How do you handle nested routes and layout routes?
+
+How does routing change in Next.js App Router (layouts, nested routes)?
+
+1️⃣2️⃣ Data Fetching & State vs Cache
+
+Difference between client state and server cache.
+
+Why do libraries like React Query / SWR exist?
+
+How do you handle caching, refetching, invalidation in a React app?
+
+How to implement polling, stale-while-revalidate, and background updates.
+
+How do you deal with race conditions in API calls?
+
+How to cancel in-flight requests when components unmount?
+
+How to ensure the UI doesn’t flicker when data reloads?
+
+1️⃣3️⃣ State Management Libraries
+
+Compare Redux, Redux Toolkit, Zustand, MobX, Recoil, Jotai.
+
+Why is Redux Toolkit preferred over classic Redux?
+
+Explain concepts: slice, reducer, thunk, middleware.
+
+What is an action, and why are they serializable?
+
+When would you not use Redux?
+
+How do you structure a large Redux store?
+
+How do you avoid prop drilling with Context vs a global store?
+
+1️⃣4️⃣ React + TypeScript
+
+How do you type function components and props in TS?
+
+How do you type children properly?
+
+How do you type useState, especially when the state can be multiple shapes?
+
+How do you type useReducer (state, actions, reducer)?
+
+How do you type custom hooks?
+
+How do you type event handlers like onClick, onChange, onSubmit?
+
+How do you type refs for DOM vs component instances?
+
+How do you type higher-order components?
+
+How do you type a polymorphic component with as prop?
+
+1️⃣5️⃣ Testing (Unit, Integration, E2E)
+
+What’s the difference between unit, integration, and E2E tests in React?
+
+What is the React Testing Library philosophy (“test the behavior, not implementation”)?
+
+How do you test components that:
+- fetch data
+- use Context
+- use Redux / Zustand / Query
+
+Why is mocking network calls important?
+
+How do you test custom hooks?
+
+How do you test components using Suspense and Error Boundaries?
+
+1️⃣6️⃣ Accessibility (a11y)
+
+Why is accessibility important in React?
+
+How do you ensure a React app is keyboard accessible?
+
+How do you handle focus management in modals, dialogs, and routes?
+
+What are ARIA roles and when should you use them?
+
+Tools you use to audit accessibility (Lighthouse, axe, etc).
+
+1️⃣7️⃣ Security in React
+
+How does React protect against XSS attacks by default?
+
+What is dangerouslySetInnerHTML and when is it actually needed?
+
+How do you sanitize user input in React?
+
+How do you handle auth tokens (localStorage vs cookies vs httpOnly cookies)?
+
+How do you prevent CSRF in a React app with a backend?
+
+1️⃣8️⃣ Architecture & Folder Structure
+
+How do you structure a large React codebase?
+
+Feature-based vs layer-based folder structures?
+
+How do you split the app into modules (auth, dashboard, settings, shared, etc.)?
+
+How do you handle shared UI components and shared hooks?
+
+How to enforce boundaries between domains in a large app?
+
+1️⃣9️⃣ Code-splitting & Bundling
+
+What is code splitting?
+
+Difference between route-level and component-level code splitting?
+
+How to use dynamic imports with React?
+
+How do you analyze bundle size?
+
+How to reduce initial bundle size in a large SPA?
+
+2️⃣0️⃣ Micro-frontends & Large Scale
+
+What are micro-frontends and when would you use them?
+
+What are typical micro-frontend approaches? (Module Federation, iframe, build-time composition)
+
+What are the trade-offs of micro-frontends?
+
+How do teams share components and libraries across multiple apps?
+
+2️⃣1️⃣ React with Next.js / SSR / RSC
+
+Compare CSR, SSR, SSG, and ISR.
+
+What’s the benefit of SSR for a React app?
+
+What are React Server Components (RSC)?
+
+How does the Next.js App Router differ from the Pages Router?
+
+How do Suspense, streaming, and RSC work together?
+
+How do you handle data fetching in server vs client components?
+
+2️⃣2️⃣ Real-world Problem-Solving / Scenarios
+
+How would you debug a React app that feels “slow” to users?
+
+How would you fix a memory leak caused by async calls and unmounted components?
+
+How do you handle a form with 50+ fields with validation and performance in mind?
+
+How do you handle offline support in a React app?
+
+How do you design a notification system in React with real-time updates?
+
+How would you introduce TypeScript into an existing JavaScript React codebase?
+
+How do you handle feature flags and gradual rollouts in a React app?
