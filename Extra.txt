@@ -1,4 +1,4 @@
-⚛️ FINAL REACT MASTER LIST (NO DUPLICATES — CLEANED)
+⚛️ FINAL REACT MASTER LIST 
 
 ✅ 1. Axios
 
@@ -109,43 +109,19 @@ z-index independence
 Event bubbling behavior
 Rendering outside DOM tree
 
-✅ 8. Render Props
 
-Passing functions as children
-Sharing reusable behavior
-Render prop patterns
+✅ 8. Avoid Unnecessary Re-renders
 
-
-✅ 9. Concurrent Rendering (React 18)
-
-Concurrent Mode basics
-startTransition
-Transitions vs normal updates
-useTransition
-useDeferredValue
-Automatic batching
-Benefits: smoother UI, responsive inputs
-
-✅ 10. Avoid Unnecessary Re-renders
-
-React.memo
-useCallback
-useMemo
-Lifting state correctly
-Avoid passing inline functions
-Dependency arrays
-Splitting components
-Key usage patterns
 useId
 
 
-✅ 11. Modals & Portals
+✅ 9. Modals & Portals
 
 Opening modals
 Closing modals
 Passing data to modals
 
-✅ 12. Class Components
+✅ 10. Class Components
 
 constructor
 this.state
@@ -153,7 +129,7 @@ this.setState
 bindings
 class methods
 
-✅ 13. All Lifecycle Methods
+✅ 11. All Lifecycle Methods
 Mounting
 
 constructor
@@ -171,14 +147,14 @@ getDerivedStateFromError
 componentDidCatch
 
 
-✅ 18. AbortController
+✅ 12. AbortController
 
 Cancel API requests
 Cancel fetch
 Cleanup in useEffect
 Cancel long-running actions
 
-✅ 19. Custom Hooks
+✅ 13. Custom Hooks
 
 Reusable logic extraction
 useToggle
@@ -187,7 +163,7 @@ useFetch
 useDebounce
 useThrottle
 
-✅ 26. TypeScript + React (Props + Hooks + Events)
+✅ 14. TypeScript + React (Props + Hooks + Events)
 
 Typing props
 Typing children
@@ -197,17 +173,7 @@ Typing reducers
 Typing context
 Typing portal props
 
-✅ 27. Modern React (React 18 + 19)
-React 18:
-
-Automatic batching
-Concurrent rendering
-startTransition
-useTransition
-useDeferredValue
-Streaming SSR
-
-React 19:
+✅ 15. Modern React (React  19)
 
 Actions API
 Server Actions
@@ -219,7 +185,7 @@ View Transitions
 Enhanced Suspense
 Disposable Effects
 
-⚛️ 28. React Architectures & Patterns
+✅ 16. React Architectures & Patterns
 
 Container vs Presentation components
 Smart vs Dumb components
@@ -231,7 +197,7 @@ HOC pattern
 Render props pattern
 State reducer pattern
 
-⚛️ 29. Real-World React Concepts
+✅ 17. Real-World React Concepts
 
 Folder structure
 API layer setup
@@ -248,14 +214,8 @@ Search filters
 Caching strategies (React Query / SWR)
 
 
-===============================================================================
-===============================================================================
-===============================================================================
-===============================================================================
-===============================================================================
-===============================================================================
 
-✅ 1. Core React Hooks (Basic Hooks)
+✅ 19. Core React Hooks (Basic Hooks)
 
 useReducer
 useLayoutEffect Vs useEffect
@@ -268,23 +228,8 @@ useFormStatus
 useOptimistic (now stable)
 
 
-✅ 2 Advanced Form Concepts
 
-Controlled vs Uncontrolled forms
-File input
-Refs in forms
-Complex forms with nested fields
-Dynamic forms
-Aborting requests with AbortController
-
-
-
-=========================================================================
-
-Additionals / Extra -
-
-
-✅ 1. Compound Components -> Javascript features.
+✅ 20. Compound Components -> Javascript features.
 
 Parent-child control
 Context-based compound APIs
