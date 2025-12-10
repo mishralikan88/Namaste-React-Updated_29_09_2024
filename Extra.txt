@@ -138,18 +138,14 @@ Splitting components
 Key usage patterns
 useId
 
-✅ 11. Refs & DOM Manipulation
 
-useImperativeHandle
-Scrolling
-
-✅ 17. Modals & Portals
+✅ 11. Modals & Portals
 
 Opening modals
 Closing modals
 Passing data to modals
 
-✅ 18. Class Components
+✅ 12. Class Components
 
 constructor
 this.state
@@ -157,7 +153,7 @@ this.setState
 bindings
 class methods
 
-✅ 19. All Lifecycle Methods
+✅ 13. All Lifecycle Methods
 Mounting
 
 constructor
@@ -174,42 +170,15 @@ Error lifecycle
 getDerivedStateFromError
 componentDidCatch
 
-✅ 20. Compound Components
 
-Parent-child control
-Context-based compound APIs
-Behavior sharing patterns
-Example: Accordion, Tabs, Menu
-
-✅ 21. Controlled vs Uncontrolled Component Patterns
-
-value + onChange
-defaultValue
-useRef for uncontrolled
-When to use which pattern
-
-✅ 22. useNavigate (React Router)
-
-Programmatic navigation
-Replace vs push
-Passing state through navigate
-Navigating after submit
-
-✅ 23. Lazy Loaded Routes
-
-lazy()
-Suspense fallback
-Route-level code splitting
-Component-level code splitting
-
-✅ 24. AbortController
+✅ 18. AbortController
 
 Cancel API requests
 Cancel fetch
 Cleanup in useEffect
 Cancel long-running actions
 
-✅ 25. Custom Hooks
+✅ 19. Custom Hooks
 
 Reusable logic extraction
 useToggle
@@ -272,8 +241,8 @@ Infinite Scroll
 Debounced search
 Authentication
 Authorization (role-based UI)
-Optimistic UI
-Error handling architecture
+Optimistic U
+Error handling archIitecture
 SSG / SSR / ISR (Next.js)
 Search filters
 Caching strategies (React Query / SWR)
@@ -288,44 +257,18 @@ Caching strategies (React Query / SWR)
 
 ✅ 1. Core React Hooks (Basic Hooks)
 
-useState - Done 
-
-useEffect - Done
-
-useRef - Done
-
-useMemo - Done 
-
-useCallback - Done 
-
-useContext - Done 
-
 useReducer
-
-useImperativeHandle - Done 
-
-useLayoutEffect
-
+useLayoutEffect Vs useEffect
 useDebugValue
-
 useId
-
-useDeferredValue
-
-useTransition
-
 useSyncExternalStore
-
 useInsertionEffect
-
 useActionState
-
 useFormStatus
-
 useOptimistic (now stable)
 
 
-✅ 6 Advanced Form Concepts
+✅ 2 Advanced Form Concepts
 
 Controlled vs Uncontrolled forms
 File input
@@ -336,49 +279,14 @@ Aborting requests with AbortController
 
 
 
-✅ 8. Render Props
+=========================================================================
 
-Passing functions as children
-Sharing reusable behavior
-Render prop patterns
+Additionals / Extra -
 
 
-✅ 9. Concurrent Rendering (React 18)
-
-Concurrent Mode basics
-startTransition
-Transitions vs normal updates
-useTransition
-useDeferredValue
-Automatic batching
-Benefits: smoother UI, responsive inputs
-
-
-
-✅ 20. Compound Components
+✅ 1. Compound Components -> Javascript features.
 
 Parent-child control
 Context-based compound APIs
 Behavior sharing patterns
 Example: Accordion, Tabs, Menu
-
-✅ 21. Controlled vs Uncontrolled Component Patterns
-
-value + onChange
-defaultValue
-useRef for uncontrolled
-When to use which pattern
-
-✅ 22. useNavigate (React Router)
-
-Programmatic navigation
-Replace vs push
-Passing state through navigate
-Navigating after submit
-
-✅ 23. Lazy Loaded Routes
-
-lazy()
-Suspense fallback
-Route-level code splitting
-Component-level code splitting
