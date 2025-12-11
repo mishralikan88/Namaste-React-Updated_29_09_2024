@@ -1,4 +1,5 @@
 ⚛️ FINAL REACT MASTER LIST 
+===========================
 
 ✅ 1. Axios
 
@@ -9,48 +10,15 @@ Cancel Token / AbortController
 Global axios instance
 API layer structure
 
-✅ 2. URL Search Params
 
-useSearchParams (React Router)
-Reading query params
-Updating query params
-Syncing UI with search params
-
-✅ 3. Forms in React (FULL)
-
-Controlled components
-Uncontrolled components
-Refs for forms
-All input types:
-Text input
-Textarea
-Checkbox
-Radio
-Dropdown (select)
-Multi-select
-File input
-Date input
-Number input
-Form validation:
-Required
-Length
-Pattern
-Custom validation
-Real-time validation
-Error handling UI
-React Hook Form
-Formik
-Yup validation schema
-Form submission lifecycle
-
-✅ 4. Index as Keys
+✅ 2. Index as Keys
 
 Why index as keys is bad
 Reordering issues
 Incorrect reconciliation
 
 
-✅ 5. ALL React Events
+✅ 3. ALL React Events
 Mouse Events
 
 onClick
@@ -89,17 +57,7 @@ onPointerEnter
 onPointerLeave
 
 
-✅ 6 Advanced Form Concepts
-
-Controlled vs Uncontrolled forms
-File input
-Refs in forms
-Complex forms with nested fields
-Dynamic forms
-Aborting requests with AbortController
-
-
-✅ 7. Portals (FULL SET)
+✅ 4. Portals (FULL SET)
 
 Creating a portal
 Modal root
@@ -110,18 +68,13 @@ Event bubbling behavior
 Rendering outside DOM tree
 
 
-✅ 8. Avoid Unnecessary Re-renders
-
-useId
-
-
-✅ 9. Modals & Portals
+✅ 5. Modals & Portals
 
 Opening modals
 Closing modals
 Passing data to modals
 
-✅ 10. Class Components
+✅ 6. Class Components
 
 constructor
 this.state
@@ -129,7 +82,7 @@ this.setState
 bindings
 class methods
 
-✅ 11. All Lifecycle Methods
+✅ 7. All Lifecycle Methods
 Mounting
 
 constructor
@@ -147,23 +100,8 @@ getDerivedStateFromError
 componentDidCatch
 
 
-✅ 12. AbortController
 
-Cancel API requests
-Cancel fetch
-Cleanup in useEffect
-Cancel long-running actions
-
-✅ 13. Custom Hooks
-
-Reusable logic extraction
-useToggle
-useLocalStorage
-useFetch
-useDebounce
-useThrottle
-
-✅ 14. TypeScript + React (Props + Hooks + Events)
+✅ 8. TypeScript + React (Props + Hooks + Events)
 
 Typing props
 Typing children
@@ -173,31 +111,9 @@ Typing reducers
 Typing context
 Typing portal props
 
-✅ 15. Modern React (React  19)
 
-Actions API
-Server Actions
-useActionState
-useOptimistic
-useFormState
-useFormStatus
-View Transitions
-Enhanced Suspense
-Disposable Effects
 
-✅ 16. React Architectures & Patterns
-
-Container vs Presentation components
-Smart vs Dumb components
-Compound components
-Controlled vs Uncontrolled
-Provider pattern
-Hooks pattern
-HOC pattern
-Render props pattern
-State reducer pattern
-
-✅ 17. Real-World React Concepts
+✅ 9. Real-World React Concepts
 
 Folder structure
 API layer setup
@@ -212,10 +128,96 @@ Error handling archIitecture
 SSG / SSR / ISR (Next.js)
 Search filters
 Caching strategies (React Query / SWR)
+Search Bar with Debouncing (using useRef)
+Dynamic Forms (Add / Remove Inputs) -> To do app 
+Aborting Requests with AbortController
 
 
+Extras -
+=====================================================================================================================
 
-✅ 19. Core React Hooks (Basic Hooks)
+✅ 1. URL Search Params
+
+useSearchParams (React Router)
+Reading query params
+Updating query params
+Syncing UI with search params
+
+
+========================================================================================================================
+
+✅ 1. AbortController
+
+Cancel API requests
+Cancel fetch
+Cleanup in useEffect
+Cancel long-running actions
+
+
+✅ 2. Custom Hooks
+
+Reusable logic extraction
+useToggle
+useLocalStorage
+useFetch
+useDebounce
+useThrottle
+
+
+✅ 3. Forms in React (FULL)
+
+Controlled components
+Uncontrolled components
+Refs for forms
+All input types:
+Text input
+Textarea
+Checkbox
+Radio
+Dropdown (select)
+Multi-select
+File input
+Date input
+Number input
+Form validation:
+Required
+Length
+Pattern
+Custom validation
+Real-time validation
+Error handling UI
+React Hook Form
+Formik
+Yup validation schema
+Form submission lifecycle
+Form validation
+Form libraries (Formik, RHF)
+Debouncing, throttling in forms
+Error handling patterns
+
+
+✅ 4. Modern React (React  19)
+
+Actions API
+Server Actions
+useActionState
+useOptimistic
+useFormState
+useFormStatus
+View Transitions
+Enhanced Suspense
+Disposable Effects
+
+✅ 5. React Architectures & Patterns
+
+Compound components
+Provider pattern
+Hooks pattern
+HOC pattern
+State reducer pattern
+
+
+✅ 6. Core React Hooks (Basic Hooks)
 
 useReducer
 useLayoutEffect Vs useEffect
@@ -229,9 +231,14 @@ useOptimistic (now stable)
 
 
 
-✅ 20. Compound Components -> Javascript features.
+✅ 7. Compound Components -> Javascript features.
 
 Parent-child control
 Context-based compound APIs
 Behavior sharing patterns
 Example: Accordion, Tabs, Menu
+
+
+
+
+=================================================================================
