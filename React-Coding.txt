@@ -1,0 +1,424 @@
+✅ REACT INTERVIEW PRACTICE QUESTIONS — MASTER LIST
+
+
+🟢 SECTION 1: React Fundamentals (Warm-up, but interview-critical)
+
+Build a counter with increment, decrement, reset
+
+Disable decrement when count is 0
+
+Toggle button (ON/OFF)
+
+Show / hide password
+
+Conditional rendering (Login / Logout)
+
+Controlled text input
+
+Convert uncontrolled input to controlled
+
+Render list using map
+
+Add key correctly — explain why
+
+Fix missing key warning
+
+Show empty state if list is empty
+
+Conditional button disabling
+
+Pass props parent → child
+
+Child → parent communication
+
+Default props handling
+
+Render JSX conditionally using &&
+
+Render JSX using ternary
+
+Inline styles vs CSS classes
+
+Event handling basics
+
+Prevent default form submit
+
+🟡 SECTION 2: State, Immutability & Lists (VERY IMPORTANT)
+
+Update object state immutably
+
+Update nested object state
+
+Update array state immutably
+
+Add item to list
+
+Remove item from list
+
+Edit item in list
+
+Toggle item property (done / not done)
+
+Clear entire list
+
+Derived state vs stored state
+
+Why NOT store derived state?
+
+Fix state mutation bug
+
+Sorting list (asc / desc)
+
+Filtering list by condition
+
+Pagination logic
+
+Select all / deselect all checkboxes
+
+Multi-select dropdown
+
+Controlled checkbox group
+
+Controlled radio buttons
+
+Form with multiple inputs (single state object)
+
+Dynamic form fields (add/remove)
+
+🔵 SECTION 3: useEffect Mastery (INTERVIEW FAVORITE)
+
+Run effect only once
+
+Run effect on state change
+
+Cleanup function — when does it run?
+
+Fix infinite loop in useEffect
+
+Missing dependency bug
+
+Stale closure problem
+
+Fetch data using useEffect
+
+Loading + error handling
+
+Abort API request on unmount
+
+Multiple useEffect separation
+
+useEffect vs event handler
+
+Why NOT put everything in useEffect?
+
+Timer using setInterval
+
+Cleanup interval properly
+
+Debounce logic using useEffect
+
+Throttle logic using useEffect
+
+Compare debounce vs throttle
+
+Explain execution order of effects
+
+API polling using useEffect
+
+Sync state with localStorage
+
+🟣 SECTION 4: Forms & User Input (REAL PROJECT SCENARIOS)
+
+Controlled form with validation
+
+Disable submit until valid
+
+Show error messages
+
+Real-time validation
+
+On-blur validation
+
+File upload using useRef
+
+Controlled vs uncontrolled forms
+
+Large form performance issue
+
+Optimize large form rendering
+
+Dynamic form rows
+
+Form reset logic
+
+Multi-step form
+
+Character counter
+
+OTP input (4/6 digit)
+
+Resend OTP with throttle
+
+Search input with debounce
+
+Password strength checker
+
+Dependent dropdowns
+
+Form submission lifecycle
+
+Prevent double submit
+
+🔴 SECTION 5: Re-renders & Performance (SENIOR FILTER)
+
+Why did my component re-render?
+
+How to prevent child re-render
+
+Fix unnecessary re-render
+
+React.memo usage
+
+useCallback usage
+
+useMemo usage
+
+useCallback vs useMemo
+
+Referential equality problem
+
+Inline function re-render issue
+
+Memoizing expensive computation
+
+Optimize slow list rendering
+
+Optimize dashboard with many components
+
+When NOT to use memoization
+
+Context causing re-render — fix it
+
+State colocation vs lifting state
+
+Prop drilling — solutions
+
+Split component to reduce re-render
+
+Virtualization concept
+
+Key misuse performance issue
+
+Batch state updates
+
+🟠 SECTION 6: Custom Hooks (SENIOR EXPECTATION)
+
+Why custom hooks exist?
+
+Build useToggle
+
+Build useDebounce
+
+Build useThrottle
+
+Build useFetch
+
+Build useLocalStorage
+
+Reuse logic without duplication
+
+Hook rules — explain
+
+Hook dependency pitfalls
+
+Hook returning functions vs values
+
+Hook composition
+
+Hook cleanup handling
+
+Hook for form logic
+
+Hook for pagination
+
+Hook for window resize
+
+Hook for outside click detection
+
+Hook for keyboard events
+
+Testing custom hooks
+
+When NOT to use custom hooks
+
+Difference between hook & utility function
+
+🟤 SECTION 7: Component Design Patterns (INTERVIEW GOLD)
+
+Controlled vs uncontrolled components
+
+Compound components pattern
+
+Build Tabs using compound pattern
+
+Build Accordion using compound pattern
+
+Render props pattern
+
+HOC pattern
+
+Hooks vs HOC
+
+Context API usage
+
+Context performance optimization
+
+Build reusable modal
+
+Close modal on outside click
+
+Portal usage
+
+Slot-based components
+
+Composition vs inheritance
+
+Dumb vs smart components
+
+Container-presentational pattern
+
+Reusable button component
+
+Feature-based folder structure
+
+Component API design
+
+Error boundary implementation
+
+🔷 SECTION 8: Modern React (React 18 / 19 Awareness)
+
+Automatic batching
+
+Concurrent rendering basics
+
+useTransition
+
+useDeferredValue
+
+Suspense basics
+
+Suspense for data fetching (concept)
+
+Server Components (concept)
+
+Client vs server components
+
+Streaming rendering (concept)
+
+When concurrency helps
+
+When concurrency hurts
+
+Legacy mode vs concurrent mode
+
+Priority updates
+
+Blocking vs non-blocking updates
+
+Progressive rendering
+
+⚫ SECTION 9: Debugging & Tricky Scenarios (REAL INTERVIEWS)
+
+Fix infinite re-render bug
+
+Fix stale state bug
+
+Fix broken dependency array
+
+Fix memory leak
+
+Fix event handler bug
+
+Fix wrong closure issue
+
+Fix incorrect key usage
+
+Fix form lag issue
+
+Fix unnecessary API calls
+
+Fix modal scroll bug
+
+Fix double API submit
+
+Fix flickering UI issue
+
+Fix incorrect conditional render
+
+Fix race condition in fetch
+
+Fix debounce bug
+
+🧠 SECTION 10: Architecture & Thinking (SENIOR LEVEL)
+
+When to lift state up?
+
+When to colocate state?
+
+Global vs local state
+
+Redux vs Context
+
+State normalization
+
+Error handling strategy
+
+Component responsibility split
+
+Folder structure for large app
+
+Feature-based vs layer-based
+
+Scaling React apps
+
+Code-splitting strategy
+
+Lazy loading components
+
+Environment-based configs
+
+Security basics in React
+
+Accessibility basics
+
+Testing strategy (unit vs integration)
+
+Performance monitoring
+
+Bundle size optimization
+
+Refactoring legacy React code
+
+Interview explanation clarity
+
+🏁 FINAL BOSS: MOCK INTERVIEW TASKS
+
+Build debounced search + explain flow
+
+Build todo app with filters
+
+Build reusable modal (no library)
+
+Optimize re-render-heavy component
+
+Design form architecture
+
+Fix performance bottleneck
+
+Explain render cycle verbally
+
+Explain hooks execution order
+
+Explain cleanup execution timing
+
+Design scalable React component API

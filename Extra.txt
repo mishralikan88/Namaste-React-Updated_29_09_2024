@@ -1,5 +1,3 @@
-⚛️ FINAL REACT MASTER LIST 
-===========================
 
 ✅ 1. Axios
 
@@ -19,6 +17,7 @@ Incorrect reconciliation
 
 
 ✅ 3. ALL React Events
+
 Mouse Events
 
 onClick
@@ -57,63 +56,8 @@ onPointerEnter
 onPointerLeave
 
 
-✅ 4. Portals (FULL SET)
 
-Creating a portal
-Modal root
-Escape clipping context
-Escape stacking context
-z-index independence
-Event bubbling behavior
-Rendering outside DOM tree
-
-
-✅ 5. Modals & Portals
-
-Opening modals
-Closing modals
-Passing data to modals
-
-✅ 6. Class Components
-
-constructor
-this.state
-this.setState
-bindings
-class methods
-
-✅ 7. All Lifecycle Methods
-Mounting
-
-constructor
-getDerivedStateFromProps
-render
-componentDidMount
-Updating
-shouldComponentUpdate
-getSnapshotBeforeUpdate
-componentDidUpdate
-Unmounting
-componentWillUnmount
-Error lifecycle
-getDerivedStateFromError
-componentDidCatch
-
-
-
-✅ 8. TypeScript + React (Props + Hooks + Events)
-
-Typing props
-Typing children
-Typing events
-Typing custom hooks
-Typing reducers
-Typing context
-Typing portal props
-
-
-
-✅ 9. Real-World React Concepts
+✅ 4. Real-World React Concepts
 
 Folder structure
 API layer setup
@@ -131,72 +75,18 @@ Caching strategies (React Query / SWR)
 Search Bar with Debouncing (using useRef)
 Dynamic Forms (Add / Remove Inputs) -> To do app 
 Aborting Requests with AbortController
+useDebounce -> (custom hooks)
+useThrottle -> (custom hooks)
+Advanced Form Validation  - 
+React Hook Form.
+Formik.
+Yup validation schema.
+Form + Yup 
+Formik + Yup 
+React Hook Form + Yup 
 
 
-Extras -
-=====================================================================================================================
-
-✅ 1. URL Search Params
-
-useSearchParams (React Router)
-Reading query params
-Updating query params
-Syncing UI with search params
-
-
-========================================================================================================================
-
-✅ 1. AbortController
-
-Cancel API requests
-Cancel fetch
-Cleanup in useEffect
-Cancel long-running actions
-
-
-✅ 2. Custom Hooks
-
-Reusable logic extraction
-useToggle
-useLocalStorage
-useFetch
-useDebounce
-useThrottle
-
-
-✅ 3. Forms in React (FULL)
-
-Controlled components
-Uncontrolled components
-Refs for forms
-All input types:
-Text input
-Textarea
-Checkbox
-Radio
-Dropdown (select)
-Multi-select
-File input
-Date input
-Number input
-Form validation:
-Required
-Length
-Pattern
-Custom validation
-Real-time validation
-Error handling UI
-React Hook Form
-Formik
-Yup validation schema
-Form submission lifecycle
-Form validation
-Form libraries (Formik, RHF)
-Debouncing, throttling in forms
-Error handling patterns
-
-
-✅ 4. Modern React (React  19)
+✅ 5. Modern React (React  19)
 
 Actions API
 Server Actions
@@ -208,37 +98,97 @@ View Transitions
 Enhanced Suspense
 Disposable Effects
 
-✅ 5. React Architectures & Patterns
+✅ 6. React Architectures & Patterns
 
-Compound components
 Provider pattern
 Hooks pattern
 HOC pattern
 State reducer pattern
 
-
-✅ 6. Core React Hooks (Basic Hooks)
-
-useReducer
-useLayoutEffect Vs useEffect
-useDebugValue
-useId
-useSyncExternalStore
-useInsertionEffect
-useActionState
-useFormStatus
-useOptimistic (now stable)
-
-
-
-✅ 7. Compound Components -> Javascript features.
-
+Compound Components pattern -> Javascript features.
 Parent-child control
 Context-based compound APIs
 Behavior sharing patterns
 Example: Accordion, Tabs, Menu
 
 
+✅ 7. Core React Hooks (Basic Hooks)
+
+useReducer
+useLayoutEffect Vs useEffect
+useDebugValue
+useSyncExternalStore
+useInsertionEffect
+useActionState
+useFormStatus
+useOptimistic
 
 
-=================================================================================
+✅ 8. URL Search Params
+
+useSearchParams (React Router)
+Reading query params
+Updating query params
+Syncing UI with search params
+
+
+✅ 9. AbortController
+
+Cancel API requests
+Cancel fetch
+Cleanup in useEffect
+Cancel long-running actions
+
+
+✅ 10. Portals (FULL SET)
+
+Creating a portal
+Modal root
+Escape clipping context
+Escape stacking context
+z-index independence
+Event bubbling behavior
+Rendering outside DOM tree
+
+
+✅ 11. Modals & Portals
+
+Opening modals
+Closing modals
+Passing data to modals
+
+✅ 12. Class Components
+
+constructor
+this.state
+this.setState
+bindings
+class methods
+
+✅ 13. All Lifecycle Methods
+Mounting
+
+constructor
+getDerivedStateFromProps
+render
+componentDidMount
+Updating
+shouldComponentUpdate
+getSnapshotBeforeUpdate
+componentDidUpdate
+Unmounting
+componentWillUnmount
+Error lifecycle
+getDerivedStateFromError
+componentDidCatch
+
+
+✅ 14. TypeScript + React (Props + Hooks + Events)
+
+Typing props
+Typing children
+Typing events
+Typing custom hooks
+Typing reducers
+Typing context
+Typing portal props
