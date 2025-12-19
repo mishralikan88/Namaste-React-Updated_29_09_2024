@@ -1,89 +1,81 @@
-✅ REACT INTERVIEW PRACTICE QUESTIONS — MASTER LIST
+✅ REACT INTERVIEW CODING QUESTIONS — FINAL MASTER LIST
 
+Target: 8–12+ years experience
+Goal: Ace React technical interviews (coding + explanation)
 
-🟢 SECTION 1: React Fundamentals (Warm-up, but interview-critical)
+🟢 SECTION 1: React Fundamentals (FILTER ROUND – MUST PASS)
 
-Build a counter with increment, decrement, reset
+Build a counter (increment, decrement, reset)
 
-Disable decrement when count is 0
+Disable decrement button when count is 0
 
-Toggle button (ON/OFF)
+Toggle button (ON / OFF)
 
 Show / hide password
 
 Conditional rendering (Login / Logout)
 
-Controlled text input
-
-Convert uncontrolled input to controlled
-
-Render list using map
-
-Add key correctly — explain why
-
-Fix missing key warning
-
-Show empty state if list is empty
-
-Conditional button disabling
-
-Pass props parent → child
-
-Child → parent communication
-
-Default props handling
-
 Render JSX conditionally using &&
 
 Render JSX using ternary
 
-Inline styles vs CSS classes
+Controlled text input with live preview
 
-Event handling basics
+Convert uncontrolled input to controlled
 
 Prevent default form submit
+
+Conditional button disabling
+
+Pass props from parent → child
+
+Child → parent communication (callback props)
+
+Default props handling
+
+Inline styles vs CSS classes (code example)
+
+Event handling basics
 
 🟡 SECTION 2: State, Immutability & Lists (VERY IMPORTANT)
 
 Update object state immutably
 
-Update nested object state
+Update nested object state immutably
 
 Update array state immutably
 
-Add item to list
+Add item to a list
 
-Remove item from list
+Remove item from a list
 
-Edit item in list
+Edit item in a list
 
 Toggle item property (done / not done)
 
 Clear entire list
 
-Derived state vs stored state
+Fix state mutation bug
+
+Derived state vs stored state (code example)
 
 Why NOT store derived state?
 
-Fix state mutation bug
+Sort list (ascending / descending)
 
-Sorting list (asc / desc)
+Filter list by condition
 
-Filtering list by condition
+Pagination logic (basic)
 
-Pagination logic
+Render list using map()
 
-Select all / deselect all checkboxes
+Add correct key — explain why
 
-Multi-select dropdown
+Fix missing key warning
 
-Controlled checkbox group
+Explain why index as key is bad
 
-Controlled radio buttons
-
-Form with multiple inputs (single state object)
-
-Dynamic form fields (add/remove)
+Show empty state if list is empty
 
 🔵 SECTION 3: useEffect Mastery (INTERVIEW FAVORITE)
 
@@ -91,13 +83,15 @@ Run effect only once
 
 Run effect on state change
 
-Cleanup function — when does it run?
-
 Fix infinite loop in useEffect
 
-Missing dependency bug
+Fix missing dependency bug
 
-Stale closure problem
+Explain cleanup function — when does it run?
+
+Cleanup setInterval properly
+
+Cleanup setTimeout properly
 
 Fetch data using useEffect
 
@@ -105,57 +99,71 @@ Loading + error handling
 
 Abort API request on unmount
 
-Multiple useEffect separation
+Fix memory leak warning
+
+Demonstrate stale closure problem
+
+Separate concerns using multiple useEffect
 
 useEffect vs event handler
 
 Why NOT put everything in useEffect?
 
-Timer using setInterval
-
-Cleanup interval properly
-
-Debounce logic using useEffect
-
-Throttle logic using useEffect
-
-Compare debounce vs throttle
-
-Explain execution order of effects
-
 API polling using useEffect
 
 Sync state with localStorage
 
-🟣 SECTION 4: Forms & User Input (REAL PROJECT SCENARIOS)
+Explain execution order of effects
 
-Controlled form with validation
+🟣 SECTION 4: Debounce & Throttle (VERY COMMON)
 
-Disable submit until valid
+Debounced search input using useEffect
 
-Show error messages
+Explain debounce execution flow step-by-step
+
+Fix debounce bug
+
+Throttle button clicks (Resend OTP)
+
+Throttle function with arguments
+
+Compare debounce vs throttle (code + explanation)
+
+🟠 SECTION 5: Forms & User Input (REAL PROJECT SCENARIOS)
+
+Controlled form with multiple inputs (single state object)
+
+Disable submit until form is valid
+
+Show validation error messages
 
 Real-time validation
 
 On-blur validation
 
-File upload using useRef
+Controlled checkbox group
 
-Controlled vs uncontrolled forms
+Select all / deselect all checkboxes
+
+Controlled radio buttons
+
+Multi-select dropdown
+
+Dynamic form fields (add / remove rows)
+
+Form reset logic
+
+File upload using useRef
 
 Large form performance issue
 
 Optimize large form rendering
 
-Dynamic form rows
-
-Form reset logic
-
 Multi-step form
 
 Character counter
 
-OTP input (4/6 digit)
+OTP input (4 / 6 digit)
 
 Resend OTP with throttle
 
@@ -165,11 +173,11 @@ Password strength checker
 
 Dependent dropdowns
 
+Prevent double form submit
+
 Form submission lifecycle
 
-Prevent double submit
-
-🔴 SECTION 5: Re-renders & Performance (SENIOR FILTER)
+🔴 SECTION 6: Re-renders & Performance (SENIOR FILTER)
 
 Why did my component re-render?
 
@@ -177,7 +185,13 @@ How to prevent child re-render
 
 Fix unnecessary re-render
 
+Inline function re-render issue
+
+Referential equality problem
+
 React.memo usage
+
+When React.memo does NOT help
 
 useCallback usage
 
@@ -185,17 +199,11 @@ useMemo usage
 
 useCallback vs useMemo
 
-Referential equality problem
-
-Inline function re-render issue
-
-Memoizing expensive computation
+Memoize expensive computation
 
 Optimize slow list rendering
 
 Optimize dashboard with many components
-
-When NOT to use memoization
 
 Context causing re-render — fix it
 
@@ -211,7 +219,7 @@ Key misuse performance issue
 
 Batch state updates
 
-🟠 SECTION 6: Custom Hooks (SENIOR EXPECTATION)
+🟤 SECTION 7: Custom Hooks (SENIOR EXPECTATION)
 
 Why custom hooks exist?
 
@@ -231,7 +239,7 @@ Hook rules — explain
 
 Hook dependency pitfalls
 
-Hook returning functions vs values
+Hook returning function vs value
 
 Hook composition
 
@@ -253,7 +261,7 @@ When NOT to use custom hooks
 
 Difference between hook & utility function
 
-🟤 SECTION 7: Component Design Patterns (INTERVIEW GOLD)
+🟤 SECTION 8: Component Design Patterns (INTERVIEW GOLD)
 
 Controlled vs uncontrolled components
 
@@ -295,7 +303,7 @@ Component API design
 
 Error boundary implementation
 
-🔷 SECTION 8: Modern React (React 18 / 19 Awareness)
+🔷 SECTION 9: Modern React (React 18 / 19 Awareness)
 
 Automatic batching
 
@@ -319,15 +327,13 @@ When concurrency helps
 
 When concurrency hurts
 
-Legacy mode vs concurrent mode
-
 Priority updates
 
 Blocking vs non-blocking updates
 
 Progressive rendering
 
-⚫ SECTION 9: Debugging & Tricky Scenarios (REAL INTERVIEWS)
+⚫ SECTION 10: Debugging & Tricky Scenarios (REAL INTERVIEWS)
 
 Fix infinite re-render bug
 
@@ -359,49 +365,7 @@ Fix race condition in fetch
 
 Fix debounce bug
 
-🧠 SECTION 10: Architecture & Thinking (SENIOR LEVEL)
-
-When to lift state up?
-
-When to colocate state?
-
-Global vs local state
-
-Redux vs Context
-
-State normalization
-
-Error handling strategy
-
-Component responsibility split
-
-Folder structure for large app
-
-Feature-based vs layer-based
-
-Scaling React apps
-
-Code-splitting strategy
-
-Lazy loading components
-
-Environment-based configs
-
-Security basics in React
-
-Accessibility basics
-
-Testing strategy (unit vs integration)
-
-Performance monitoring
-
-Bundle size optimization
-
-Refactoring legacy React code
-
-Interview explanation clarity
-
-🏁 FINAL BOSS: MOCK INTERVIEW TASKS
+🏁 FINAL BOSS — MOCK INTERVIEW TASKS
 
 Build debounced search + explain flow
 
@@ -420,5 +384,3 @@ Explain render cycle verbally
 Explain hooks execution order
 
 Explain cleanup execution timing
-
-Design scalable React component API
