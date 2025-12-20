@@ -23,15 +23,10 @@ Monitoring means watching errors, performance, and user issues after the feature
 
 I don't say no directly. I explain the risk, effort, and impact in simple terms, and then suggest a safer alternative. This way we still deliver value without breaking existing features or functionalities.
 
-
-✅ what is Effort ?
-
-ffort is how much work is needed to build a product request.(PR)
-
-
 ✅ What is a Product Request (PR) ?
 
 A product request is any feature or change the product team asks engineers to build.
+
 
 Examples of product requests -
 
@@ -59,10 +54,18 @@ Canceling a product request means deciding not to build it right now or at all.
 
 Cancel Product Request — Simple Reasons
 
-It needs a lot of effort for little value
-It can break existing features
-There is not enough time
-A simpler option exists
+It needs a lot of effort for little value.
+It can break existing features.
+There is not enough time.
+A simpler option exists.
+
+
+
+✅ what is Effort ?
+
+Effort is how much work is needed to build a product request.(PR)
+
+
 
 
 # 4. How do you decide what not to build?
@@ -162,7 +165,7 @@ Example: checkout UI, profile UI, search UI
 
 I design APIs with clear inputs and predictable outputs, keep them consistent, and make sure changes don’t break existing clients.
 This helps the API handle growth safely.
-I also make sure the API can handle more users as usage grows.
+I also make sure the API can handle/scale more users as usage grows.
 
 
 # 12. How do you handle API versioning?
@@ -237,7 +240,7 @@ Backend can change internally without breaking UI
 
 # 14. How do you do zero-downtime migrations?
 
-I do zero-downtime migrations by releasing changes in a backward-compatible way so the UI keeps working and users don’t notice any disruption.
+I do zero-downtime migrations by releasing changes in a 'backward-compatible' way so the UI keeps working and users don't notice any disruption.
 
 ✅ Example (API response change + UI stays working)
 
@@ -381,7 +384,7 @@ Using Redux / complex store for a small page with 2–3 inputs.
 ✅ Right approach
 
 Use useState to store the state.
-Move to Redux only when state grows across many pages
+Monve to Redux only whe state grows across many pages
 
 👉 Build simple first.
 
@@ -423,9 +426,9 @@ unnecessary rerenders.
 Traffic spike means suddenly many users come to the app at the same time.
 The goal is to keep the app usable and not crash.
 
-Step-by-Step How You Handle It 
+Step-by-Step How You Handle It - **CARG**
 
-1️⃣ Caching (reduce load)
+1️⃣ Caching (reduce load) - C
 
 Homepage banners, product lists are cached. Same data is reused for many users
 
@@ -433,19 +436,19 @@ Homepage banners, product lists are cached. Same data is reused for many users
 
 Example: Instead of calling API 10,000 times,Cached data is served instantly
 
-2️⃣ Auto-scaling (handle more users)
+2️⃣ Auto-scaling (handle more users) - A 
 
 System adds more servers automatically.More users can be served at the same time
 
 👉 App stays responsive
 
-3️⃣ Rate limiting (protect system)
+3️⃣ Rate limiting (protect system) - R
 
 One user or bot cannot send too many requests . Stop abuse and overload
 
 👉 System stays healthy
 
-4️⃣ Graceful degradation (keep core working)
+4️⃣ Graceful degradation (keep core working) - G 
 
 Disable non-important features:
 
@@ -453,7 +456,7 @@ Recommendations
 Animations
 Extra widgets
 
-Keep core features working:
+Enable / Keep core features working:
 Login
 Browse
 Checkout
@@ -541,8 +544,6 @@ Load increases even more
 
 4️⃣ Entire app slows down or crashes
 
-Login fails
-
 Checkout fails
 
 Users can’t use the app ❌
@@ -556,6 +557,7 @@ Users can’t use the app ❌
 I prevent cascading failures by stopping one failure from spreading to other systems.
 I do this using timeouts, limited retries, isolation, and circuit breakers.
 
+**CLIT** - Circuit breakers , Limited retries , Isolation , Time out 
 
 1️⃣ Timeouts 
 
@@ -592,7 +594,7 @@ Checkout still works
 
 👉 Core features stay alive
 
-4️⃣ Circuit breakers (fail fast)
+4️⃣ Circuit breakers (fail fast) - stop calling the service temporarily.
 
 What it means: If a service keeps failing, stop calling it for some time.
 
@@ -600,7 +602,7 @@ Example
 
 Payment service keeps failing
 System blocks calls to it temporarily
-Tries again later
+Tries again later.
 
 👉 Protects backend threads
 
@@ -764,9 +766,7 @@ UI never sees what it doesn’t need.
 
 # 37. How do you manage dependency vulnerabilities?
 
-
 I keep dependencies up to date, scan them for known security issues, and use alerts so problems are caught early.
-
 
 Simple Frontend Example
 
@@ -881,7 +881,7 @@ What is not included
 
 # 40. What is tech debt? 
 
-Tech debt is when we take quick or temporary shortcuts to deliver faster, knowing we’ll need to clean them up later.
+Tech debt is when we take quick or temporary shortcuts to deliver faster, knowing we'll need to clean them up later.
 
 Simple Frontend Example
 
@@ -936,7 +936,7 @@ No tests
 
 What you do ?
 
-Create a tech-debt task
+Create a tech-debt task.
 
 While adding a new feature:
 Clean part of the code
@@ -955,7 +955,7 @@ Simple Example (Frontend)
 
 Situation
 
-You’re asked to: "Deliver a new dashboard by Friday"
+You're asked to: "Deliver a new dashboard by Friday"
 
 Mid-week, you realize:
 
@@ -1281,7 +1281,7 @@ Decision
 How you evaluate ? 
 Maturity: Is it production-ready?
 Ecosystem: Does it have libraries and docs?
-Team readiness: Does the team know it already?
+Team readiness: tDoes the team know i already?
 Business value: Will it improve performance or speed?
 
 Decision
@@ -1559,7 +1559,9 @@ Other teams reuse it easily
 
 What worries me most are scalability risks, reliability issues, and growing tech debt — because they can silently hurt users and slow the team over time.
 
-1️⃣ Scalability risk
+TCS - Tech debt , cascading failure , Scalabily risk
+
+1️⃣ Scalability risk - S
 
 App works fine with 1,000 users
 
@@ -1569,7 +1571,7 @@ System may not handle load ❌
 
 👉 Worry: Will the system survive growth?
 
-2️⃣ Reliability issues
+2️⃣ Reliability issues (cascading failure- c)
 
 One service failure can bring down others
 
@@ -1577,7 +1579,7 @@ Users can’t log in or pay
 
 👉 Worry: Will users trust the system?
 
-3️⃣ Growing tech debt
+3️⃣ Growing tech debt (T)
 
 Quick fixes added again and again
 
@@ -1590,6 +1592,9 @@ Code becomes hard to change
 # 60. What should leadership worry about next year?
 
 Leadership should focus on scaling challenges, long-term reliability, and talent development — because these determine whether the organization can grow safely and sustainably.
+
+Same - TCS - 
+Long tem reliability  , Not short term fix 
 
 1️⃣ Scaling challenges
 User base grows
@@ -1614,5 +1619,70 @@ Seniors get overloaded
 👉 Worry: Are we growing strong engineers and future leaders fast enough?
 
 
+
+🧊 ICE BREAKER QUESTIONS
+
+
+1. Tell me about yourself
+
+Answer
+
+I am a frontend engineer who focuses on owning features end to end.
+I have worked on building and maintaining production systems and I care about delivering stable features that are easy to maintain.
+
+Counter
+👉 "Anything specific you’re proud of?
+
+I am most proud of owning features end-to-end — from design to production support and reducing incidents through better monitoring and safer releases.
+
+2. What does your current role look like?
+
+I own features end-to-end, collaborate with product, review code, mentor juniors, and ensure releases are safe and stable in production.
+
+3. What kind of teams have you worked with?
+
+Cross-functional teams — product, design, backend, QA — where alignment and communication were as important as coding.
+
+
+# If time permits search for counter questions.
+
+
+Mock Round -
+
+# Introduction - 
+
+I’m a React frontend engineer with around 7 years of experience.
+I’ve worked on building scalable, maintainable, and well-optimized frontend applications.
+Along with implementation, I’ve been involved in system design, requirement validation, and low-level and high-level design before building features from scratch.
+I also focus strongly on performance optimization and long-term maintainability.
+
+# scaling - 
+
+Frontend scalability means the UI continues to work smoothly as users and data grow.
+
+It includes handling more users, larger data sets, and more features without slowing down, by using efficient rendering, lazy loading, caching, and avoiding unnecessary re-renders.
+
+# Okay. Can you give one real example where frontend scalability became a problem and how you handled it?
+
+In one application, the search API was being called on every keystroke, which caused performance issues.
+I fixed it by adding debouncing so the API is called only after the user stops typing.
+I also implemented lazy loading so only required components are loaded instead of the entire bundle at page load.
+This reduced API load and improved page performance.
+
+
+# Why did you choose debouncing instead of throttling for search?
+
+I chose debouncing because search should trigger only after the user finishes typing.
+Debouncing waits for a short pause (like 500ms) and then makes a single API call.
+Throttling would still call the API at fixed intervals while the user is typing, which is unnecessary for search.
+
+
+# What debounce delay would you choose, and how do you decide that value?
+
+The debounce delay depends on the use case and user experience.
+For search, I usually start with 300–500ms so results feel responsive while still reducing API calls.
+I fine-tune the value based on typing behavior, API load, and user feedback.
+
+# https://chatgpt.com/c/69458db8-ce30-8320-84e4-c7d1a60e1340 
 
 
