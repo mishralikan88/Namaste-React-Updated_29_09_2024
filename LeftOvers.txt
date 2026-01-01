@@ -110,6 +110,10 @@ Parent-child control
 Context-based compound APIs
 Behavior sharing patterns
 Example: Accordion, Tabs, Menu
+composition - proprdrilling
+Key misuse performance issue   (>>>)
+Optimize slow list rendering. (>>>)
+Virtualization concept. (>>>>)
 
 
 ✅ 7. Core React Hooks (Basic Hooks)

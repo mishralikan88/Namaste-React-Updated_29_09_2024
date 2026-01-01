@@ -4067,6 +4067,8 @@ Bad keys:
 
 ================================================================================================================================
 
+🔴 SECTION 6: Re-renders & Performance
+
 Avoid unnecessary re-renders in React -
 
 Why do we need to avoid unnecessary re-renders in React? (One-liner)
@@ -4096,8 +4098,6 @@ Below are the techniques to Avoid Unnecessary Re-renders in React.
 8️⃣ Proper Keys in Lists
 
 
-
-===================================================================================================
 
 1️⃣ React.memo - 
 
@@ -4187,12 +4187,11 @@ Old props: { name: "Imran" }
 New props: { name: "Imran" }
 oldProps.name === newProps.name → true
 
-✅ React: “Props are same → skip Child render”
+✅ React: "Props are same → skip Child render"
 
 
 ⚡ Without React.memo, child re-renders whenever parent re-renders; with React.memo, child only re-renders when its props actually change.
 
-==========================================================================================================================
 
 
 
@@ -4234,6 +4233,7 @@ function Parent() {
       </button>
 
       {/* ❌ Inline function → new function every render */}
+
       <Child addItem={(value) => setItems([...items, value])} />
     </div>
   );
@@ -4443,7 +4443,6 @@ function Parent() {
 Because React default behavior: "Parent rendered → child also renders."
 React does not care whether your function is inline or referenced from outside.
 
-==================================================================================
 
 
 ⚡ useCallback — Developer Notes (Easy + Complete)
@@ -4539,9 +4538,16 @@ const addItem = useCallback(() => {
 Child will NOT re-render unless props actually change.
 
 
+
 🟦 Full Example: Parent + Child + useCallback with [count]
 
-✅ Code
+✅ Code - 
+
+parent - useCallback
+Child - React.memo
+
+```js
+
 import { useState, useCallback } from "react";
 
 const Child = React.memo(function Child({ logCount }) {
@@ -4557,6 +4563,7 @@ export default function Parent() {
   const [count, setCount] = useState(0);
 
   // useCallback depends on "count"
+
   const logCount = useCallback(() => {
     console.log("Current count:", count);
   }, [count]);
@@ -4574,8 +4581,13 @@ export default function Parent() {
   );
 }
 
-🧠 STEP-BY-STEP EXPLANATION
-⭐ 1. First Render
+```
+
+
+# Step by step explanation -
+
+
+⭐ 1. First Render - 
 
 count = 0
 
@@ -4591,14 +4603,15 @@ Inside child:
 
 <button onClick={logCount}>
 
+→ Event handler F1 is attached.
 
-→ event handler = F1
+So clicking the button prints: 'Current count: 0' in the console.
 
-So clicking the button prints:
 
-Current count: 0
 
-⭐ 2. User clicks “Increase Parent Count”
+
+
+⭐ 2. User clicks :Increase Parent Count"
 
 setCount(c => c + 1) makes:
 
@@ -4608,10 +4621,13 @@ Parent re-renders
 
 Now useCallback runs again:
 
+```js
+
 logCount = useCallback(() => {
   console.log("Current count:", count);
 }, [count]);
 
+```
 
 Since count changed (0 → 1)
 → dependency changed
@@ -4623,7 +4639,10 @@ old function = F1
 
 new function = F2
 
-logCount prop to Child CHANGED
+'logCount' prop to Child changed.
+
+
+
 
 ⭐ 3. React.memo compares old/new props
 
@@ -4644,6 +4663,9 @@ references are different
 So:
 
 ✔ React.memo decides → Re-render Child
+
+
+
 ⭐ 4. Now Child re-renders with new logCount (F2)
 
 And now clicking the child button prints:
@@ -4651,9 +4673,9 @@ And now clicking the child button prints:
 Current count: 1
 
 
-This is correct because the callback was rebuilt with the latest count.
 
-⭐ 5. If you increase count again…
+
+⭐ 5. If you increase count again.
 
 count becomes 2
 
@@ -4663,9 +4685,9 @@ useCallback rebuilds function → new reference F3
 
 React.memo sees prop changed → Child re-renders again
 
-logCount prints:
+logCount prints: Current count: 2
 
-Current count: 2
+
 
 
 Example 2 -
@@ -4676,22 +4698,24 @@ import { useState, useCallback } from "react";
 
 const Child = React.memo(function Child({ logCount }) {
   console.log("Child Rendered");
-
   return (
     <div>
-      <h3>Child Component</h3>
+      <h3>Child Component</h3> 
 
       {/* Clicking this shows the current count in UI instead of console */}
+
       <button onClick={logCount}>Show Count</button>
     </div>
   );
-});
+}
+);
 
 export default function Parent() {
   const [count, setCount] = useState(0);
   const [childMessage, setChildMessage] = useState("");
 
   // useCallback depends on "count"
+
   const logCount = useCallback(() => {
     setChildMessage("Current count (from Child): " + count);
   }, [count]);
@@ -4707,6 +4731,7 @@ export default function Parent() {
       <Child logCount={logCount} />
 
       {/* Show child's message here */}
+      
       <p>{childMessage}</p>
     </div>
   );
@@ -4716,7 +4741,7 @@ export default function Parent() {
 
 Code Explanation -
 
-🟦 First render (Initial phase)
+🟦 First render - Initial phase
 
 count = 0
 
@@ -4724,49 +4749,61 @@ childMessage = ""
 
 useCallback runs:
 
+```js
+
 const logCount = useCallback(() => {
   setChildMessage("Current count (from Child): " + count);
 }, [count]);
 
+```
 
 This is the first render → React creates function F1
 
 So logCount = F1
 
-Child render:
-
 Child gets logCount = F1
 
 React.memo has no previous props → Child renders
 
-🧊 UI after first render shows:
 
-Parent Count: 0
+UI after first render shows -
 
-Button: Increase Parent Count
+→ Parent Count: 0
 
-In Child: button Show Count From Child
+→ Increase Parent Count button
 
-Message (from parent): (nothing yet, empty)
+→ Child Component
 
-🟨 Click “Show Count From Child”
+→ Show Count
+
+
+
+
+
+🟨 Click "Show Count From Child".
 
 You click the button in Child:
 
 logCount(); // F1
 
-
 F1 runs:
 
+```js
+
 setChildMessage("Current count (from Child): " + count);
+
 // count is still 0
 
+```
 
-So:
+So: childMessage = "Current count (from Child): 0".
 
-childMessage = "Current count (from Child): 0"
 
-✅ Parent state changed → Parent re-renders
+
+
+
+
+✅ Parent state 'childMessage' changed to 'Current count (from Child): 0'  → Parent re-renders
 
 During this re-render:
 
@@ -4790,40 +4827,56 @@ React.memo:
 
 Props are the same → Child does NOT re-render
 
+
+
+
 🧊 UI now shows:
 
-Parent Count: 0
 
-Button: Increase Parent Count
+→ Parent Count: 0
 
-Child button: Show Count From Child
+→ Button: Increase Parent Count
 
-Message:
-Current count (from Child): 0
+→ Child Component
 
-Only the message changed; Child itself did not re-render.
+→ Child button: Show Count From Child
 
-🟦 Click “Increase Parent Count”
+→ Current count (from Child): 0
+
+Important - 
+
+Only the message changed.
+
+Child itself did not re-render.
+
+
+
+
+
+
+🟦 Click "Increase Parent Count"
 
 You click the Parent button:
 
 setCount(c => c + 1);
 
-
-Now:
+Now: 
 
 count = 1
 
 childMessage still = "Current count (from Child): 0"
 
-Parent re-renders.
+Parent re-renders because count state is changed.
 
 useCallback runs again:
+
+```js
 
 const logCount = useCallback(() => {
   setChildMessage("Current count (from Child): " + count);
 }, [count]);
 
+```
 
 Old count = 0
 
@@ -4841,48 +4894,53 @@ React.memo compares:
 
 F1 !== F2 → props changed → Child re-renders
 
-🧊 UI after this:
-
-Parent Count: 1
-
-Buttons still:
-
-Increase Parent Count
-
-Show Count From Child
-
-Message is still:
-Current count (from Child): 0
-(we haven’t clicked the child button again yet)
-
-🟨 Click “Show Count From Child” again
-
-Now child’s button uses logCount = F2.
-
-When you click:
-
-logCount(); // F2
 
 
-F2 runs:
-
-setChildMessage("Current count (from Child): " + count);
-// now count = 1
+UI after this - 
 
 
-So:
+→ Parent Count: 1
 
-childMessage = "Current count (from Child): 1"
+→ Button: Increase Parent Count
+
+→ Child Component
+
+→ Child button: Show Count From Child
+
+→ Current count (from Child): 0
+
+(we haven't clicked the child button again yet)
+
+
+
+
+
+🟨 Click "Show Count From Child" again
+
+Now child's button uses logCount = F2.
+
+When you click F2 (logCount()) is executed
+
+ 
+So F2 runs:
+
+```js
+
+setChildMessage("Current count (from Child): " + count);  // now count = 1
+
+```
+
+So: childMessage = "Current count (from Child): 1"
 
 Parent re-renders.
 
 During this re-render:
 
-count = 1
+→ count = 1
 
-childMessage = "Current count (from Child): 1"
+→ childMessage = "Current count (from Child): 1"
 
-useCallback runs again:
+→ useCallback runs again:
 
 Old count = 1
 
@@ -4890,7 +4948,7 @@ New count = 1
 
 Deps same → React reuses F2
 
-Child gets:
+→ Child gets:
 
 old logCount = F2
 
@@ -4900,21 +4958,31 @@ React.memo:
 
 props unchanged → Child does NOT re-render
 
-🧊 UI now shows:
 
-Parent Count: 1
 
-Buttons unchanged
+UI now shows -
 
-Message:
-Current count (from Child): 1
+
+→ Parent Count: 1
+
+→ Button: Increase Parent Count
+
+→ Child Component
+
+→ Child button: Show Count From Child
+
+→ Current count (from Child): 1
+
+
+
+
+
 
 🟦 Increase again
 
 Click Increase Parent Count again:
 
 setCount(c => c + 1);
-
 
 Now:
 
@@ -4942,7 +5010,9 @@ React.memo:
 
 F2 !== F3 → props changed → Child re-renders
 
-If you now press Show Count From Child:
+
+
+If you now press Show Count From Child - 
 
 F3 runs
 
@@ -4950,126 +5020,203 @@ childMessage = "Current count (from Child): 2"
 
 Parent re-renders, deps unchanged → F3 reused, Child skipped.
 
-🧊 UI after that:
 
-Parent Count: 2
 
-Message:
-Current count (from Child): 2
+UI after that -
 
-✅ What this shows you
 
-Initial phase: Both buttons visible from the start (Parent + Child).
+→ Parent Count: 2
 
-Show Count From Child:
+→ Button: Increase Parent Count
 
-Updates only Parent’s message
+→ Child Component
 
-Parent re-renders, Child is skipped (same function F1/F2/F3).
+→ Child button: Show Count From Child
 
-Increase Parent Count:
+→ Current count (from Child): 2
 
-Updates count
+(We haven't clicked the child button again yet.)
 
-useCallback dependency [count] changes
 
-New function (F1 → F2 → F3)
 
-React.memo sees new prop → Child re-renders.
+
+
+✅ What this shows you ?
+
+→ Initial phase: Both buttons visible from the start (Parent + Child).
+
+
+
+→ 'Show Count' From Child button  Updates only Parent’s message.
+
+→ Parent re-renders, Child is skipped (same function F1/F2/F3).
+
+
+
+→ Increase Parent Count: Updates count
+
+→  useCallback dependency [count] changes
+
+→ New function (F1 → F2 → F3)
+
+→ React.memo sees new prop → Child re-renders.
 
 
 ⭐ Rules - 
 
 
-✔ Rule 1:
+✔ Rule 1 - If a function doesn't use props or state, use useCallback(fn, []) to keep the same function reference.
 
-If function does NOT use state/props → useCallback(..., []).
+✔ Rule 2 - If a function uses a variable, that variable must be listed in useCallback dependencies.
 
-✔ Rule 2:
+✔ Rule 3 - useCallback alone does not stop re-renders; React.memo is required.
 
-If function uses X → include X in deps.
+✔ Rule 4 - useCallback stabilizes function references, while React.memo prevents component re-renders.
 
-✔ Rule 3:
+✔ Rule 5 - Dependencies ensure the function always uses the latest values and avoids stale state bugs.
 
-useCallback ALONE does NOT prevent re-renders. React.memo is needed.
 
-✔ Rule 4:
-
-useCallback prevents new function creation. React.memo prevents re-render.
-
-✔ Rule 5:
-
-Dependencies ensure your function has the latest values and avoids stale state.
-
-Need usecallback example with dependancies ....
 
 ⭐ Can we use useCallback without React.memo?
+
 ✔ YES — it compiles, works, no error
+
 ❌ BUT it does NOT stop the child from re-rendering
 
 Because:
 
-useCallback only stabilizes the function reference
+useCallback only stabilizes the function reference.
 
-React.memo is the thing that actually blocks re-rendering
+React.memo is the thing that actually blocks re-rendering.
 
-Without React.memo, React always re-renders children when the parent re-renders — even if the function reference does not change.
+Without React.memo, React always re-renders children when the parent re-renders - even if the function reference does not change.
 
 
-==========================================================================================================================
 
 useMemo -
 
 What useMemo does ?
 
-👉 useMemo remembers a value so React doesn’t recalculate it on every render.
-👉 It memoizes any value → number, string, object, array, JSX.
+👉 useMemo remembers a value so React doesn't recalculate it on every render.
+👉 It memoizes any value → number string, object, array, JSX.
 👉 Only recalculates when dependencies change.
 
 syntax -
 
+```js
+
 const value = useMemo(() => heavyWork(), [deps]);
+
+```
 
 Why do we use useMemo ?
 
-👉 Avoid expensive calculations like filter, sort, loops, big lists
-👉 Keep object/array reference stable So a memoized child (React.memo) does NOT re-render unnecessarily.
+1️⃣ Avoid expensive calculations
 
-What React.memo does
+useMemo remembers the result of a calculation.
 
-👉 React.memo skips re-render if the props reference is the same.
+👉 If you have filter / sort / loops / big lists, React won't recalculate them on every render.
+
+Without useMemo -
+
+```js
+
+const filtered = items.filter(item => item.active); // runs every render 😵
+
+```
+
+With useMemo -
+
+```js
+
+const filtered = useMemo(() => {
+  return items.filter(item => item.active);
+}, [items]); // runs ONLY when items change ✅
+
+```
+
+✔ Faster.
+✔ Less CPU usage.
+
+
+
+
+2️⃣ React.memo skips child re-render if props are the same.
+
+```js
+const Child = React.memo(({ data }) => {
+  console.log("Child rendered");
+  return <div>{data.name}</div>;
+});
+
+```
+
+But React.memo checks reference, not values.
+
+
+
+
+3️⃣ useMemo + React.memo = 🔥 Perfect combo .
+
+
+```js
+
+const data = useMemo(() => {
+  return { name: "John" };
+}, []);
+
+<Child data={data} />
+
+```
+
+✔ useMemo → same reference
+✔ React.memo → skips re-render
+
+
+
+```js
+
 const Child = React.memo(function Child(props) { ... });
-If props are unchanged → child does NOT re-render.
 
-Relationship Between useMemo and React.memo
+```
 
-useMemo → memoizes VALUES
-Remembers a value until dependencies change
-Example: arrays, objects, filters, configs, expensive calculations
+👉 If props are unchanged → child does not re-render.
 
-React.memo → memoizes COMPONENTS
-Skips re-rendering a child component if its props (by reference) didn’t change
+Relationship between useMemo and React.memo - 
 
-🟥 CASE 1 — ❌ No useMemo, ❌ No React.memo
+👉 useMemo → memoizes values.
+👉 Remembers a value until dependencies change.
+👉 Example: arrays, objects, filters, configs, expensive calculations.
 
-"Normal React behavior. Every parent re-render → child re-render."
+React.memo → memoizes components.
 
+👉 Skips re-rendering a child component if its props (by reference) didn't change.
+
+
+
+🟥 CASE 1 — ❌ No useMemo, ❌ No React.memo - 
+
+
+Normal React behavior. Every parent re-render → child re-render.
 
 ```js
 
 function Parent() {
   const [count, setCount] = useState(0);
+
   const [minPrice, setMinPrice] = useState(0);
 
-  const filters = { minPrice }; // new object every render
+  const filters = { minPrice }; // new object every render.
 
   return (
     <>
       <p>Parent Count: {count}</p>
+
       <button onClick={() => setCount(c => c + 1)}>Increase Parent Count</button>
+
       <button onClick={() => setMinPrice(p => p + 10)}>Increase Min Price</button>
 
-      <Child filters={filters} /> {/* NOT memoized */}
+      <Child filters={filters} /> {/* not memoized */}
     </>
   );
 }
@@ -5080,8 +5227,11 @@ function Child({ filters }) {
 }
 
 
+
+
 ```
-🟦 First render (Initial phase)
+
+🟦 First render (Initial Phase)
 
 count = 0
 minPrice = 0
@@ -5092,7 +5242,7 @@ Calls Parent() → returns JSX + <Child filters={filters} />
 Calls Child({ filters: O1 })
 Child componnet logs: Child renders and returns <p>Min price: 0</p>
 
-UI after first render:
+UI -
 Parent Count: 0
 Button: Increase Parent Count
 Button: Increase Min Price
@@ -5100,15 +5250,15 @@ Min price: 0
 
 🟨 Click "Increase Parent Count"
 
-You click Increase Parent Count:
+You click Increase Parent Count.
 setCount(c => c + 1) is invoked.
 Now: count = 1 , minPrice = 0
 Parent re-renders:
 filters = { minPrice: 0 } → new object O2 (different from O1)
 
 React:
-Calls Parent() again → gets new JSX
-Calls Child({ filters: O2 }) (because Child is not memoized)
+Calls Parent() again → gets new JSX.
+Calls Child({ filters: O2 }) (because Child is not memoized).
 logs Child render again
 Child componnet logs: Child renders and returns <p>Min price: 0</p>
 
@@ -5134,7 +5284,7 @@ Calls Child({ filters: O3 })
 logs Child render again
 Child componnet logs: Child renders and returns <p>Min price: 10</p>
 
-🧊 UI:
+🧊 UI -
 Parent Count: 1
 Min price: 10
 
@@ -5144,6 +5294,9 @@ Every time any state changes in Parent:
 Parent re-renders
 Child re-renders
 No optimization, normal React.
+
+
+
 
 🟦 CASE 2 — React.memo ONLY, ❌ NO useMemo
 
@@ -5184,43 +5337,33 @@ filters = { minPrice: 0 } → object O1 created
 React:
 
 Calls Parent() → returns JSX + <Child filters={filters} />
-
 Child is wrapped in React.memo, but this is first render:
-
 No previous props to compare
-
 So React must render Child
-
 Calls Child({ filters: O1 })
 Child component logs: Child render and returns <p>Min price: 0</p>
 
-UI after first render:
+UI -
 
 Parent Count: 0
-
 Button: Increase Parent Count
-
 Button: Increase Min Price
-
 Min price: 0
+
+
+
 
 🟨 Click "Increase Parent Count"
 
 You click Increase Parent Count:
-
 setCount(c => c + 1);
-
-
 Now:
 count = 1
 minPrice = 0
 
 Parent re-renders:
-
 filters = { minPrice: 0 } → new object O2 (different from O1)
-
 React:
-
 Calls Parent() again → gets new JSX
 
 React.memo checks props:
@@ -5236,6 +5379,7 @@ Because props changed → Child re-renders
 Calls Child({ filters: O2 })
 Child component logs: Child render and returns <p>Min price: 0</p>
 
+
 UI now:
 
 Parent Count: 1 ✅ updated
@@ -5243,6 +5387,9 @@ Parent Count: 1 ✅ updated
 Buttons same
 
 Min price: 0 (same text, but Child re-rendered again)
+
+
+
 
 🟦 Click "Increase Min Price"
 
@@ -5276,7 +5423,7 @@ Props changed → Child re-renders again
 Calls Child({ filters: O3 })
 Child component logs: Child render and returns <p>Min price: 10</p>
 
-🧊 UI:
+🧊 UI -
 
 Parent Count: 1
 
@@ -5299,7 +5446,13 @@ Child also re-renders
 React.memo is useless if you pass fresh inline objects/arrays.
 
 
-🟩 CASE 3 — React.memo ✅ + useMemo ✅
+
+
+
+
+
+🟩 CASE 3 — React.memo ✅ + useMemo ✅ 
+
 (Best performance optimization — stable reference + memoized child)
 
 ```js
@@ -5437,6 +5590,8 @@ React.memo → skips Child render when props are unchanged
 Together: Child only re-renders when it actually needs to.
 
 
+
+
 🟨 CASE 4 — useMemo ✅ but ❌ NO React.memo
 
 Child is not memoized → it will always re-render when Parent re-renders, even though useMemo stabilizes filters reference.
@@ -5558,12 +5713,15 @@ useMemo → saves recomputation / object creation
 
 For render-skipping, you still need: React.memo(Child)
 
-======================================
- usememo taking dependancies -
+
+
+
+usememo taking dependancies -
 
 
 ```js
- import { useState, useMemo } from "react";
+
+import { useState, useMemo } from "react";
 
 function App() {
   const [minPrice, setMinPrice] = useState(0);
@@ -5577,6 +5735,7 @@ function App() {
   ];
 
   // ⭐ useMemo using two state values: minPrice AND search
+
   const filteredProducts = useMemo(() => {
     console.log("Filtering...");
     return products.filter(
@@ -5623,6 +5782,8 @@ Filtering a list can be expensive.useMemo prevents unnecessary filtering and spe
 If you pass filteredProducts to a memoized child component in the future:
 <Child products={filteredProducts} /> useMemo gives a stable reference, helping React.memo skip re-renders.
 
+
+
 🟦 useMemo with ZERO dependencies ([])
 
 ```js
@@ -5639,17 +5800,13 @@ const config = useMemo(() => {
 
 What it means 
 
-✔ Runs ONLY on the first render -
-React runs the callback once → caches the value forever.
+✔ Runs ONLY on the first render - React runs the callback once → caches the value forever.
 
-✔ Never recomputes again
-Even if the component re-renders 1000 times, the memoized value stays the same.
+✔ Never recomputes again - Even if the component re-renders 1000 times, the memoized value stays the same.
 
-✔ Good for static values
-Useful when you want to create an object/array only once and reuse it.
+✔ Good for static values - Useful when you want to create an object/array only once and reuse it.
 
-✔ Helps keep stable references - 
-If you pass this config to React.memo children, they won't re-render unnecessarily.
+✔ Helps keep stable references -  If you pass this config to React.memo children, they won't re-render unnecessarily.
 
 Real time example -
 
@@ -5686,7 +5843,7 @@ Q: Is React.memo only used on child components?
 A: Yes — in real-world React, React.memo is mainly used on child components to prevent them from re-rendering when parent re-renders unnecessarily.
 
 
-✅ 1) useMemo for Heavy Calculation (CPU-intensive work)
+✅ 1. useMemo for Heavy Calculation (CPU-intensive work)
 
 Use case: avoid repeating expensive math on every re-render.
 
@@ -5734,7 +5891,35 @@ Clicking the button re-renders parent, but heavy work does NOT run again
 Massive performance win
 
 
-✅ 2) useMemo for Filtering (dependent on user input)
+⏳ What actually happens on initial load
+
+Because your heavy calculation runs during render, this is the sequence:
+
+Page loads
+↓
+React calls component
+↓
+useMemo runs heavy loop (BLOCKING)
+↓
+JSX is returned
+↓
+Browser paints UI
+
+
+🛑 Until the loop finishes, NOTHING is painted on screen.
+
+So yes 👉 the screen will stay blank for a moment.
+
+
+Until the data is available, nothing related to that data is shown in the UI.
+When the data becomes available, the JSX that uses that data is rendered and displayed.
+
+Note -
+
+we CANNOT display a fallback JSX during memoisation phase because its a synchronous operation and this blocks the render.
+
+
+✅ 2. useMemo for Filtering (dependent on user input)
 
 Use case: avoid filtering again when irrelevant state changes.
 
@@ -5793,26 +5978,29 @@ export default FilterDemo;
 
 🟦 What this shows
 
-filteredProducts recalculates only when minPrice changes
+filteredProducts recalculates only when minPrice changes.
 
-Re-rendering the parent via count DOES NOT trigger filter again
+Re-rendering the parent via count does not trigger filter again.
 
-This is the ideal use case for useMemo
+This is the ideal use case for useMemo.
  
 
 Q: Is type="number" mandatory?
 
-A: No — but converting the input to a number is mandatory for numeric comparisons.
+A: No - but converting the input to a number is mandatory for numeric comparisons.
+
 
 Q: Why do we convert e.target.value to Number?
 
 A: Because all input values come as strings, and filtering needs a number.
 
+
 Q: What happens if I don't convert?
 
 A: Filtering breaks because "500" is a string, not a number.
 
-✅ 3) useMemo for Sorting (dependent on sorting order)
+
+✅ 3. useMemo for Sorting (dependent on sorting order)
 
 Use case: avoid sorting again unless the sort order changes.
 
@@ -5874,7 +6062,7 @@ Sorting runs only when sort order changes
 Changing other state (count) DOES NOT re-run sorting
 
 
-Note - We never sort the original array because sort() mutates it — even if items stay same, order changes, which breaks React’s immutability rules and memoization.
+Note - We never sort the original array because sort() mutates it — even if items stay same, order changes, which breaks React's immutability rules and memoization.
 
 
 Q: Why don’t we use a state variable for products?
@@ -5896,8 +6084,6 @@ Q: Do heavy calculation, filtering, and sorting inside useMemo run sequentially?
 
 A: Yes.
 During the first render, React executes all your useMemo callbacks one by one, synchronously, on the main thread.
-
-================================================================================================
 
 
 1️⃣ Splitting Components – Real-Time Example
@@ -6014,7 +6200,6 @@ This is the real use case of "Splitting components to avoid unnecessary re-rende
 One-liner: Split heavy UI into separate memoized child components so they don’t re-render when only parent state changes.
 
 
-===============================================================================================================================
 
 
 2️⃣ Key Usage Patterns – Real-Time Example
@@ -8909,9 +9094,9 @@ Use cases
 
 ====================================================================================================================
 
-DEBOUNCING IN JAVASCRIPT — MASTER NOTES (WITH FULL EXAMPLES)
+DEBOUNCING IN JAVASCRIPT — MASTER NOTES
 
-1️⃣ THE CORE PROBLEM (WHY DEBOUNCING EXISTS)
+1️⃣ THE CORE PROBLEM 
 
 
 <!DOCTYPE html>
@@ -8920,16 +9105,17 @@ DEBOUNCING IN JAVASCRIPT — MASTER NOTES (WITH FULL EXAMPLES)
     <title>Normal Search (No Debounce)</title>
   </head>
   <body>
-    <input id="searchBox" type="text" placeholder="Type to search..." />
-
+   <input id="searchBox" type="text" placeholder="Type to search..." />   <!-- Tip - type , id , placeholder -->
     <script src="app.js"></script>
   </body>
 </html>
 
 
+app.js
+
 ```js
 
-// Get the input element from DOM
+// Get the input element from DOM.
 
 const input = document.getElementById("searchBox");
 
@@ -9015,28 +9201,35 @@ User types 'r'
 → NEW setTimeout scheduled (API CALL after 2000ms)
 
 
-
-
 ❌ Delay exists - We are using setTimeout(2000).So the function does not run immediately , it runs after 2 seconds.
-Delay is added.Control is missing
+
+Delay is added.
+Control is missing.
 
 
-❌ But NOT debouncing - Even though you added a delay, the function still runs many times.
-Debouncing requires:
+This is not debouncing - Even though you added a delay, the function still runs many times.
 
-wait for silence(when user stops typing)
-cancel previous work
-run only once
+1. Just adding a delay is not debouncing. The function still runs multiple times.
 
-This code:
-waits ❌
-does not cancel ❌
-runs many times ❌
+2. Debouncing means the function runs only after the user stops typing.
+
+3. If it runs on every keypress, it's not debouncing.
+
+Key points - 
+
+1. Debouncing waits for silence (user inactivity), cancels previous work, and runs the function only once.
+
+2. Debouncing is not about delay — it's about delay + cancellation = control.
+
+Current implementation:
+
+does not wait for user inactivity ❌
+does not cancel previous execution ❌
+runs the function multiple times ❌
 
 
+❌ All timers still execute. Meaning Every key press creates its own timer.
 
-
-❌ All timers still execute.Meaning Every key press creates its own timer.
 User types s → Timer 1 created
 User types p → Timer 2 created
 User types i → Timer 3 created
@@ -9044,7 +9237,8 @@ User types d → Timer 4 created
 User types e → Timer 5 created
 User types r → Timer 6 created
 
-After 2 seconds, all the timers will fire, one after another.
+👉 They execute after their own 2 seconds elapse — NOT when the user stops typing.
+👉 Because there is no cancellation, all timers that were created will eventually fire, in order.
 
 Timer 1 → API CALL
 Timer 2 → API CALL
@@ -9053,12 +9247,13 @@ Timer 4 → API CALL
 Timer 5 → API CALL
 Timer 6 → API CALL
 
-👉 No timer was cancelled
-👉 All timers run
+👉 No timer was cancelled.
+👉 All timers run.
+👉 We delayed every call, but we did not stop any call.
 
-We delayed every call, but we did not stop any call.
 
-Timeline example (typing fast)
+
+# Timeline example (typing fast) -
 
 Assume user types spider quickly:
 
@@ -9068,6 +9263,8 @@ t = 200ms → 'i' → Timer 3 (run at ~2200ms)
 t = 300ms → 'd' → Timer 4 (run at ~2300ms)
 t = 400ms → 'e' → Timer 5 (run at ~2400ms)
 t = 500ms → 'r' → Timer 6 (run at ~2500ms)
+
+Note - t = 200ms (example) is always measured from the same reference point — the base time t = 0ms, not from the previous keypress.
 
 
 What happens after ~2 seconds ?
@@ -9079,15 +9276,15 @@ Timer 4 → API CALL
 Timer 5 → API CALL
 Timer 6 → API CALL
 
-They fire very close to each other, so it feels like:
+👉 They fire very close to each other, so it feels like all API calls happen at once.In reality, they run one after another, but the time gap is too small to notice — they don't actually fire at the same time.
 
-👉 "All API calls happen at once"
 
-4️⃣ STEP 2 — STORE THE TIMER
+
+4️⃣ STEP 2 — Store the Timer.
 
 ```js
 
-let timer;
+let timer; // Added a timer.
 
 function search() {
   timer = setTimeout(() => {
@@ -9104,12 +9301,10 @@ What you might think ❌. "I stored the timer, so old timers should be replaced"
 What ACTUALLY happens?
 
 1️. timer is just a variable
-
-It stores a timer ID.
+It stores a "timer ID".
 It does not control the timer by itself.
 
-2️. On every key press
-
+2️. On every key press -
 
 User types 's'
 → setTimeout created (Timer 1)
@@ -9124,25 +9319,20 @@ User types 'i'
 → timer = Timer 3  (Timer 1 & 2 still alive)
 
 
-❌ "timer keeps getting overwritten" - WHAT THIS MEANS
+👉 The variable timer gets a new value on every key press.
 
-The variable timer gets a new value on every key press
+👉 But the old setTimeout timers are already scheduled.
 
-But the old setTimeout timers are already scheduled
+👉 JavaScript does not cancel timers automatically.
 
-JavaScript does not cancel timers automatically
-
-Overwriting the variable does NOT stop the timer
+👉 Overwriting the variable 'timer' does NOT stop the timer
 
 
+"Old timers are still alive" - What does it mean ?
 
-❌ "Old timers are still alive" — WHAT THIS MEANS
-
-Timer 1 → still scheduled
-
-Timer 2 → still scheduled
-
-Timer 3 → still scheduled
+Timer 1 → still scheduled.
+Timer 2 → still scheduled.
+Timer 3 → still scheduled.
 
 After 2 seconds:
 
@@ -9151,11 +9341,12 @@ Timer 2 → API CALL
 Timer 3 → API CALL
 
 
-❌ "Multiple executions still happen" — WHY ?
+"Multiple executions still happen" - WHY ?
 
 Because:
 
-You never cancelled the old timers You only replaced the reference (timer). 'timer' now points to the latest timer.
+You never cancelled the old timers You only replaced the reference (timer). 
+'timer' now points to the latest timer.
 The previous timer still exists, you just don't have its ID anymore.
 
 👉 Losing the ID does NOT stop the timer.JavaScript still runs all scheduled timeouts.
@@ -9163,21 +9354,25 @@ The previous timer still exists, you just don't have its ID anymore.
 👉 Timers don't auto-cancel - you must cancel them yourself.
 
 
-❌ Why this is STILL NOT debouncing
+❌ Why this is still not debouncing
 
 Debouncing needs TWO things:
 
-⏳ Delay
-❌ Cancel previous timers
+Delay
+Cancel previous timers
 
-You only did:
-⏳ Delay ✅
-❌ Cancel ❌ (missing)
+But you only did:
+
+Delay ✅
+Cancel ❌ (missing)
 
 So it is NOT debouncing.
 
 
 Note - Storing a timer is useless unless you cancel the previous one.
+
+
+
 
 5️⃣ STEP 3 — CANCEL PREVIOUS TIMER (DEBOUNCING IS BORN 🔥)
 
@@ -9186,7 +9381,6 @@ let timer;
 
 function search() {
   clearTimeout(timer);   // cancel previous timer
-
   timer = setTimeout(() => {
     console.log("API CALL");
   }, 2000);
@@ -9196,16 +9390,23 @@ input.addEventListener("keyup", search);
 
 ```
 
+On every keyup, we clear the previous timer and start a new 2-second timer. If the user keeps typing, the timer keeps getting cancelled. When the user stops typing for 2 seconds, the callback runs and the API is called. So many keypresses result in only one API call.
 
-What changes compared to STEP 2? (KEY POINT)
+
+So What changes compared to STEP 2? (KEY POINT)
 
 👉 This one line is new and important:
 
+```js
+
 clearTimeout(timer);
 
-This line:
-stops the previously scheduled API call
-makes sure old timers do NOT run
+```
+
+clearTimeout(timer) cancels the previously scheduled callback so it never runs.
+
+
+
 
 What happens when the user types spider fast without pause ?
 
@@ -9248,10 +9449,10 @@ When the user STOPS typing
 
 ```js
 
-→ no more keyup events
-→ no clearTimeout call
-→ last timer survives
-→ after 2 seconds → API CALL executes ONCE
+→ no more keyup events.
+→ no clearTimeout call.
+→ last timer survives.
+→ after 2 seconds → API CALL executes ONCE.
 
 ```
 
@@ -9265,60 +9466,56 @@ Only the last timer is allowed to live.
 That last timer runs after silence.
 
 
-Super-simple memory sentence -
-
-Each key press cancels the previous plan and makes a new one.
-
-Only the last plan is executed.
-
 🔑 One liner - Debouncing works by cancelling previously scheduled executions and allowing only the final one to run after a delay.
 
 
 
 6️⃣  WHY timer IS INITIALLY undefined
+
 let timer;
 
-
 Variable declared
-
 No value assigned
-
 JavaScript sets it to undefined
 
 First call:
 clearTimeout(undefined); // safe, does nothing
-
-
 ✔ No error
 ✔ Clean logic
 ✔ No if condition needed
 
 
-7️⃣STEP 4 — MAKE DEBOUNCING REUSABLE (IMPORTANT)
+7️⃣ STEP 4 — MAKE DEBOUNCING REUSABLE (IMPORTANT)
 
-We don’t want debounce logic inside every function.
-
+We don't want debounce logic inside every function.
 
 
 8️⃣ REUSABLE DEBOUNCE FUNCTION (STANDARD)
 
 ```js
 
-function debounce(fn, delay) {
-  let timer;
+function debounce(fn, delay) { 
 
-  return function () {
-    clearTimeout(timer);
+  // fn → function to debounce
+  // delay → wait time in milliseconds
+
+  let timer; // stores the timeout ID
+
+  return function () {    // returned function is called on every event (e.g. keyup)
+
+    clearTimeout(timer);  // cancel the previous timer so it never executes. 
 
     timer = setTimeout(() => {
-      fn();
+      fn();               // Execute the function only after user inactivity
     }, delay);
   };
 }
 
+
+
 ```
 
-LINE-BY-LINE EXPLANATION
+Code Explanation
 
 
 function debounce(fn, delay)
@@ -9362,11 +9559,11 @@ User types 'p'
 → fn rescheduled to run at t = 2400ms
 
 t = 900ms
-User types 'i'
-→ keyup event fires
-→ clearTimeout(previous timer) → CANCELLED
-→ new timer set
-→ fn rescheduled to run at t = 2900ms
+User types 'i'.
+→ keyup event fires.
+→ clearTimeout(previous timer) → CANCELLED.
+→ new timer set.
+→ fn rescheduled to run at t = 2900ms.
 
 (no typing after this)
 
@@ -9380,8 +9577,7 @@ t = 2900ms
 👉 It is just the time when the last key was pressed
 
 
-✔ ONE execution
-✔ LAST input only
+✔ One execution for last input only
 
 
 🔐 WHY CLOSURE IS REQUIRED
@@ -9420,10 +9616,12 @@ Example: Search box
 
 ```js
 
-// 1️⃣ Get input element
+// 1️⃣ Get input element.
+
 const input = document.getElementById("searchBox");
 
 // 2️⃣ Reusable debounce function (NO arguments)
+
 function debounce(fn, delay) {
   let timer;
 
@@ -9437,16 +9635,18 @@ function debounce(fn, delay) {
 }
 
 // 3️⃣ Actual function
+
 function search() {
   console.log("API CALL");
 }
 
 // 4️⃣ Create debounced function
+
 const debouncedSearch = debounce(search, 2000);
 
 // 5️⃣ Attach event listener
-input.addEventListener("keyup", debouncedSearch);
 
+input.addEventListener("keyup", debouncedSearch);
 
 
 ```
@@ -9484,13 +9684,19 @@ analytics
 </body>
 </html>
 
+Changes required -
 
+👉 use args in two places.
+👉 pass a parameter for callback function.
 
 ```js
-// 1️⃣ Get input element
+
+// 1️⃣ Get input element.
+
 const input = document.getElementById("searchBox");
 
-// 2️⃣ Reusable debounce function (WITH arguments)
+// 2️⃣ Reusable debounce function (with arguments).
+
 function debounce(fn, delay) {
   let timer;
 
@@ -9503,15 +9709,15 @@ function debounce(fn, delay) {
   };
 }
 
-// 3️⃣ Actual function that needs data
+// 3️⃣ Actual function that needs data.
 function search(text) {
   console.log("API CALL for:", text);
 }
 
-// 4️⃣ Create debounced version
+// 4️⃣ Create debounced version.
 const debouncedSearch = debounce(search, 2000);
 
-// 5️⃣ Attach event listener
+// 5️⃣ Attach event listener.
 input.addEventListener("input", (e) => {
   debouncedSearch(e.target.value);
 });
@@ -9549,7 +9755,7 @@ return function (...args) { ... }
 ```
 This means:
 
-"Take all arguments passed to this function and put them into an array called args."
+"Collect all arguments passed to this function and store them in an array called args."
 
 Example calls:
 
@@ -9573,13 +9779,14 @@ args = ["spider"]
 This is called REST parameters.
 
 
+
 2️⃣ Second ...args → SPREAD (UNPACK)
 
 fn(...args);
 
 This means:
 
-"Take the array args and pass its values back as normal arguments."
+"Take the array args and pass its values as individual arguments."
 
 If: args = ["spider"];
 
@@ -9590,18 +9797,24 @@ Then: fn(...args);   // same as fn("spider")
 
 This is called SPREAD.
 
+![alt text](image-1.png)
+
 
 
 Q : Why NOT just do fn(args) ❌
 
-If you did this: fn(args); Then fn would receive: fn(["spider"]); // WRONG
+If you did this: fn(args); Then fn would receive: fn(["spider"]);. But our function receives, a text a single value. 
 
-fn("spider"); is CORRECT
+
+fn(["spider"]) is incorrect. 
+fn("spider"); is correct.
 
 So we must spread the array ["spider"] back to "spider" by doing ...["spider"].
 
 
-Full picture (very important)
+
+
+Full picture - 
 
 ```js
 
@@ -9620,35 +9833,28 @@ Second ...args throws them back.
 
 1️⃣1️⃣ WHERE DEBOUNCING SHOULD BE USED
 
-✅ Search inputs
-✅ Auto-save
-✅ Input validation
-✅ Filtering lists
-
+✅ Search inputs.
+✅ Auto-save.
+✅ Input validation.
 
 
 1️⃣2️⃣  COMMON MISTAKES ❌
 
-❌ Forget clearTimeout
-❌ Declare timer inside returned function
-❌ Expect debounce to trigger immediately
+❌ Forget clearTimeout.
+❌ Declare timer inside returned function.
+❌ Expect debounce to trigger immediately.
 
 
-1️⃣3️⃣  INTERVIEW-READY ANSWERS
-One-liner
 
-Debouncing delays function execution until the event stops firing.
+INTERVIEW-READY ANSWERS
 
-Why clearTimeout?
+
+1️⃣3️⃣ Why clearTimeout?
 
 To cancel previously scheduled executions so only the last one runs.
 
 
-1️⃣4️⃣  FINAL MEMORY SENTENCE 🧠
-
-Debouncing waits for silence, cancels previous timers, and executes only the final action.
-
-Why does debouncing break if the timer variable is declared inside the returned function instead of the outer debounce function?
+1️⃣4️⃣   Why does debouncing break if the timer variable is declared inside the returned function instead of the outer debounce function?
 
 
 ```js
@@ -9684,14 +9890,13 @@ debouncedFn("sp") is called AGAIN
 
 
 Inside the function:
-
 let timer;          // ❌ NEW timer variable again
 clearTimeout(timer); // still undefined → cannot cancel Timer #1
 timer = setTimeout(...); // Timer #2 created
 
 
-👉 Timer #1 is STILL alive
-👉 Timer #2 is ALSO alive
+👉 Timer #1 is still alive
+👉 Timer #2 is also alive
 
 3️⃣ User types 'i', 'd', 'e', 'r'
 
@@ -9713,73 +9918,64 @@ Timer #6 → fn("spider")
 
 
 ❌ Multiple executions happen
-❌ Debouncing is broken
+❌ Debouncing is broken.
 
 
 ❌ WHY debouncing breaks (core reason)
 
 Because:
 
-timer is NOT shared
-Each call has its own local timer
-No call can cancel another call's timer
-There is no closure over a shared timer
+timer is NOT shared.
+Each call has its own local timer.
+No call can cancel another call's timer.
+There is no closure over a shared timer.
 
 
-🔟 Why doesn’t clearTimeout(undefined) throw an error?
+🔟 Why doesn't clearTimeout(undefined) throw an error?
 
-Answer:
-Because clearTimeout safely ignores invalid or undefined timer IDs.
+Answer: Because clearTimeout safely ignores invalid or undefined timer IDs.
 
 
 1️⃣1️⃣ Where does the timer variable live?
 
-Answer:
-Inside the closure created by the debounce function, so it persists across multiple function calls.
+Answer: Inside the closure created by the debounce function, so it persists across multiple function calls.
 
 1️⃣2️⃣ Why is closure required for debouncing?
 
-Answer:
-Because closure allows the debounced function to remember the timer value between executions.
+Answer: Because closure allows the debounced function to remember the timer value between executions.
 
 1️⃣4️⃣ Can debouncing be implemented without closure?
 
-Answer:
-No. Closure is required to preserve the timer state across calls.
+Answer: No. Closure is required to preserve the timer state across calls.
 
 
 1️⃣5️⃣ Explain debouncing execution flow step by step.
 
-Answer:
+Answer: 
 Each event:
-
-Cancels the previous timer
-
-Starts a new timer
-
-Executes the function only if no new event occurs during the delay
+Cancels the previous timer.
+Starts a new timer.
+Executes the function only if no new event occurs during the delay.
 
 
 1️⃣6️⃣ When should debouncing be used?
 
-Answer:
-For user-driven events that naturally stop, like typing, auto-save, and form validation.
+Answer:For user-driven events that naturally stop, like typing, auto-save.
 
 1️⃣7️⃣ When should debouncing NOT be used?
 
-Answer:
-For continuous events like scrolling or mouse movement.
+Answer: For continuous events like scrolling or mouse movement.
 
 1️⃣8️⃣ Can debouncing be used for API calls?
 
-Answer:
-Yes, especially for search suggestions or filtering APIs.
+Yes. Debouncing is commonly used for API calls to avoid making requests on every user action, especially in search suggestions or live filtering.
 
 1️⃣9️⃣ How do you debounce a function that accepts arguments?
-By using rest parameters and passing them to the original function inside setTimeout.
+
+By using rest parameters to capture all arguments and spread syntax to pass them back to the original function after the delay.
 
 
-===============================================================================================
+=============================================================================================================
 
 Throttling - 
 
@@ -9795,7 +9991,7 @@ Examples:
 scroll
 resize
 mousemove
-button spam clicks
+button spam clicks.
 
 When you scroll once with your mouse / trackpad, JavaScript does NOT get one event.
 
@@ -9813,9 +10009,8 @@ scroll
 👉 On many browsers
 
 30–60+ scroll events per second
-Sometimes even more
+Sometimes even more.
 
-❌ If a function runs on EVERY scroll
 
 ```js
 
@@ -9825,7 +10020,7 @@ window.addEventListener("scroll", () => {
 
 ```
 
-What happens ❌
+If a function runs on every scroll , what happens ?
 
 Function runs dozens of times per second.
 Heavy calculations repeat again and again.
@@ -9833,55 +10028,57 @@ Browser can't keep up.
 
 Result -
 
-❌ High CPU usage
-❌ UI lag / jank
-❌ Bad performance
-❌ Poor user experience
+❌ High CPU usage.
+❌ UI lag.
+❌ Bad performance.
+❌ Poor user experience.
 
 Scroll is a continuous event
 A single scroll action triggers many scroll events.
 Events fire constantly while scrolling.
-There is no clear “end” moment like typing and stopping.
+There is no clear "end" moment like typing and stopping.
 
 scroll → scroll → scroll → scroll → scroll.
 
+Why Throttling exists ?
+
+👉 Throttling controls how often a function is allowed to run.
+
+👉 Throttle runs the function, then waits X milliseconds, then allows it to run again, then waits X milliseconds again… as long as the event keeps happening.
+
+👉 Throttle ignores repeated events for a short time and runs the function again only after the delay passes.
+
+👉 Throttling exists to control the rate of execution. 
 
 
-Why throttling exists ?
+Real life analogy - 
 
-Throttling controls HOW often a function is allowed to run.
+Security gate example (THROTTLING)
 
-Instead of running on every scroll event, Throttle runs the function at most once every X milliseconds. Meaning no matter how many times the event fires, the function is allowed to run only once in a fixed time window (X ms).
+👉 Imagine a security gate that checks ID cards:
 
-Extra events are ignored until the delay passes.
+👉 People keep coming one after another
 
-Throttling exists to CONTROL the RATE of execution.
+👉 The gate checks only one person every 2 seconds
 
+👉 If more people come, they have to wait
 
+👉 After 2 seconds, the next person is checked
 
-3️⃣ REAL-LIFE ANALOGY -
+People keep coming ❌
+Gate works at fixed time gap ✅
 
-🚿 Water tap example
-
-Water pressure is too high.
-
-You say: " Even if the tap is turned continuously, water will flow only once every 2 seconds."
-
-Continuous demand ❌
-
-Controlled output ✅
-
-🔥 This is THROTTLING.
+🔥 This is throttling
 
 
 
-4️⃣ CORE DIFFERENCE
+4️⃣ Core Difference - 
 
 Debounce ❌ waits for silence.
 Throttle ✅ Controls speed. runs at a fixed rate.
 
 
-5️⃣ VISUAL TIMELINE (LOCK THIS)
+5️⃣ Visual Timeline -
 
 User scrolls continuously.
 
@@ -9892,14 +10089,14 @@ Throttle (2 seconds):
 
 🔥        🔥        🔥
 
-✔ Runs once every 2 seconds.
+✔ Runs once, then runs again every 2 seconds while scrolling continues.
 
 ✔ Ignores extra events in between.
 
 
 
 
-6️⃣ STEP 1 — NORMAL FUNCTION (PROBLEM)
+6️⃣ STEP 1 — Normal function (Problem)
 
 ```js
 
@@ -9938,16 +10135,13 @@ window.addEventListener("scroll", handleScroll);
 ❌ NOT throttling.
 
 
+8️⃣ STEP 3 — Core idea of throttling.
 
-8️⃣ STEP 3 — CORE IDEA OF THROTTLING
+👉 Run the function, then wait some time before running it again.
 
-Allow execution only if enough time has passed since the last execution.
+👉 Don't run again until the wait time is over.
 
-Run the function, then wait some time before running it again.
-
-Don't run again until the wait time is over.
-
-So we need last execution time , current time , comparison
+👉 So we need last execution time , current time for comparison.
 
 9️⃣ THROTTLING FROM SCRATCH (BASIC VERSION)
 
@@ -9973,10 +10167,9 @@ So we need last execution time , current time , comparison
     }
   </style>
 </head>
+ 
 <body>
-
   <div class="box">Scroll the page</div>
-
   <script src="app.js"></script>
 </body>
 </html>
@@ -9985,18 +10178,20 @@ So we need last execution time , current time , comparison
 
 ```js
 
-// 1️⃣ Throttle function
+// 1️⃣ Throttle Function
 
 function throttle(fn, delay) {
-  let lastRun = 0; // stores last execution time
+
+  let lastExecutionTime = 0; // stores Last Execution Time (LET)
 
   return function () {
-    const now = Date.now(); // current time
+    const currentTime = Date.now(); // stores Current Time (CT) , currentTime = 1721815123456 ms 
 
-    // check if enough time has passed
-    if (now - lastRun >= delay) {
-      fn();              // run the function
-      lastRun = now;     // update last execution time
+    // Check if enough time has passed.
+
+    if (currentTime - lastExecutionTime >= delay) {
+      fn();                                // run the function
+      lastExecutionTime = currentTime;     // update Last Execution Time
     }
   };
 }
@@ -10015,8 +10210,7 @@ window.addEventListener("scroll", throttledScroll);
 
 ```
 
-
-🔁 What happens when you scroll continuously
+What happens when you scroll continuously ?
 
 scroll → function runs ✅
 scroll → ignored ❌
@@ -10024,110 +10218,69 @@ scroll → ignored ❌
 (after 1 second)
 scroll → function runs ✅
 scroll → ignored ❌
+scroll → ignored ❌
+(after 1 second)
+scroll → function runs ✅
+
+
+✔ Executes once every 1 second.
+✔ Continuous scroll events controlled.
 
 
 
-✔ Executes once every 1 seconds
-✔ Continuous events controlled
-
-
-
-1️⃣ EXECUTION PROCESS — STEP BY STEP
-
+1️⃣ EXECUTION PROCESS —
 
 STEP 1: Page loads
 
 const throttledScroll = throttle(handleScroll, 1000);
-
-What happens once:
-
-throttle() is executed.
-
-lastRun is created once.
-
+What happens once: throttle() is executed
+lastRun is created once (inside closure)
 fn = handleScroll
 delay = 1000
-
-Inner function is returned
-
+Inner function is returned.
 throttledScroll now holds the inner function
-
-👉 Throttle setup is done only once
-
+👉 Throttle setup happens only once
 
 
 STEP 2: User starts scrolling
 
-Every scroll event triggers this:
-
+Every scroll event triggers:
 throttledScroll();
-
-This means the returned function runs.
-
+This means the returned inner function runs.
 
 
 STEP 3: First scroll event
 
-Inside returned function:
-
+Inside the returned function:
 const now = Date.now();
-
-Assume:
-
-lastRun = 0
+Assume: lastRun = 0
 now = 5000
-
-Check:
-
-now - lastRun >= delay
-5000 - 0 >= 1000  ✅
-
-So:
-
-handleScroll();   // runs
+Check: now - lastRun >= delay , 5000 - 0 >= 1000  ✅
+So: handleScroll();   // runs
 lastRun = now;   // lastRun = 5000
-
-
 ✔ Function executes
 ✔ Execution time stored
 
+
 STEP 4: Continuous scrolling (fast)
 
-Next scroll at:
-
-now = 5200
-
-Check:
-
-5200 - 5000 = 200 < 1000 ❌
-
-So:
-
-fn() is NOT called
-
-lastRun stays the same
-
+Next scroll at: now = 5200.
+Check: 5200 - 5000 = 200 < 1000 ❌
+So: fn() is NOT called.
+lastRun stays the same.
 ❌ Execution skipped
 
-STEP 5: Scroll after enough time
 
-Next scroll at:
+STEP 5: Scroll after enough time.
 
-now = 6100
-
-Check:
-
-6100 - 5000 = 1100 >= 1000 ✅
-
-So
-
-handleScroll();  // runs again
+Next scroll at: now = 6100
+Check: 6100 - 5000 = 1100 >= 1000 ✅
+So: handleScroll();  // runs again
 lastRun = 6100;
-
-
 ✔ Execution allowed again
 
-🔁 SUMMARY TIMELINE
+
+🔁 Summary Timeline -
 
 t = 5000 → scroll → RUN
 t = 5200 → scroll → SKIP
@@ -10135,10 +10288,9 @@ t = 5400 → scroll → SKIP
 t = 6100 → scroll → RUN
 
 
-✔ Runs at most once every 1000ms
 
+2️⃣ CLOSURE — WHAT IS ACTUALLY HAPPENING -
 
-2️⃣ CLOSURE — WHAT IS ACTUALLY HAPPENING
 🔐 What is the closure here?
 
 The returned function closes over:
@@ -10149,65 +10301,59 @@ The returned function closes over:
   delay
 }
 
-
 These variables live in closure memory.
 
-🔹 Why closure is REQUIRED ?
 
-Key rule:
+Why closure is REQUIRED ?
 
-Throttle must remember the last execution time across multiple calls
+👉 Key rule: Throttle must remember the last execution time across multiple calls
+👉 Without closure: lastRun would reset every scroll.
+👉 Throttling would break.
 
-Without closure:
 
-lastRun would reset every scroll
+How closure behaves here ?
 
-Throttling would break
+👉 throttle() runs once.
+👉 lastRun is created once.
+👉 Every scroll uses the same lastRun.
+👉 Only its value changes.
 
-🔹 How closure behaves here ?
-
-throttle() runs once
-
-lastRun is created once
-
-Every scroll uses the same lastRun
-
-Only its VALUE changes
 
 Memory picture:
-
 Closure memory:
 lastRun → 0 → 5000 → 6100 → ...
 
+
+
 ❌ What if lastRun was inside returned function?
+
+
+```js
 
 return function () {
   let lastRun = 0; // ❌ BAD
 }
 
-Then:
+```
+Ans - 
 
 New lastRun created every scroll
-
 Always 0
-
 Condition always passes
-
 Function runs EVERY time
-
 ❌ Throttle breaks
 
-🔟 WHY THROTTLING DOES NOT USE clearTimeout
 
-Debouncing:
 
-cancels previous plans
+
+🔟 WHY Throttling does not use clearTimeout.
+
+Debouncing: cancels previous plans
 
 Throttling:
 
 ignores extra calls.
-relies on time difference
-
+relies on time difference.
 no cancellation required
 
 
@@ -10215,7 +10361,7 @@ no cancellation required
 1️⃣1️⃣ THROTTLING WITH ARGUMENTS
 
 ```js
-// 1️⃣ Throttle function (WITH arguments)
+// 1️⃣ Throttle function (with arguments)
 function throttle(fn, delay) {
   let lastRun = 0; // last execution time
 
@@ -10247,7 +10393,7 @@ window.addEventListener("scroll", () => {
 ```
 
 
-1️⃣3️⃣ BUTTON SPAM PREVENTION
+1️⃣3️⃣ Button Spam Prevention.
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10274,6 +10420,7 @@ window.addEventListener("scroll", () => {
   <button id="submitBtn">Submit</button>
 
   <script src="app.js"></script>
+
 </body>
 </html>
 
@@ -10281,14 +10428,17 @@ window.addEventListener("scroll", () => {
 
 ```js
 
-// 1️⃣ Throttle function
+// 1️⃣ Throttle Function.
+
 function throttle(fn, delay) {
-  let lastRun = 0; // last execution time
+
+  let lastRun = 0; // Last Execution Time.
 
   return function (...args) {
     const now = Date.now();
 
-    // allow execution only if enough time passed
+    // Allow execution only if enough time passed.
+
     if (now - lastRun >= delay) {
       fn(...args);
       lastRun = now;
@@ -10297,17 +10447,21 @@ function throttle(fn, delay) {
 }
 
 // 2️⃣ Actual submit function
+
 function submitForm() {
   console.log("Submitted at:", new Date().toLocaleTimeString());
 }
 
-// 3️⃣ Create throttled submit function
+// 3️⃣ Create throttled submit function.
+
 const throttledSubmit = throttle(submitForm, 3000);
 
 // 4️⃣ Get button
+
 const button = document.getElementById("submitBtn");
 
 // 5️⃣ Attach click listener
+
 button.addEventListener("click", throttledSubmit);
 
 
@@ -10315,40 +10469,28 @@ button.addEventListener("click", throttledSubmit);
 
 🔁 WHAT HAPPENS (STEP BY STEP)
 
-User clicks button → submitForm() runs
-User clicks again within 3s → ignored
-User clicks after 3s → submitForm() runs again
+User clicks button → submitForm() runs.
+User clicks again within 3s → ignored.
+User clicks after 3s → submitForm() runs again.
 
 
-✔ Prevents multiple submissions
-✔ Runs at most once every 3 seconds
-✔ Uses closure (lastRun) to remember last execution
+✔ Prevents multiple submissions. 
+✔ Runs once and after every 3 seconds until the event is happening.
+✔ Uses closure (lastRun) to remember last execution.
 
 
-1️⃣4️⃣ WHERE THROTTLING SHOULD BE USED
+1️⃣4️⃣ Where Throttling should be user ? 
 
-✅ Scroll handling
-✅ Window resize
-✅ Mouse move
-✅ Button spam
-✅ Infinite scrolling
-
+✅ Scroll handling.
+✅ Window resize.
+✅ Mouse move.
+✅ Button spam.
+✅ Infinite scrolling.
 ❌ Search input
 ❌ Auto-save
 
 
-1️⃣8️⃣ INTERVIEW-READY DEFINITIONS
-One-liner
-
-Throttling ensures a function runs at most once in a given time interval.
-
-Key difference
-
-Debouncing waits for inactivity, throttling controls execution rate.
-
-
-
-2️⃣0️⃣ FINAL MEMORY SENTENCE 🧠
+Note - 
 
 Throttling controls speed — no matter how often events fire, execution happens at a fixed rate.
 
@@ -10357,7 +10499,7 @@ Throttling controls speed — no matter how often events fire, execution happens
 
 Throttling VS Debouncing -
 
-The CORE IDEA (MOST IMPORTANT)
+![alt text](image-2.png)
 
 🔹 Debouncing asks:
 
@@ -10365,33 +10507,31 @@ The CORE IDEA (MOST IMPORTANT)
 
 🔹 Throttling asks:
 
-“Has enough TIME passed since the last execution?”
+"Has enough TIME passed since the last execution?"
 
 This single difference changes everything.
 
 
+Debouncing internally - 
+Uses setTimeout.
+Uses clearTimeout.
+Cancels previous execution.
+Only last call survives.
 
-Debouncing internally
-Uses setTimeout
-Uses clearTimeout
-Cancels previous execution
-Only last call survives
-
-Throttling internally
-Uses timestamps or flags
-Checks time difference
-Ignores extra calls
-No cancellation
+Throttling internally -
+Uses timestamps or flags.
+Checks time difference.
+Ignores extra calls.
+No cancellation.
 
 
-REAL-WORLD USE CASES (THIS IS ASKED A LOT)
+Real-world use cases -
 
 ✅ Use Debouncing for:
 
 Search input
 Auto-save
-Form validation
-Filtering lists
+
 
 ✅ Use Throttling for:
 
@@ -10404,7 +10544,9 @@ Button spam prevention
 Debouncing waits for inactivity before executing, while throttling limits execution to a fixed rate regardless of event frequency.
 
 
-================================================================================================================
+=========================================================================================================================
+
+
 1️⃣ What is a Custom Hook?
 
 A custom hook is a normal JavaScript function that:
@@ -11619,11 +11761,17 @@ What is happening
 
 import React, { useState } from "react";
 
+
+// Grand-parent
+
 function App() {
-  // ✅ 1) State lives here (top)
+
+  // ✅ State lives here (top).
+
   const [theme, setTheme] = useState("light");
 
-  // ✅ 2) Handler lives here (because state is here)
+  // ✅ Handler lives here (because state is here).
+
   function toggleTheme() {
     if (theme === "light") {
       setTheme("dark");
@@ -11632,18 +11780,43 @@ function App() {
     }
   }
 
-  // ✅ 3) Pass state + handler to Parent (even if Parent doesn't need it)
-  return <Parent theme={theme} toggleTheme={toggleTheme} />;
+  // ✅ Pass state + handler to Parent (even if Parent doesn't need it).
+
+   return (
+
+    // 🔥 Div using Theme (Visible Change here)
+    <div
+      style={{
+        height: "100vh",
+        backgroundColor: theme === "light" ? "#ffffff" : "#121212",
+        color: theme === "light" ? "#000000" : "#ffffff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Parent theme={theme} toggleTheme={toggleTheme} />
+    </div>
+  );
+
+
 }
+
+
+// parent 
 
 function Parent({ theme, toggleTheme }) {
   // ❗ Parent doesn't use theme, but still receives it.
-  // ✅ 4) Pass again to Child (2nd level drilling)
+  // ✅ Pass it again to Child (2nd level drilling)
   return <Child theme={theme} toggleTheme={toggleTheme} />;
 }
 
+
+// child
+
 function Child({ theme, toggleTheme }) {
-  // ✅ 5) Child actually uses theme + handler
+
+  // ✅ Child actually uses theme + handler
   return <button onClick={toggleTheme}>Theme: {theme}</button>;
 }
 
@@ -11675,24 +11848,26 @@ theme, toggleTheme
 
 What is happening
 
-→ App broadcasts data using Provider
-→ Child directly reads it
-→ Parent is completely skipped
+→ App (Grand-parent) broadcasts data using Provider.
+→ Child directly reads it.
+→ Parent is completely skipped.
 
 
 ```js
 
 import React, { useState, createContext, useContext } from "react";
 
+// 1.Creating Context
+
 const ThemeContext = createContext();
 
 function App() {
 
-  // ✅ 1. State still lives here.
+  // ✅ State still lives here.
 
   const [theme, setTheme] = useState("light"); 
 
-  // ✅ 2. Handler still lives here.
+  // ✅ Handler still lives here.
 
   function toggleTheme() {
     if (theme === "light") {
@@ -11702,26 +11877,44 @@ function App() {
     }
   }
 
-  // ✅ 3. Provider broadcasts State + Handler to all children.
+  // ✅ 2. Provide state and handlers via Context Provider to all wrapped children.
 
+
+  // {{ theme: theme, toggleTheme: toggleTheme }} The outter {} is -> JSX inner {} is javascript object. 
+  
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <Parent />
+   <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: theme === "light" ? "#ffffff" : "#121212",
+          color: theme === "light" ? "#000000" : "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Parent />
+      </div>
     </ThemeContext.Provider>
   );
 }
 
-// ✅ 4. Parent doesn't receive any props now.
+
+// ✅ Parent - Parent doesn't receive any props now.
 
 function Parent() {
   return <Child />;   
 }
 
+
+// Child 
+
 function Child() {
 
-  // ✅ 5. Child directly reads from Context (no drilling).
+  // ✅ 3. Child directly reads from Context 
 
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext); // Destructuring
 
   return <button onClick={toggleTheme}>Theme: {theme}</button>;
 }
@@ -11736,6 +11929,30 @@ What's happening ?
 → value={{ theme, toggleTheme }} = what we are sending
 → Child uses useContext() like TV 📺 to read it
 → Parent is no longer a courier
+
+
+
+# Note - 
+
+why does Context exist?
+
+Context is NOT for performance.
+Context is for clean data access and architecture.
+
+That’s it.
+
+
+What Context does NOT do
+
+❌ It does NOT reduce re-renders
+❌ It does NOT optimize performance
+❌ It does NOT replace Redux
+
+
+Note - 
+In both prop drilling and Context, re-renders happen by default.
+Context does not prevent re-renders — it only simplifies how data is accessed.
+
 
 
 Toggle Theme Code -
@@ -11795,6 +12012,26 @@ export default App;
 
 ```
 
+Code Explanation - 
+
+→ Context is created to act as a global data channel.
+
+→ Theme state lives in App as the single source of truth.
+
+→ toggleTheme updates the theme state in App.
+
+→ Context Provider shares state and handler with all children.
+
+→ Parent is a structural component and does not consume data.
+
+→ Child consumes theme and handler directly from Context.
+
+→ The div applies theme-based styles for visible UI change.
+
+→ Button click triggers the handler from Context.
+
+→ State update causes App and its children to re-render.
+
 
 FULL CODE: Default Context Value Example
 
@@ -11802,7 +12039,8 @@ FULL CODE: Default Context Value Example
 
 import React, { useState, createContext, useContext } from "react";
 
-/* 1️⃣ Create Context WITH default value */
+/* 1️⃣ Create Context WITH default value (object). syntax const ThemeContext = createContext(Object) */
+
 const ThemeContext = createContext({
   theme: "light",
   toggleTheme: () => {
@@ -11810,12 +12048,14 @@ const ThemeContext = createContext({
   },
 });
 
-/* -------------------------------
-   CASE A: WITHOUT PROVIDER
-   Default value WILL be used
--------------------------------- */
+/* -----------------------------------------------------------------------------
+   CASE A: WITHOUT PROVIDER - Default value WILL be used - Independant Componnet
+-------------------------------------------------------------------------------- */
 function WithoutProvider() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+
+  // Default Context Value
+
+  const { theme, toggleTheme } = useContext(ThemeContext); 
 
   return (
     <div style={{ padding: 20, border: "1px solid red" }}>
@@ -11825,14 +12065,15 @@ function WithoutProvider() {
   );
 }
 
-/* -------------------------------
-   CASE B: WITH PROVIDER
-   Default value IGNORED
--------------------------------- */
+/* -----------------------------------------------
+   CASE B: WITH PROVIDER - Default value IGNORED 
+--------------------------------------------------- */
+
 function WithProvider() {
+
   const [theme, setTheme] = useState("light");
 
-function toggleTheme() {
+  function toggleTheme() {
     if (theme === "light") {
       setTheme("dark");
     } else {
@@ -11841,7 +12082,10 @@ function toggleTheme() {
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+
+    // Overridden Context Value
+
+    <ThemeContext.Provider value={{ theme, toggleTheme }}> 
       <Child />
     </ThemeContext.Provider>
   );
@@ -11878,7 +12122,158 @@ export default function App() {
 }
 
 ```
-==========================================================================================================================
+
+
+
+# Context performance trick: split contexts
+
+Single Context -
+
+Problem: Unrelated components re-render
+
+```js
+import React, { createContext, useContext, useState } from "react";
+
+const AppContext = createContext(null);
+
+function App() {
+  const [theme, setTheme] = useState("light");
+  const [user] = useState({ name: "Likan" });
+
+  console.log("App render");
+
+  return (
+    <AppContext.Provider value={{ theme, setTheme, user }}>
+      <UserHeader />
+      <ThemeBox />
+    </AppContext.Provider>
+  );
+}
+
+function UserHeader() {
+  const { user } = useContext(AppContext);
+  console.log("UserHeader render");
+
+  return <h2>User: {user.name}</h2>;
+}
+
+function ThemeBox() {
+  const { theme, setTheme } = useContext(AppContext);
+  console.log("ThemeBox render");
+
+  return (
+    <div
+      style={{
+        height: "200px",
+        background: theme === "dark" ? "#000" : "#fff",
+        color: theme === "dark" ? "#fff" : "#000",
+        padding: "20px",
+      }}
+    >
+      <p>Theme: {theme}</p>
+      <button onClick={() => setTheme(t => (t === "light" ? "dark" : "light"))}>
+        Toggle Theme
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+```
+
+What happens here ?
+
+Click Toggle Theme
+
+Console output:
+App render
+UserHeader render   ❌ (UNNECESSARY)
+ThemeBox render
+
+⚠️ UserHeader re-renders even though it does NOT use theme
+
+
+split contexts - 
+
+Render the required component in response to a state change.
+
+```js
+
+import React, { createContext, useContext, useState } from "react";
+
+const ThemeContext = createContext(null);
+const UserContext = createContext(null);
+
+function App() {
+  const [theme, setTheme] = useState("light");
+  const [user] = useState({ name: "Likan" });
+
+  console.log("App render");
+
+  return (
+    <UserContext.Provider value={user}>
+      <ThemeContext.Provider value={{ theme, setTheme }}>
+        <UserHeader />
+        <ThemeBox />
+      </ThemeContext.Provider>
+    </UserContext.Provider>
+  );
+}
+
+function UserHeader() {
+  const user = useContext(UserContext);
+  console.log("UserHeader render");
+
+  return <h2>User: {user.name}</h2>;
+}
+
+function ThemeBox() {
+  const { theme, setTheme } = useContext(ThemeContext);
+  console.log("ThemeBox render");
+
+  return (
+    <div
+      style={{
+        height: "200px",
+        background: theme === "dark" ? "#000" : "#fff",
+        color: theme === "dark" ? "#fff" : "#000",
+        padding: "20px",
+      }}
+    >
+      <p>Theme: {theme}</p>
+      <button onClick={() => setTheme(t => (t === "light" ? "dark" : "light"))}>
+        Toggle Theme
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+
+```
+
+
+✅ What happens now
+
+Click Toggle Theme
+Console output:
+App render
+ThemeBox render
+
+✅ UserHeader does NOT re-render
+
+Interview line: "Splitting contexts prevents unrelated consumers from re-rendering."
+
+
+Note -
+
+Splitting context isolates state updates.
+Only consumers of the changed context re-render.
+
+==================================================================================================================
 
 A React form takes user input, validates it, submits the data, and and shows success or error after submission.
 
@@ -13625,3 +14020,107 @@ Big forms
 Complex validation rules
 
 ✅ Common mistakes & debugging.
+
+========================================================================
+
+S3 Rule -  
+
+S - Slice
+S - Store
+S - Selector  (UI reads the value from the store)
+A - App 
+
+
+Redux -
+
+```js
+
+import React from "react";
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { Provider, useDispatch, useSelector } from "react-redux";
+
+/* 1️⃣ Create slice */
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1; // looks like mutation, but Immer handles immutability
+    }
+  }
+});
+
+// Slice Syntax - 
+
+// const counterSlice = createSlice({
+//   // nir
+//   name : <name>,
+//   initialState: <object>
+//   reducers: <object Action-Reducer Mapping>
+// });
+
+// Action-Reducer Mapping -
+
+//   {
+//     increment: (state) => {
+//       state.value += 1; 
+//     }
+
+//     decrement: (state) => {
+//       state.value -= 1;
+//     }
+//   }
+
+
+
+/* 2️⃣ Create store */
+
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer
+  }
+});
+
+
+// Store syntax -
+
+// const store = configureStore({
+//   reducer: {
+//     SliceName1: SliceReducer1, (counterSlice.reducer) not (counterSlice.reducers)
+//     SliceName2: SliceReducer2
+//   }
+// });
+
+
+
+/* 3️⃣ UI component */
+
+function Counter() {
+  const value = useSelector(state => state.counter.value);
+
+  // syntax -   const value = useSelector(store => store.sliceName.Targetedvalue);
+
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <h2>Count: {value}</h2>
+      <button onClick={() => dispatch(counterSlice.actions.increment())}>
+        +
+      </button>
+    </div>
+  );
+}
+
+/* 4️⃣ App root */
+export default function App() {
+  return (
+    <Provider store={store}>
+      <Counter />
+    </Provider>
+  );
+}
+
+```
+

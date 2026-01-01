@@ -3,7 +3,9 @@
 Target: 8–12+ years experience
 Goal: Ace React technical interviews (coding + explanation)
 
-🟢 SECTION 1: React Fundamentals (FILTER ROUND – MUST PASS)
+
+
+# SECTION 1: React Fundamentals (FILTER ROUND – MUST PASS)
 
 Build a counter (increment, decrement, reset)
 
@@ -37,47 +39,49 @@ Inline styles vs CSS classes (code example)
 
 Event handling basics
 
-🟡 SECTION 2: State, Immutability & Lists (VERY IMPORTANT)
 
-Update object state immutably
+# SECTION 2: State, Immutability & Lists (VERY IMPORTANT)
 
-Update nested object state immutably
+Update object state immutably.
 
-Update array state immutably
+Update nested object state immutably.
 
-Add item to a list
+Update array state immutably.
 
-Remove item from a list
+Add item to a list.
 
-Edit item in a list
+Remove item from a list.
 
-Toggle item property (done / not done)
+Edit item in a list.
 
-Clear entire list
+Toggle item property (done / not done).
 
-Fix state mutation bug
+Clear entire list.
 
-Derived state vs stored state (code example)
+Fix state mutation bug.
+
+Derived state vs stored state (code example).
 
 Why NOT store derived state?
 
-Sort list (ascending / descending)
+Sort list (ascending / descending).
 
-Filter list by condition
+Filter list by condition.
 
-Pagination logic (basic)
+Pagination logic (basic).
 
-Render list using map()
+Render list using map().
 
-Add correct key — explain why
+Add correct key — explain why.
 
-Fix missing key warning
+Fix missing key warning.
 
-Explain why index as key is bad
+Explain why index as key is bad.
 
-Show empty state if list is empty
+Show empty state if list is empty.
 
-🔵 SECTION 3: useEffect Mastery (INTERVIEW FAVORITE)
+
+# SECTION 3: useEffect Mastery.
 
 Run effect only once
 
@@ -114,6 +118,12 @@ API polling using useEffect
 Sync state with localStorage
 
 Explain execution order of effects
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
 
 🟣 SECTION 4: Debounce & Throttle (VERY COMMON)
 
@@ -384,3 +394,126 @@ Explain render cycle verbally
 Explain hooks execution order
 
 Explain cleanup execution timing
+
+# Number of questions 
+
+🟢 Section 1 (Fundamentals): 16
+
+🟡 Section 2 (State/Immutability/Lists): 19
+
+🔵 Section 3 (useEffect): 18
+
+🟣 Section 4 (Debounce/Throttle): 6
+
+🟠 Section 5 (Forms): 23
+
+🔴 Section 6 (Re-renders/Perf): 20
+
+🟤 Section 7 (Custom Hooks): 20
+
+# >>>
+
+🟤 Section 8 (Design Patterns): 20
+
+🔷 Section 9 (Modern React): 14
+
+⚫ Section 10 (Debugging): 15
+
+🏁 Final Boss (Mock tasks): 9
+
+✅ Total = 180
+
+=====================================================================================================================
+
+Missing / under-covered areas (add these)
+1) React Router (very common in real projects)
+
+Build protected routes (AuthGuard)
+
+Nested routes + Outlet
+
+Dynamic routes (/users/:id) + params
+
+Search params (filter/sort via URL)
+
+Navigation: useNavigate, Link, back button handling
+
+Lazy route loading + Suspense fallback
+
+2) Data fetching patterns beyond basic useEffect
+
+Request dedupe / caching (why React Query / SWR)
+
+Retry + exponential backoff
+
+Pagination: cursor-based (not just page numbers)
+
+Race condition fix (latest request wins)
+
+Optimistic UI update (add item instantly, rollback on failure)
+
+3) State management (senior filter)
+
+useReducer real use case (form/todo complexity)
+
+Context vs Redux vs Zustand — when to use what
+
+Avoid Context re-render (split contexts, selectors pattern)
+
+Basic Redux Toolkit slice + async thunk (even if not deep)
+
+4) Testing (many seniors get filtered here)
+
+Test a component with React Testing Library
+
+Test custom hook
+
+Mock fetch / API
+
+Test user flows (form submit, debounce search, modal open/close)
+
+5) Accessibility (companies care)
+
+Keyboard nav for modal (ESC close, focus trap concept)
+
+Proper labels, aria attributes
+
+Button vs div click handlers (semantic HTML)
+
+Accessible error messages in forms
+
+6) TypeScript with React (if role expects TS)
+
+Type props correctly (optional, union, generics)
+
+useRef typing
+
+Event types (ChangeEvent, FormEvent)
+
+React.FC discussion (pros/cons)
+
+children typing patterns
+
+7) Rendering & SSR basics (often asked)
+
+SSR vs CSR vs hydration (concept)
+
+Hydration mismatch causes (common bug)
+
+Lazy loading components + code splitting (practical)
+
+8) Component communication edge cases
+
+forwardRef + useImperativeHandle (common in UI libraries)
+
+Controlled vs uncontrolled with refs (focus, reset)
+
+Error boundaries: you have it, but add fallback UI + reset pattern
+
+9) Styling & UI architecture (real-world)
+
+CSS Modules vs styled-components vs Tailwind (tradeoffs)
+
+Theming (dark mode) via context
+
+Design system component API (Button/Input variants)
