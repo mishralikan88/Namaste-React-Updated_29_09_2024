@@ -48,71 +48,33 @@ Form submission lifecycle
 
 
 
-
-
-
-🔴 SECTION 6: Re-renders & Performance (SENIOR FILTER) - Reference - notes.md
-
-https://chatgpt.com/c/69554aa7-fc94-8320-baa5-b54aaccb7721
-https://chatgpt.com/c/6955fac0-8f4c-8323-a4d6-27e107de9f4f
-
-
-
-12. Key misuse performance issue   (>>>)
-
-13. Optimize slow list rendering. (>>>)
-
-14. Virtualization concept. (>>>>)
-
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 5 left >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-
-
 🟤 SECTION 7: Custom Hooks (SENIOR EXPECTATION)
 
-Why custom hooks exist?
 
-Build useToggle
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-Build useDebounce
 
-Build useThrottle
+1. Build useLocalStorage.
 
-Build useFetch
+2. Build useFetch.
 
-Build useLocalStorage
+3. Hook for form logic.
 
-Reuse logic without duplication
+4. Hook for pagination.
 
-Hook rules — explain
+5. Hook for window resize.
 
-Hook dependency pitfalls
+6. Hook for keyboard events.
 
-Hook returning function vs value
+7. Hook for outside click detection.
 
-Hook composition
+8. Hooks + Context Pattern
 
-Hook cleanup handling
+9. Why do we store callbacks in refs in some hooks?
 
-Hook for form logic
+10. Supporting SSR / safe browser APIs
 
-Hook for pagination
-
-Hook for window resize
-
-Hook for outside click detection
-
-Hook for keyboard events
-
-Testing custom hooks
-
-When NOT to use custom hooks
-
-Difference between hook & utility function
-
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 
@@ -122,45 +84,47 @@ Difference between hook & utility function
 🟤 SECTION 8: Component Design Patterns 
 
 
-Controlled vs uncontrolled components
+1. Controlled vs uncontrolled components
 
-Compound components pattern
+2. Compound components pattern
 
-Build Tabs using compound pattern
+3. Build Tabs using compound pattern
 
-Build Accordion using compound pattern
+4. Build Accordion using compound pattern
 
-Render props pattern
+5. Render props pattern
 
-HOC pattern
+6. HOC pattern
 
-Hooks vs HOC
+7. Hooks vs HOC
 
-Context API usage
+8. Context API usage
 
-Context performance optimization
+9. Context performance optimization
 
-Build reusable modal
+10. Build reusable modal
 
-Close modal on outside click
+11. Close modal on outside click
 
-Portal usage
+12. Portal usage
 
-Slot-based components
+13. Slot-based components
 
-Composition vs inheritance
+14. Composition vs inheritance
 
-Dumb vs smart components
+15. Dumb vs smart components
 
-Container-presentational pattern
+16. Container-presentational pattern
 
-Reusable button component
+17. Reusable button component
 
-Feature-based folder structure
+18. Feature-based folder structure
 
-Component API design
+19. Component API design
 
-Error boundary implementation
+20. Error boundary implementation
+
+
 
 
 
@@ -198,7 +162,6 @@ Priority updates
 Blocking vs non-blocking updates
 
 Progressive rendering
-
 
 
 
@@ -274,7 +237,6 @@ Explain cleanup execution timing
 
 🟤 Section 7 (Custom Hooks): 20
 
-# >>>
 
 🟤 Section 8 (Design Patterns): 20
 

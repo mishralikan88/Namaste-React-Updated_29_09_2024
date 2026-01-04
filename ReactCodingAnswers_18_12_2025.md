@@ -6681,17 +6681,1706 @@ function App() {
 
 "Context updates re-render all consumers — split contexts to isolate updates."
 
+# 72. What is a Custom Hook?
+
+A custom hook is a normal JavaScript function that:
+
+✅ starts with use...
+✅ uses React hooks inside (useState, useEffect, useRef, etc.)
+✅ extracts reusable logic so you don’t repeat it in many components
+❌ does NOT return JSX (only components return JSX)
+
+🧠 Golden Rule
+
+Hooks = logic (return values/functions)
+Components = UI (return JSX).
+
+
+# 73. Why custom hooks exist?
+
+👉 To avoid repeating the same logic in many components.
+
+❌ BEFORE: Without Custom Hook (Problematic Pattern)
+
+```js
+
+// 1. Login Component
+
+import { useState } from "react";
+
+export function LoginPassword() {
+  const [show, setShow] = useState(false);
+
+  function togglePassword() {
+    setShow(prev => !prev);
+  }
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={togglePassword}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+// 2. Sign-up component.  
+
+import { useState } from "react";
+
+export function SignupPassword() {
+  const [show, setShow] = useState(false);
+
+  function togglePassword() {
+    setShow(prev => !prev);
+  }
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={togglePassword}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+// 3. change Password Component
+
+import { useState } from "react";
+
+export function ChangePassword() {
+  const [show, setShow] = useState(false);
+
+  function togglePassword() {
+    setShow(prev => !prev);
+  }
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={togglePassword}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+
+// 4. Confirm password Component
+
+
+import { useState } from "react";
+
+export function ConfirmPassword() {
+  const [show, setShow] = useState(false);
+
+  function togglePassword() {
+    setShow(prev => !prev);
+  }
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={togglePassword}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+```
+
+🚨 Problems -
+
+1️⃣ Logic Duplication
+
+👉 Same show/hide password logic is written again and again in different components.
+
+2️⃣ Tight Coupling to UI
+
+👉 Password logic lives inside the component, so it can't be reused easily elsewhere.
+
+3️⃣ Poor Maintainability
+
+👉 If the logic changes, you must update many files instead of one.
+
+
+4️⃣ Violates Single Responsibility
+
+👉 Component handles both how it looks (UI rendering) and how it works (state management).
+
+
+
+
+After Custom hooks -
+
+```js
+
+// useToggle.js -> custom hook 
+
+import { useState } from "react";
+
+export function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+
+  function toggle() {
+    setValue(prev => !prev);
+  }
+
+  return { value, toggle };
+}
+
+
+// 🧩 Component 1 – LoginPassword.jsx (UI Only)
+
+import { useToggle } from "./useToggle";
+
+export function LoginPassword() {
+  const { value: show, toggle } = useToggle(false);
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={toggle}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+
+// 🧩 Component 2 – Signup Password - SignupPassword.jsx (UI Only)
+
+import { useToggle } from "./useToggle";
+
+export function SignupPassword() {
+  const { value: show, toggle } = useToggle(false);
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={toggle}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+
+// 🧩 Component 3 -  ChangePassword.jsx (UI Only)
+
+import { useToggle } from "./useToggle";
+
+export function ChangePassword() {
+  const { value: show, toggle } = useToggle(false);
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={toggle}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+
+// 🧩 Component 4 – Confirm Password - ConfirmPassword.jsx (UI Only)
+
+import { useToggle } from "./useToggle";
+
+export function ConfirmPassword() {
+  const { value: show, toggle } = useToggle(false);
+
+  return (
+    <div>
+      <input type={show ? "text" : "password"} />
+      <button onClick={toggle}>{show ? "Hide" : "Show"}</button>
+    </div>
+  );
+}
+
+
+// Note - When the state inside a custom hook changes, the component that uses that hook re-renders.
+
+```
+
+✅ Benefit / Solutions - (How Custom Hook Helps)
+
+
+1️⃣ Fix Logic Duplication
+👉 Put the show/hide logic in one custom hook (useToggle / usePasswordVisibility) and reuse it in all components.
+
+2️⃣ Fix Tight Coupling to UI
+👉 Move the password logic out of the component into a custom hook, so the component only consumes the state and handlers exposed by the hook.
+
+3️⃣ Fix Poor Maintainability
+👉 If logic changes (example: auto-hide after 5 sec), update the hook in one file, and all components get the update automatically.
+
+4️⃣ Fix Single Responsibility Issue
+👉 Custom hook handles state + behavior, component handles only UI rendering — clean separation.
+
+Note - This is where we have reused logic without code duplication
+
+
+# 74. What a Custom Hook returns ? 
+
+Custom Hook returns -
+
+values
+functions
+arrays
+objects
+
+Examples:
+return value;
+return [value, setValue];
+return { data, loading, error };
+
+
+❌ Cannot return:
+
+return <div>Hello</div>; // ❌ JSX (wrong)
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+# 75. useDebouncedValue custom hook - 
+
+Debouncing in Forms - 
+
+
+```js
+
+import React, { useState, useEffect } from "react";
+
+function DebounceExample() {
+
+  // Stores the current value typed by the user.
+
+  const [value, setValue] = useState("");
+
+  // Stores the result shown after debounce.
+
+  const [result, setResult] = useState("");
+
+  useEffect(() => {
+
+    // Starts a timer that runs after user stops typing for 500ms.
+
+    const timer = setTimeout(() => {
+
+      // Only runs when input is not empty.
+
+      if (value) {
+        console.log("API CALL with:", value);
+
+        // Update result after debounce delay.
+
+        setResult(`Result for "${value}"`);
+      }
+
+    }, 500);
+
+    // Cleanup: If user types again before 500ms, cancel the previous timer.
+    
+    return () => clearTimeout(timer);
+
+  }, [value]); // Effect runs every time `value` changes
+
+  return (
+    <div>
+      {/* Input field */}
+      <input
+        type="text"
+        placeholder="Search..."
+        value={value}
+
+        // Update value on every keystroke
+        onChange={(e) => setValue(e.target.value)}
+      />
+
+      {/* Show debounced result */}
+      <p>{result}</p>
+    </div>
+  );
+}
+
+export default DebounceExample;
+
+```
+
+using custom hook -
+
+
+```js
+
+// useDebouncedValue.js - custom hook.
+
+
+import { useState, useEffect } from "react";
+
+function useDebounce(value, delay = 500) {
+
+  // Stores the debounced (delayed) value.
+
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+
+    // Start a timer whenever value changes
+
+    const timer = setTimeout(() => {
+
+      // Update debounced value AFTER delay
+
+      setDebouncedValue(value);
+
+    }, delay);
+
+    // Cleanup: If value changes again before delay, cancel the previous timer
+
+    return () => clearTimeout(timer);
+
+  }, [value]); // Runs when value.
+
+  // Return the debounced value
+
+  return debouncedValue;
+}
+
+export default useDebounce;
+
+
+// ==========================================================
+
+// DebounceExample.jsx - Componnet useing the Hook 
+
+import React, { useState, useEffect } from "react";
+
+import useDebounce from "./useDebounce";
+
+function DebounceExample() {
+
+  // Stores what the user types.
+
+  const [value, setValue] = useState("");
+
+  // Stores the result after debounce.
+
+  const [result, setResult] = useState("");
+
+  // Get debounced value (updates only after 500ms).
+
+  const debouncedValue = useDebounce(value, 500);
+
+  useEffect(() => {
+
+    // Run API logic only when debounced value changes.
+
+    if (debouncedValue) {
+      console.log("API CALL with:", debouncedValue);
+      setResult(`Result for "${debouncedValue}"`);
+    }
+
+  }, [debouncedValue]); // Runs after debounce finishes.
+
+  return (
+    <div>
+
+      {/* Input field */}
+
+      <input
+        type="text"
+        placeholder="Search..."
+        value={value}
+
+        // Update value on every keystroke.
+
+        onChange={(e) => setValue(e.target.value)}
+      />
+
+      {/* Show debounced result */}
+
+      <p>{result}</p>
+    </div>
+  );
+}
+
+export default DebounceExample;
+
+
+
+```
+
+# 76. What are "hook dependency pitfalls"?.
+
+Hook dependency pitfalls happen when you use a value inside useEffect/useCallback/useMemo but forget to include it in dependencies. This causes stale values, wrong behavior, or bugs that look random.
+
+
+❌ Wrong Custom Hook (Bug) - 
+
+```js
+
+// useKeyPress.js (WRONG)
+
+import { useEffect } from "react";
+
+export function useKeyPress(targetKey, handler) {
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === targetKey) {
+        handler(); // uses handler
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+
+    // ❌ PITFALL: handler is missing in deps
+
+  }, [targetKey]);
+}
+
+```
+
+Component using it ( ❌Bug will show here) -
+
+```js
+
+// App.jsx
+import React, { useState } from "react";
+import { useKeyPress } from "./useKeyPress";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  // handler uses count (changes over time)
+  function onEnter() {
+    alert("Count is: " + count);
+  }
+
+  useKeyPress("Enter", onEnter);
+
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+      <button onClick={() => setCount(c => c + 1)}>Increase</button>
+      <p>Press Enter to show count</p>
+    </div>
+  );
+}
+
+
+```
+
+
+
+🧪 Problem recreation (step-by-step)
+
+1️⃣ First render
+count = 0
+onEnter() closes over count = 0
+useKeyPress attaches listener with old handler
+✅ Press Enter → shows 0
+
+2️⃣ Click “Increase” 3 times
+UI shows count = 3
+New handler onEnter() now closes over count = 3
+BUT ❌ effect does NOT re-run (because deps are only [targetKey])
+So the listener still uses the old handler.
+
+3️⃣ Press Enter again
+❌ Alert still shows: “Count is: 0” (stale value)
+Even though UI shows 3.
+
+That's the dependency pitfall.
+
+
+
+✅ Fix : Add handler to deps
+
+
+Correct Custom Hook - 
+
+```js
+
+// useKeyPress.js (FIXED)
+
+import { useEffect } from "react";
+
+export function useKeyPress(targetKey, handler) {
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === targetKey) {
+        handler();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+
+    // ✅ FIX: include handler
+
+  }, [targetKey, handler]);
+}
+
+```
+
+Why this works ? 
+
+When handler changes (because count changed.a new reference for handler is created on rerender with updated closure count value ,So handler changes),
+
+effect re-runs
+
+old listener removed
+
+new listener added using latest handler ✅
+
+
+# 77. useThrottle Custom hook in action 
+
+Throttling in Forms - 
+
+```js
+
+import React, { useRef } from "react";
+
+function ThrottleExample() {
+  const lastTime = useRef(0);
+
+  function sendOtp() {
+    console.log("OTP Sent");
+  }
+
+  function handleClick() {
+    const now = Date.now();
+
+    if (now - lastTime.current > 3000) {
+      sendOtp();                 // allow action
+      lastTime.current = now;    // update time
+    }
+  }
+
+  return <button onClick={handleClick}>Resend OTP</button>;
+}
+
+export default ThrottleExample;
+
+
+```
+
+✅ Custom Hook: useThrottleCallback (for buttons like "Resend OTP")
+
+
+```js
+
+// useThrottleCallback.js
+
+
+import { useRef, useEffect, useCallback } from "react";
+
+export function useThrottleCallback(fn, delay = 3000) {
+  const lastTimeRef = useRef(0);
+  const fnRef = useRef(fn);
+
+  // Always keep latest fn in ref.
+
+  useEffect(() => {
+    fnRef.current = fn;
+  }, [fn]);
+
+  // Stable throttled function.
+
+  const throttledFn = useCallback(() => {
+    const now = Date.now();
+
+    if (now - lastTimeRef.current >= delay) {
+      fnRef.current();          // ✅ always latest fn
+      lastTimeRef.current = now;
+    }
+  }, [delay]);
+
+  return throttledFn;
+}
+
+
+
+✅ Component Using It (Your OTP example)
+
+// ThrottleExample.jsx
+
+import React, { useState } from "react";
+import { useThrottleCallback } from "./useThrottleCallback";
+
+export default function ThrottleExample() {
+  const [count, setCount] = useState(0);
+
+  // ❌ This function WILL be recreated on every render.
+
+  function sendOtp() {
+    console.log("OTP Sent | count =", count);
+  }
+
+  // ✅ handleClick stays STABLE anyway.
+
+  const handleClick = useThrottleCallback(sendOtp, 3000);
+
+  return (
+    <div>
+      <button onClick={() => setCount(c => c + 1)}>
+        Re-render Parent
+      </button>
+
+      <button onClick={handleClick}>
+        Resend OTP
+      </button>
+    </div>
+  );
+}
+
+
+```
+
+
+Why 2 usecallback ? 
+
+1️⃣ useCallback on sendOtp (component level)
+
+What problem it solves ? 
+
+In React, functions are recreated on every render
+sendOtp is a function defined inside the component
+When the component re-renders, sendOtp gets a new reference
+
+Why this is a problem ?
+When you pass sendOtp to a hook:
+The hook sees it as "changed".
+This can force the hook to recreate its internal logic
+
+What useCallback does here ?
+It stabilizes the reference of sendOtp.
+Prevents unnecessary downstream updates.
+
+📌 This is about stabilizing the INPUT to the hook
+
+
+
+2️⃣ useCallback inside the custom hook (hook level)
+
+What problem it solves ? 
+
+The hook RETURNS a function (the throttled function)
+Without useCallback, that returned function is:
+recreated on every render
+a new reference each time
+
+Why this is a problem
+The consumer receives a new function every render
+This breaks:
+memoization
+effect dependencies
+predictable behavior
+
+What useCallback does here
+It stabilizes the function returned by the hook
+Ensures consumers receive a consistent function reference
+
+📌 This is about stabilizing the OUTPUT of the hook
 
 
 
 
 
 
+# 78. What are "Rules of Hooks"? 
+
+
+Rules:
+
+✅ Call hooks only at the top level (not inside if/for/while/functions).
+
+✅ Call hooks only inside React function components or custom hooks.
+
+✅ Custom hook name must start with use (so linting can verify rules).
+
+
+
+# 79. When should a custom hook return a function and when should it return a value?
+
+✅ Answer:
+
+Return a value when hook gives derived data/state.
+
+
+Return a function when hook exposes an action.
+
+Return both when it's like useState pattern.
+
+
+# 80.  Difference between a custom hook and a utility function?
+
+
+Custom Hook:
+
+Uses React hooks → useState, useEffect, useMemo, etc.
+
+Knows about React lifecycle (mount, update, unmount)
+
+Works only inside React components or other hooks
+
+Runs during render
+
+Example - 
+
+```js
+
+function useCounter() {
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    console.log("Component rendered");
+  }, []);
+
+  return { count, setCount };
+
+}
+
+```
+
+👉 This depends on React rendering → so it must be a hook.
+
+
+👉 What it is: A plain JavaScript function with no React knowledge.
+
+Key points (easy)
+
+Pure JS
+No useState, no useEffect
+No lifecycle
+Can be used anywhere:
+React
+Node.js
+Tests
+Backend
+
+
+Example - 
+
+```js
+
+function add(a, b) {
+  return a + b;
+}
+
+```
+
+
+
+👉 This does not depend on React → so it’s a utility.
+
+
+
+# 81. When should you NOT create a custom hook?
+
+
+Don’t create a custom hook when:
+
+1️⃣ Logic is used only once
+
+No reuse = over-engineering
+Keeping logic inside the component is clearer
+
+👉 If it’s not reused, it’s not a hook.
+
+
+
+2️⃣ It’s just a pure helper function
+
+No useState, useEffect, lifecycle
+Just calculation / formatting
+
+👉 Use a utility function, not a hook.
+
+
+
+3️⃣ Hook hides too much logic
+
+Makes code harder to read
+You can’t easily understand what’s happening
+
+👉 Abstraction should simplify, not confuse.
+
+
+
+4️⃣ Hook causes unnecessary re-renders
+
+Bad dependencies
+Wrong abstraction
+Performance issues
+
+👉 A hook that hurts performance is a bad hook.
+
+
+# 82. What is cleanup in hooks? When is it needed?
+
+Cleanup is the function returned from useEffect. It runs:
+before the effect runs again (dependency change)
+when component unmounts
+
+Needed for:
+removing event listeners
+clearing timers
+aborting fetch
+canceling subscriptions
+
+
+
+# 83 . What is a Hook Composition ? 
+
+Hook composition means creating a higher-level hook by combining smaller hooks, while all state still belongs to the component using it.
+
+Hook composition = building one custom hook by using other hooks (built-in or custom).
+
+Just like:
+
+  Functions call functions
+
+  Components use components
+
+  Hooks use hooks
 
 
 
 
+✅ FULL EXAMPLE: Basic Hook Composition -
 
+
+📁 File: useAuth.js  - User Authentication Custom Hook
+
+```js
+
+import React from "react";
+
+/**
+ * useAuth
+ * - Handles authentication state
+ * - Single responsibility: user data
+ */
+export function useAuth() {
+  const [user, setUser] = React.useState(null);
+
+  // fake login for demo
+  function login() {
+    setUser({ id: 1, name: "Likan" });
+  }
+
+  function logout() {
+    setUser(null);
+  }
+
+  return {
+    user,
+    login,
+    logout,
+  };
+}
+
+```
+
+📁 File: useTheme.js - Theme Custom hook
+
+```js
+
+import React from "react";
+
+/**
+ * useTheme
+ * - Handles theme state
+ * - Single responsibility: theme handling
+ */
+export function useTheme() {
+  const [theme, setTheme] = React.useState("dark");
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }
+
+  return {
+    theme,
+    toggleTheme,
+  };
+}
+
+```
+
+📁 File: useAppContext.js (👉 Hook Composition happens here)
+
+```js
+
+import { useAuth } from "./useAuth";
+import { useTheme } from "./useTheme";
+
+/**
+ * useAppContext
+ * - Composes multiple hooks into one
+ * - This is HOOK COMPOSITION
+ */
+export function useAppContext() {
+  const auth = useAuth();   // hook using hook
+  const theme = useTheme(); // hook using hook
+
+  return {
+    ...auth,
+    ...theme,
+  }; // spreads object properties. 
+}
+
+```
+
+📁 File: Dashboard.js
+
+
+```js
+
+import React from "react";
+import { useAppContext } from "./useAppContext";
+
+/**
+ * Dashboard component
+ * - Uses ONE hook instead of many
+ */
+
+export default function Dashboard() {
+  const { user, login, logout, theme, toggleTheme } = useAppContext();
+
+  return (
+    <div
+      style={{
+        padding: "20px",
+        background: theme === "dark" ? "#222" : "#eee",
+        color: theme === "dark" ? "#fff" : "#000",
+      }}
+    >
+      <h2>Dashboard</h2>
+
+      {/* AUTH */}
+      {user ? (
+        <>
+          <p>Welcome, {user.name}</p>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <button onClick={login}>Login</button>
+      )}
+
+      <hr />
+
+      {/* THEME */}
+      <p>Theme: {theme}</p>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+    </div>
+  );
+}
+
+```
+
+
+📁 File: App.js
+
+```js
+
+import React from "react";
+import Dashboard from "./Dashboard";
+
+export default function App() {
+  return <Dashboard />;
+}
+
+```
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+# 84. useLocalStorage -
+
+❌ Without custom hook → code duplication
+
+
+```js
+
+// Component 1: Theme.jsx
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved ? saved : "light";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  return (
+    <button onClick={() => setTheme(prev => prev === "light" ? "dark" : "light")}>
+      Theme: {theme}
+    </button>
+  );
+}
+
+```
+
+Component 2: Language
+
+```js
+
+import { useState, useEffect } from "react";
+
+function LanguageSelector() {
+  const [lang, setLang] = useState(() => {
+    const saved = localStorage.getItem("lang");
+    return saved ? saved : "en";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+  }, [lang]);
+
+  return (
+    <div>
+      <p>Language: {lang}</p>
+
+      <button onClick={() => setLang("en")}>English</button>
+      <button onClick={() => setLang("fr")}>French</button>
+      <button onClick={() => setLang("hi")}>Hindi</button>
+    </div>
+  );
+}
+
+export default LanguageSelector;
+
+```
+
+Component 3: Sidebar
+
+```js
+import { useState, useEffect } from "react";
+
+function Sidebar() {
+  const [open, setOpen] = useState(() => {
+    const saved = localStorage.getItem("sidebar");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("sidebar", JSON.stringify(open));
+  }, [open]);
+
+  return (
+    <div>
+      <button onClick={() => setOpen(o => !o)}>
+        {open ? "Close Sidebar" : "Open Sidebar"}
+      </button>
+
+      {open && (
+        <div style={{ border: "1px solid black", padding: "10px" }}>
+          <p>Sidebar Content</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Sidebar;
+
+```
+
+🔴 What problem do you see now?
+
+❌ Same 'logic' repeated. static logic
+❌ Only 'key name' changes. dynamic key name.
+❌ More components → more duplication.
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+🟢 WITH custom hook → SINGLE SOURCE OF TRUTH
+
+useLocalStorage.js
+
+```js
+import { useEffect, useState } from "react";
+
+/**
+ * useLocalStorage(key, initialValue)
+ * - Gives you state like useState()
+ * - But it also saves/reads that state from localStorage automatically
+ */
+
+
+export function useLocalStorage(key, initialValue) {
+
+  // 1. Initial Read (runs only on first mount because of lazy initializer).
+
+  const [value, setValue] = useState(() => {
+    try {
+      const saved = localStorage.getItem(key); // string | null
+
+      // If something exists in storage → parse and return it.
+
+      if (saved !== null) {
+        return JSON.parse(saved);
+      }
+
+      // If nothing exists → return initialValue.
+
+      return initialValue;
+    } catch (err) {
+
+      // If JSON.parse fails or localStorage errors → fallback to initialValue.
+
+      return initialValue;
+    }
+  });
+
+  // 2. Write back (runs every time key OR value changes)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+
+      // Ignore write errors (storage full, privacy mode, etc.)
+
+    }
+  }, [key, value]); // useEffect uses key, value variables . 2 dependancies.
+
+  return [value, setValue];
+}
+
+// Note - localStorage can store only strings, but React state usually needs real data types (number, boolean, object, array).
+
+// So we stringify when saving and parse when reading.
+
+
+```
+
+❌ Normal initialization
+useState(getValue());
+getValue() runs on every render
+Even though React uses it only once
+❌ Wastes work (bad for localStorage, JSON.parse)
+
+✅ Lazy initialization
+useState(() => getValue());
+getValue() runs only once (on first render)
+Skipped on re-renders
+✅ Best for expensive logic
+
+
+Full Code Example - 
+
+
+```js
+
+import React from "react";
+import { useLocalStorage } from "./useLocalStorage";
+
+export default function App() {
+  const [theme, setTheme] = useLocalStorage("theme", "light");
+  const [lang, setLang] = useLocalStorage("lang", "en");
+  const [open, setOpen] = useLocalStorage("sidebar", false);
+
+  function toggleTheme() {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  }
+
+  function toggleSidebar() {
+    setOpen((prev) => !prev);
+  }
+
+  function changeLang(e) {
+    setLang(e.target.value);
+  }
+
+  return (
+    <div
+      style={{
+        padding: 16,
+        fontFamily: "sans-serif",
+        background: theme === "dark" ? "#111" : "#fff",
+        color: theme === "dark" ? "#fff" : "#111",
+        minHeight: "100vh",
+      }}
+    >
+      <h2>useLocalStorage Demo</h2>
+
+      <p>
+        <b>Theme:</b> {theme}
+      </p>
+      <p>
+        <b>Language:</b> {lang}
+      </p>
+      <p>
+        <b>Sidebar Open:</b> {open ? "Yes ✅" : "No ❌"}
+      </p>
+
+      <hr />
+
+      <button onClick={toggleTheme}>
+        Toggle Theme ({theme === "dark" ? "Switch to Light" : "Switch to Dark"})
+      </button>
+
+      <button onClick={toggleSidebar} style={{ marginLeft: 8 }}>
+        {open ? "Close Sidebar" : "Open Sidebar"}
+      </button>
+
+      <select value={lang} onChange={changeLang} style={{ marginLeft: 8 }}> // value is default selected value
+        <option value="en">English</option> // value of the dropdown items
+        <option value="hi">Hindi</option>
+        <option value="od">Odia</option>
+      </select>
+
+      <hr />
+
+      {open && (
+        <div
+          style={{
+            padding: 12,
+            border: "1px solid",
+            marginTop: 12,
+            borderRadius: 8,
+          }}
+        >
+          <b>Sidebar</b>
+          <p>This open/close state is persisted in localStorage.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+```
+
+🧠 Why this is a BIG DEAL (real-world thinking)
+
+❌ Without hook
+
+Copy-paste logic
+Bug fix everywhere
+Hard to maintain
+
+
+
+✅ With hook
+
+Logic written once
+Bug fixed once
+Consistent behavior
+Easy testing
+
+
+Code Explanation - 
+
+✅ A) First time App loads (Mount / Initial render)
+
+React calls your component function: App()
+
+React reaches this line:
+
+const [theme, setTheme] = useLocalStorage("theme", "light");
+
+
+React enters useLocalStorage("theme","light").
+
+Inside the hook, React executes useState(() => {...}).
+
+React runs that initializer function only on first mount.
+
+Inside initializer, browser runs:
+
+localStorage.getItem("theme")
+
+
+If localStorage has nothing, it returns null.
+
+Hook returns "light" as the initial state.
+
+So back in App, you now have:
+
+theme = "light"
+
+setTheme = function (React state updater)
+
+Next React reaches:
+
+const [lang, setLang] = useLocalStorage("lang", "en");
+
+
+Same process happens: localStorage.getItem("lang")
+
+If nothing exists → initial state becomes "en"
+
+Now: lang = "en"
+
+Next React reaches:
+
+const [open, setOpen] = useLocalStorage("sidebar", false);
+
+
+Same process: localStorage.getItem("sidebar")
+
+If nothing exists → initial state becomes false
+
+Now: open = false
+
+Now React creates your event functions (just created, not run yet):
+
+toggleTheme()
+
+toggleSidebar()
+
+changeLang()
+
+React now calculates JSX using the current values:
+
+theme = "light" → background becomes white
+
+open = false → sidebar block does NOT render
+
+lang = "en" → select shows English
+
+React paints UI on screen.
+
+✅ B) After UI is painted (Effects run)
+
+After the screen is shown, React runs the useEffect inside each useLocalStorage.
+
+For theme hook effect, React runs:
+
+localStorage.setItem("theme", JSON.stringify("light"))
+
+
+For lang hook effect, React runs:
+
+localStorage.setItem("lang", JSON.stringify("en"))
+
+
+For sidebar hook effect, React runs:
+
+localStorage.setItem("sidebar", JSON.stringify(false))
+
+
+Now localStorage permanently stores these values.
+
+✅ C) When you click “Toggle Theme”
+
+You click the button:
+
+<button onClick={toggleTheme}>
+
+
+React calls toggleTheme()
+
+Inside toggleTheme, this runs:
+
+setTheme(prev => (prev === "light" ? "dark" : "light"));
+
+
+React reads previous stored theme from memory (hook state) → "light"
+
+React calculates new theme → "dark"
+
+React saves new theme in hook memory.
+
+React re-renders App() again from top.
+
+Now theme becomes "dark" in render.
+
+JSX recalculates: background becomes #111, text becomes white.
+
+UI updates on screen (only changed styles).
+
+After re-render, theme hook useEffect runs again and saves:
+
+localStorage.setItem("theme", "\"dark\"")
+
+
+Refresh page later → it will open in dark again.
+
+✅ D) When you click “Open Sidebar / Close Sidebar”
+
+You click the sidebar button:
+
+<button onClick={toggleSidebar}>
+
+
+React calls toggleSidebar()
+
+This runs:
+
+setOpen(prev => !prev);
+
+
+React reads previous open value from memory → false
+
+React flips it → true
+
+React stores true and re-renders App()
+
+Now open = true during JSX building.
+
+This condition becomes true:
+
+{open && <div>Sidebar...</div>}
+
+
+Sidebar <div> appears on screen.
+
+After render, useEffect saves:
+
+localStorage.setItem("sidebar", "true")
+
+
+If you click again, it flips true → false, sidebar disappears, localStorage becomes "false".
+
+✅ E) When you change Language (select dropdown)
+
+You select a new option (say Hindi).
+
+Browser triggers onChange event.
+
+React calls:
+
+changeLang(e)
+
+
+Inside it:
+
+setLang(e.target.value)
+
+
+e.target.value becomes "hi"
+
+React stores "hi" in hook memory and re-renders App().
+
+Now lang = "hi" in JSX.
+
+<select value={lang}> shows Hindi selected.
+
+After render, effect saves:
+
+localStorage.setItem("lang", "\"hi\"")
+
+
+Refresh page → language stays Hindi.
+
+
+
+# usefetch - 
+
+Fetching data -
+
+🔴 CASE 1: WITHOUT custom hook
+
+(each component writes fetch logic itself)
+
+Users.jsx ❌ (fetch logic inside component)
+
+```js
+import { useEffect, useState } from "react";
+
+export function Users() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch(
+          "https://jsonplaceholder.typicode.com/users"
+        );
+        const json = await res.json();
+
+        setData(json);
+      } catch (e) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUsers();
+  }, []);
+
+  if (loading) return <p>Loading users...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <ul>
+      {data.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+```
+
+Posts.jsx ❌ (SAME logic again)
+
+```js
+
+import { useEffect, useState } from "react";
+
+export function Posts() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch(
+          "https://jsonplaceholder.typicode.com/posts"
+        );
+        const json = await res.json();
+
+        setData(json);
+      } catch (e) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
+
+  if (loading) return <p>Loading posts...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <ul>
+      {data.map(p => <li key={p.id}>{p.title}</li>)}
+    </ul>
+  );
+}
+
+```
+
+❌ Problem WITHOUT custom hook (very important)
+
+You repeated the same logic:
+
+useState for data
+
+useState for loading
+
+useState for error
+
+useEffect
+
+try / catch / finally
+
+fetch → json
+
+👉 Only the URL changed.
+
+If tomorrow:
+
+error handling changes
+
+loading logic changes
+
+❌ You must update every component
+
+
+🟢 CASE 2: WITH custom hook
+
+(fetch logic written ONCE, reused everywhere)
+
+useFetch.js ✅ (logic extracted)
+
+```js
+
+import { useEffect, useState } from "react";
+
+export function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await fetch(url);
+        const json = await res.json();
+
+        setData(json);
+      } catch (e) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+
+Users.jsx ✅ (clean & simple)
+
+```js
+
+import { useFetch } from "./useFetch";
+
+export function Users() {
+  const { data, loading, error } = useFetch(
+    "https://jsonplaceholder.typicode.com/users"
+  );
+
+  if (loading) return <p>Loading users...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <ul>
+      {data.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+```
+
+Posts.jsx ✅ (same logic reused)
+
+```js
+
+import { useFetch } from "./useFetch";
+
+export function Posts() {
+  const { data, loading, error } = useFetch(
+    "https://jsonplaceholder.typicode.com/posts"
+  );
+
+  if (loading) return <p>Loading posts...</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <ul>
+      {data.map(p => <li key={p.id}>{p.title}</li>)}
+    </ul>
+  );
+}
+
+```
 
 
 

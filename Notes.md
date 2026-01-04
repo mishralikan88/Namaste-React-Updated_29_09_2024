@@ -932,7 +932,7 @@ Parent → stores count
  └── Child B → reads count from parent
 
 Both see the same value.
-
+ 
 Why Do We Need to Lift State Up?
 
 Both components need the same data.
@@ -10748,105 +10748,71 @@ export default function PasswordInput() {
 ✔ Cleaner component
 
 
-Step-by-step execution (super detailed)
+Step-by-step execution -
+
 1) React starts rendering <PasswordInput />
-
-React literally calls your component function:
-
-PasswordInput()
-
-
-At this moment, React is trying to figure out: “What UI should I show?”
+React literally calls your component function -PasswordInput()
+At this moment, React is trying to figure out: "What UI should I show?"
 
 2) React reaches this line (inside PasswordInput)
 const { value: show, toggle } = useToggle(false);
-
-
 React now jumps into useToggle(false) because hooks run during render.
 
 3) useToggle(false) begins running
-
 Now we are inside:
-
 export function useToggle(initialValue = false) {
-
-
-Here:
-
-initialValue becomes false
+Here: initialValue becomes false
 
 4) React runs useState(initialValue)
 const [value, setValue] = useState(initialValue);
-
-
 This is the most important part.
 
-✅ What React does internally (simple model)
+✅ What React does internally -
 
 React keeps a hidden storage for each component render, something like:
 
 React memory for PasswordInput:
-  Hook #1 state = ???
-
+Hook #1 state = ???
 
 Because this is the first render, React sets it:
-
 Hook #1 state = false
 
-
 So React returns:
-
 value = false
-
 setValue = a special React function that can update Hook #1 later
 
 5) React creates the functions toggle, on, off
 function toggle() { setValue(prev => !prev); }
 function on() { setValue(true); }
 function off() { setValue(false); }
-
-
 ⚠️ These functions are created, not executed.
 
 So right now:
-
 no state change happens
-
 only function definitions are ready
 
 6) useToggle returns an object
 return { value, toggle, on, off };
-
-
 At this moment it returns:
-
 { value: false, toggle: f, on: f, off: f }
-
 
 This object goes back to PasswordInput.
 
 7) Back in PasswordInput, destructuring happens
+
 const { value: show, toggle } = useToggle(false);
-
-
 This means:
-
 take value and rename it as show
-
 So now:
-
 show = false
 toggle = function toggle(){...}
 
-8) React builds JSX using show
+8) React builds JSX using show.
 
 <input type={show ? "text" : "password"} />
 
 
-Since show is false → condition becomes:
-
-show ? "text" : "password"  → "password"
-
+Since show is false → condition becomes: show ? "text" : "password"  → "password"
 
 So React decides UI should be:
 
@@ -10859,9 +10825,10 @@ Then React paints this to the screen.
 ✅ Up to here = initial render done
 
 Now the click part (the real magic)
+
+
 9) You click the button
 <button onClick={toggle}>
-
 
 Browser triggers a click event.
 
@@ -10886,26 +10853,19 @@ This is the key:
 ❌ React does NOT immediately change value
 ✅ React queues an update and says:
 
-“After this click handler finishes, I will update state and re-render.”
-
+"After this click handler finishes, I will update state and re-render."
 So internally React stores something like:
-
 Pending updates for Hook #1:
   [ updaterFunction(prev => !prev) ]
 
 12) React now needs the previous value (prev)
 
 When React is ready to apply update, it looks into its memory:
-
 Hook #1 state (current stored) = false
-
-
 So:
-
 prev = false
 
-
-That’s how React “identifies” prev.
+That’s how React "identifies" prev.
 It reads it from its internal hook storage.
 
 13) React runs your updater function
@@ -10929,15 +10889,12 @@ Hook #1 state = true
 
 15) React triggers a re-render
 
-React says:
+React says: "State changed, so I must run PasswordInput again to get fresh UI."
 
-“State changed, so I must run PasswordInput again to get fresh UI.”
-
-So it calls again:
-
-PasswordInput()
+So it calls again: PasswordInput()
 
 Re-render (second run of the same component)
+
 16) React again hits
 const { value: show, toggle } = useToggle(false);
 
@@ -12938,37 +12895,53 @@ import React, { useState, useEffect } from "react";
 
 function DebounceExample() {
 
+  // Stores the current value typed by the user
   const [value, setValue] = useState("");
+
+  // Stores the result shown after debounce
   const [result, setResult] = useState("");
 
-useEffect(() => {
-  // wait 500ms after typing stops
-  const timer = setTimeout(() => {
-    if (value) {
-      console.log("API CALL with:", value);
-      setResult(`Result for "${value}"`);
-    }
-  }, 500);
+  useEffect(() => {
+    // Start a timer that runs AFTER user stops typing for 500ms
+    const timer = setTimeout(() => {
 
-  // cancel previous timer on value change
-  return () => clearTimeout(timer);
-}, [value]); // runs when input changes
+      // Only run when input is not empty
+      if (value) {
+        console.log("API CALL with:", value);
 
+        // Update result after debounce delay
+        setResult(`Result for "${value}"`);
+      }
+
+    }, 500);
+
+    // Cleanup:
+    // If user types again before 500ms,
+    // cancel the previous timer
+    return () => clearTimeout(timer);
+
+  }, [value]); // Effect runs every time `value` changes
 
   return (
     <div>
+      {/* Input field */}
       <input
         type="text"
         placeholder="Search..."
-        value={value} 
+        value={value}
+
+        // Update value on every keystroke
         onChange={(e) => setValue(e.target.value)}
       />
+
+      {/* Show debounced result */}
       <p>{result}</p>
     </div>
   );
 }
 
 export default DebounceExample;
+
 
 ```
 

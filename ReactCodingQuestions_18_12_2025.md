@@ -120,9 +120,6 @@ Sync state with localStorage
 Explain execution order of effects
 
 
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
 
 
 🟣 SECTION 4: Debounce & Throttle (VERY COMMON)

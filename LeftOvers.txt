@@ -41,14 +41,12 @@ onFocus
 onBlur
 
 UI & Scroll Events
-
 onScroll
 onWheel
 onLoad
 onError
 
 Pointer Events
-
 onPointerDown
 onPointerUp
 onPointerMove
@@ -75,8 +73,6 @@ Caching strategies (React Query / SWR)
 Search Bar with Debouncing (using useRef)
 Dynamic Forms (Add / Remove Inputs) -> To do app 
 Aborting Requests with AbortController
-useDebounce -> (custom hooks)
-useThrottle -> (custom hooks)
 Advanced Form Validation  - 
 React Hook Form.
 Formik.
@@ -103,8 +99,7 @@ Disposable Effects
 Provider pattern
 Hooks pattern
 HOC pattern
-State reducer pattern
-
+State reducer pattern 
 Compound Components pattern -> Javascript features.
 Parent-child control
 Context-based compound APIs
@@ -114,6 +109,12 @@ composition - proprdrilling
 Key misuse performance issue   (>>>)
 Optimize slow list rendering. (>>>)
 Virtualization concept. (>>>>)
+Testing custom hooks(>>>>>>)
+mount update render  unmoun image and explnation example 
+REact fibrre 
+strcuit mode
+SSR + hydratoion 
+debug a react application 
 
 
 ✅ 7. Core React Hooks (Basic Hooks)
@@ -170,8 +171,8 @@ bindings
 class methods
 
 ✅ 13. All Lifecycle Methods
-Mounting
 
+Mounting
 constructor
 getDerivedStateFromProps
 render
@@ -196,3 +197,209 @@ Typing custom hooks
 Typing reducers
 Typing context
 Typing portal props
+
+
+
+=======================================================================================================
+
+
+
+🔴 RE-RENDERS & PERFORMANCE (MOST ASKED)
+
+Why did my component re-render?
+
+Why did my child component re-render even though props didn’t change?
+
+Why does my component re-render when parent state changes?
+
+Why is React.memo not preventing re-renders?
+
+Why does passing an inline function cause re-render?
+
+Why does passing an object/array as prop cause re-render?
+
+Why does useMemo not stop re-render?
+
+Why does useCallback not work here?
+
+Why does splitting components reduce re-renders?
+
+Why does lifting state cause unnecessary re-renders?
+
+Why does state colocation improve performance?
+
+Why does changing key cause remount instead of re-render?
+
+Why does using index as key break UI?
+
+Why does my list lose input focus?
+
+Why does my component remount unexpectedly?
+
+🔴 useEffect (VERY CONFUSING FOR MOST)
+
+Why is useEffect running twice?
+
+Why does useEffect run on mount?
+
+Why does useEffect run again when state changes?
+
+Why does useEffect cause infinite loop?
+
+Why does React warn about missing dependencies?
+
+Why does adding dependency break my logic?
+
+Why does removing dependency “fix” it?
+
+Why does cleanup run before effect?
+
+Why does cleanup run on unmount?
+
+Why does cleanup run before next effect?
+
+Why does useEffect behave differently in Strict Mode?
+
+Why does useEffect not run synchronously?
+
+Why shouldn’t I fetch data directly in render?
+
+🔴 STATE & CLOSURES (SENIOR TRAP) - Focus on this .
+
+Why is my state stale?
+
+Why does my state inside setTimeout not update?
+
+Why does setInterval capture old state?
+
+Why does console.log show old state after setState?
+
+Why does functional update fix stale state?
+
+Why does useRef solve stale closure?
+
+Why does state update asynchronously?
+
+Why can’t I read updated state immediately?
+
+🔴 React.memo / useMemo / useCallback
+
+Why is React.memo not working?
+
+When should I NOT use React.memo?
+
+Why does memoized component still re-render?
+
+Why does useCallback create bugs?
+
+Why does useMemo cause memory waste?
+
+When does memoization hurt performance?
+
+Why is referential equality important?
+
+Why does shallow comparison fail?
+
+🔴 CONTEXT (PRODUCTION PAIN POINT)
+
+Why does context re-render everything?
+
+Why does updating one value re-render all consumers?
+
+Why does context break performance?
+
+How to prevent unnecessary context re-renders?
+
+Why should context be split?
+
+Why should provider value be memoized?
+
+Why is context not a replacement for Redux?
+
+Why does context cause hidden coupling?
+
+🔴 HOOKS DESIGN & CUSTOM HOOKS
+
+Why must hooks be called in same order?
+
+Why can’t hooks be called conditionally?
+
+Why must custom hooks start with use?
+
+Why is custom hook not sharing state?
+
+Why does custom hook re-run on every render?
+
+Why is my custom hook causing re-render?
+
+Why use hook composition?
+
+Why not use utility function instead of hook?
+
+When should I NOT create a custom hook?
+
+Why is hook returning object vs array important?
+
+🔴 REACT 18 / CONCURRENCY / STRICT MODE
+
+Why does Strict Mode render twice?
+
+Why does effect cleanup run twice in dev?
+
+Why is my API called twice?
+
+Why does React batch state updates?
+
+Why does batching change behavior?
+
+Why does startTransition exist?
+
+Why does React delay rendering?
+
+Why is render interruptible?
+
+Why does UI feel responsive in concurrent mode?
+
+🔴 ARCHITECTURE & DESIGN (SENIOR LEVEL)
+
+Where should state live?
+
+When to lift state vs colocate?
+
+When to use context vs props?
+
+When to use Redux vs Context?
+
+When to memoize vs not?
+
+When to split components?
+
+When to normalize state?
+
+When to derive state vs store it?
+
+Why over-memoization is bad?
+
+Why premature optimization hurts?
+
+🔴 FORMS & CONTROL
+
+Why controlled components are slow?
+
+Why uncontrolled components exist?
+
+Why refs are used for forms?
+
+Why form libraries avoid re-renders?
+
+🔴 SSR / HYDRATION (ADVANCED)
+
+Why hydration mismatch happens?
+
+Why browser APIs break SSR?
+
+Why useEffect doesn’t run on server?
+
+Why useLayoutEffect warns in SSR?
+
+Why client and server HTML differ?
