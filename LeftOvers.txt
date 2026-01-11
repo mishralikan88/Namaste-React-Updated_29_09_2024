@@ -115,6 +115,14 @@ REact fibrre
 strcuit mode
 SSR + hydratoion 
 debug a react application 
+Hook for form logic.
+Hooks + Context Pattern.
+Supporting SSR / safe browser APIs.
+Server Components (concept).
+Client vs server components.
+Streaming rendering (concept).
+Suspense for data fetching (concept).
+
 
 
 ✅ 7. Core React Hooks (Basic Hooks)

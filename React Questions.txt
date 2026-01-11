@@ -48,35 +48,6 @@ Form submission lifecycle
 
 
 
-🟤 SECTION 7: Custom Hooks (SENIOR EXPECTATION)
-
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-1. Build useLocalStorage.
-
-2. Build useFetch.
-
-3. Hook for form logic.
-
-4. Hook for pagination.
-
-5. Hook for window resize.
-
-6. Hook for keyboard events.
-
-7. Hook for outside click detection.
-
-8. Hooks + Context Pattern
-
-9. Why do we store callbacks in refs in some hooks?
-
-10. Supporting SSR / safe browser APIs
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
 
 
 
@@ -84,41 +55,41 @@ Form submission lifecycle
 🟤 SECTION 8: Component Design Patterns 
 
 
-1. Controlled vs uncontrolled components
+1. Controlled vs uncontrolled components.
 
-2. Compound components pattern
+2. Compound components pattern.
 
-3. Build Tabs using compound pattern
+3. Build Tabs using compound pattern.
 
-4. Build Accordion using compound pattern
+4. Build Accordion using compound pattern.
 
-5. Render props pattern
+5. Render props pattern.
 
-6. HOC pattern
+6. HOC pattern.
 
-7. Hooks vs HOC
+7. Hooks vs HOC.
 
-8. Context API usage
+8. Context API usage.
 
-9. Context performance optimization
+9. Context performance optimization.
 
-10. Build reusable modal
+10. Build reusable modal.
 
-11. Close modal on outside click
+11. Close modal on outside click.
 
-12. Portal usage
+12. Portal usage.
 
-13. Slot-based components
+13. Slot-based components.
 
-14. Composition vs inheritance
+14. Composition vs inheritance.
 
-15. Dumb vs smart components
+15. Dumb vs smart components.
 
-16. Container-presentational pattern
+16. Container-presentational pattern.
 
-17. Reusable button component
+17. Reusable button component.
 
-18. Feature-based folder structure
+18. Feature-based folder structure.
 
 19. Component API design
 
@@ -131,71 +102,39 @@ Form submission lifecycle
 
 
 
-
-
-🔷 SECTION 9: Modern React (React 18 / 19 Awareness)
-
-Automatic batching
-
-Concurrent rendering basics
-
-useTransition
-
-useDeferredValue
-
-Suspense basics
-
-Suspense for data fetching (concept)
-
-Server Components (concept)
-
-Client vs server components
-
-Streaming rendering (concept)
-
-When concurrency helps
-
-When concurrency hurts
-
-Priority updates
-
-Blocking vs non-blocking updates
-
-Progressive rendering
-
-
-
 ⚫ SECTION 10: Debugging & Tricky Scenarios (REAL INTERVIEWS)
 
-Fix infinite re-render bug
+1. Fix infinite re-render bug
 
-Fix stale state bug
+2. Fix stale state bug
 
-Fix broken dependency array
+3. Fix broken dependency array
 
-Fix memory leak
+4. Fix memory leak
 
-Fix event handler bug
+5. Fix event handler bug
 
-Fix wrong closure issue
+6. Fix wrong closure issue
 
-Fix incorrect key usage
+7. Fix incorrect key usage
 
-Fix form lag issue
+8. Fix form lag issue
 
-Fix unnecessary API calls
+9. Fix unnecessary API calls
 
-Fix modal scroll bug
+10. Fix modal scroll bug
 
-Fix double API submit
+11. Fix double API submit
 
-Fix flickering UI issue
+12. Fix flickering UI issue
 
-Fix incorrect conditional render
+13. Fix incorrect conditional render
 
-Fix race condition in fetch
+14. Fix race condition in fetch
 
-Fix debounce bug
+15. Fix debounce bug
+
+
 
 
 
@@ -203,23 +142,27 @@ Fix debounce bug
 
 🏁 FINAL BOSS — MOCK INTERVIEW TASKS
 
-Build debounced search + explain flow
+1. Build debounced search + explain flow
 
-Build todo app with filters
+2. Build todo app with filters
 
-Build reusable modal (no library)
+3. Build reusable modal (no library)
 
-Optimize re-render-heavy component
+4. Optimize re-render-heavy component
 
-Design form architecture
+5. Design form architecture
 
-Fix performance bottleneck
+6. Fix performance bottleneck
 
-Explain render cycle verbally
+7. Explain render cycle verbally.
 
-Explain hooks execution order
+8. Explain hooks execution order.
 
-Explain cleanup execution timing
+9. Explain cleanup execution timing.
+
+
+
+
 
 # Number of questions 
 
@@ -236,7 +179,6 @@ Explain cleanup execution timing
 🔴 Section 6 (Re-renders/Perf): 20
 
 🟤 Section 7 (Custom Hooks): 20
-
 
 🟤 Section 8 (Design Patterns): 20
 

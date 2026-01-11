@@ -7797,15 +7797,16 @@ export default Sidebar;
 ❌ More components → more duplication.
 
 
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+  
+🟢 WITH custom hook → single source of truth.
 
-🟢 WITH custom hook → SINGLE SOURCE OF TRUTH
-
-useLocalStorage.js
+useLocalStorage.js - 
 
 ```js
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
+
 
 /**
  * useLocalStorage(key, initialValue)
@@ -7814,24 +7815,17 @@ import { useEffect, useState } from "react";
  */
 
 
+// 1. Initial Read (runs only on first mount because of lazy initializer).
+
 export function useLocalStorage(key, initialValue) {
-
-  // 1. Initial Read (runs only on first mount because of lazy initializer).
-
   const [value, setValue] = useState(() => {
     try {
-      const saved = localStorage.getItem(key); // string | null
+      const saved = localStorage.getItem(key);  // string | null
 
-      // If something exists in storage → parse and return it.
+      // If something exists in storage → parse and return it. If nothing exists → return initialValue.
 
-      if (saved !== null) {
-        return JSON.parse(saved);
-      }
-
-      // If nothing exists → return initialValue.
-
-      return initialValue;
-    } catch (err) {
+      return saved !== null ? JSON.parse(saved) : initialValue;
+    } catch {
 
       // If JSON.parse fails or localStorage errors → fallback to initialValue.
 
@@ -7839,20 +7833,15 @@ export function useLocalStorage(key, initialValue) {
     }
   });
 
-  // 2. Write back (runs every time key OR value changes)
-
   useEffect(() => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch (err) {
+    } catch {}
+  }, [key, value]);
 
-      // Ignore write errors (storage full, privacy mode, etc.)
-
-    }
-  }, [key, value]); // useEffect uses key, value variables . 2 dependancies.
-
-  return [value, setValue];
+  return { value, setValue }; // useEffect uses key, value variables . 2 dependancies.
 }
+
 
 // Note - localStorage can store only strings, but React state usually needs real data types (number, boolean, object, array).
 
@@ -7880,12 +7869,21 @@ Full Code Example -
 ```js
 
 import React from "react";
+
 import { useLocalStorage } from "./useLocalStorage";
 
 export default function App() {
-  const [theme, setTheme] = useLocalStorage("theme", "light");
-  const [lang, setLang] = useLocalStorage("lang", "en");
-  const [open, setOpen] = useLocalStorage("sidebar", false);
+
+  const { value: theme, setValue: setTheme } =
+  useLocalStorage("theme", "light");
+
+const { value: lang, setValue: setLang } =
+  useLocalStorage("lang", "en");
+
+const { value: open, setValue: setOpen } =
+  useLocalStorage("sidebar", false);
+
+
 
   function toggleTheme() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -7979,202 +7977,222 @@ Easy testing
 
 Code Explanation - 
 
-✅ A) First time App loads (Mount / Initial render)
+✅ A. First time App loads (Mount / Initial render)
 
 React calls your component function: App()
-
-React reaches this line:
-
-const [theme, setTheme] = useLocalStorage("theme", "light");
-
-
+React reaches this line: 'const [theme, setTheme] = useLocalStorage("theme", "light");'
 React enters useLocalStorage("theme","light").
-
 Inside the hook, React executes useState(() => {...}).
-
 React runs that initializer function only on first mount.
-
-Inside initializer, browser runs:
-
-localStorage.getItem("theme")
-
-
+Inside initializer, browser runs: localStorage.getItem("theme")
 If localStorage has nothing, it returns null.
-
 Hook returns "light" as the initial state.
-
-So back in App, you now have:
-
-theme = "light"
-
-setTheme = function (React state updater)
-
-Next React reaches:
-
-const [lang, setLang] = useLocalStorage("lang", "en");
-
-
+So back in App, you now have: theme = "light" , setTheme = function (React state updater)
+Next React reaches: const [lang, setLang] = useLocalStorage("lang", "en");
 Same process happens: localStorage.getItem("lang")
-
-If nothing exists → initial state becomes "en"
-
-Now: lang = "en"
-
-Next React reaches:
-
-const [open, setOpen] = useLocalStorage("sidebar", false);
-
-
-Same process: localStorage.getItem("sidebar")
-
-If nothing exists → initial state becomes false
-
+If nothing exists → initial state becomes "en" Now: lang = "en"
+Next React reaches: const [open, setOpen] = useLocalStorage("sidebar", false);
+Same process: localStorage.getItem("sidebar").If nothing exists → initial state becomes false
 Now: open = false
-
 Now React creates your event functions (just created, not run yet):
-
 toggleTheme()
-
 toggleSidebar()
-
 changeLang()
-
 React now calculates JSX using the current values:
-
 theme = "light" → background becomes white
-
 open = false → sidebar block does NOT render
-
 lang = "en" → select shows English
-
 React paints UI on screen.
 
-✅ B) After UI is painted (Effects run)
+
+✅ B. After UI is painted / Dom updates (Effects run)
 
 After the screen is shown, React runs the useEffect inside each useLocalStorage.
-
-For theme hook effect, React runs:
-
-localStorage.setItem("theme", JSON.stringify("light"))
-
-
-For lang hook effect, React runs:
-
-localStorage.setItem("lang", JSON.stringify("en"))
-
-
-For sidebar hook effect, React runs:
-
-localStorage.setItem("sidebar", JSON.stringify(false))
-
-
+For theme hook effect, React runs: localStorage.setItem("theme", JSON.stringify("light"))
+For lang hook effect, React runs: localStorage.setItem("lang", JSON.stringify("en"))
+For sidebar hook effect, React runs: localStorage.setItem("sidebar", JSON.stringify(false))
 Now localStorage permanently stores these values.
 
-✅ C) When you click “Toggle Theme”
 
-You click the button:
 
+
+✅ C. When you click "Toggle Theme"
+
+
+1. User interaction
+You click the Toggle Theme button.
 <button onClick={toggleTheme}>
 
+2. React calls the event handler
+toggleTheme()
+This function runs immediately in response to the click.
 
-React calls toggleTheme()
-
-Inside toggleTheme, this runs:
-
+3. State update is requested
+Inside toggleTheme:
 setTheme(prev => (prev === "light" ? "dark" : "light"));
+What happens here:
+prev is read from React’s useState stored state
+Current stored value = "light"
+
+4. New state is calculated
+React computes the next value → "dark"
+
+5. React stores the new state
+"dark" is saved in React’s internal state slot for this useState
+UI does not update yet
+
+6. React re-renders the component
+React calls App() again from the top
+
+7. React enters the custom hook again.
+useLocalStorage("theme", "light").
+Inside the hook during this render:
+useState returns the existing stored value → "dark".
+The initializer function does NOT run again.
+useEffect is registered (but not executed yet).
+
+8. JSX is recalculated.
+theme === "dark".
+Background becomes dark (#111).
+Text becomes white.
+
+9. React updates the UI (commit phase).
+Only the changed styles are updated in the DOM.
+The user now sees dark mode.
+
+10. useEffect runs (after UI update).
+localStorage.setItem("theme", "\"dark\"");
+Side effect runs after the render is committed.
+New theme value is saved to localStorage.
+
+11. Later, when you refresh the page.
+useState initializer reads "dark" from localStorage.
+Initial state becomes "dark".
+App opens directly in dark mode.
 
 
-React reads previous stored theme from memory (hook state) → "light"
-
-React calculates new theme → "dark"
-
-React saves new theme in hook memory.
-
-React re-renders App() again from top.
-
-Now theme becomes "dark" in render.
-
-JSX recalculates: background becomes #111, text becomes white.
-
-UI updates on screen (only changed styles).
-
-After re-render, theme hook useEffect runs again and saves:
-
-localStorage.setItem("theme", "\"dark\"")
 
 
-Refresh page later → it will open in dark again.
 
-✅ D) When you click “Open Sidebar / Close Sidebar”
 
-You click the sidebar button:
+✅ D. When you click "Open Sidebar / Close Sidebar"
 
+1. User interaction
+You click the Open Sidebar / Close Sidebar button.
 <button onClick={toggleSidebar}>
 
+2. React calls the event handler
+toggleSidebar()
+This function runs immediately after the click.
 
-React calls toggleSidebar()
-
-This runs:
-
+3. State update is requested
+Inside toggleSidebar:
 setOpen(prev => !prev);
+What happens here:
+prev is read from React’s useState stored state
+Current stored value = false (sidebar is closed)
 
+4. New state is calculated
+React flips the value:
+false → true
 
-React reads previous open value from memory → false
+5. React stores the new state
+true is saved in React’s internal state slot for this useState
+UI does not update yet
 
-React flips it → true
+6. React re-renders the component
+React calls App() again from the top
 
-React stores true and re-renders App()
+7. React enters the custom hook again
+useLocalStorage("sidebar", false)
+Inside the hook during this render:
+useState returns the existing stored value → true
+The initializer function does NOT run again
+useEffect is registered (but not executed yet)
 
-Now open = true during JSX building.
-
-This condition becomes true:
-
+8. JSX is recalculated
+Now this condition becomes true:
 {open && <div>Sidebar...</div>}
+open === true
+Sidebar <div> is included in the JSX
+
+9. React updates the UI (commit phase)
+React inserts the Sidebar <div> into the DOM
+Sidebar becomes visible on screen
+
+10. useEffect runs (after UI update)
+localStorage.setItem("sidebar", "true");
+Side effect runs after the render is committed
+Sidebar state is saved to localStorage
+
+11. When you click again
+setOpen(prev => !prev) runs
+true → false
+React re-renders
+Sidebar <div> is removed from JSX
+UI updates to hide the sidebar
+useEffect saves "false" to localStorage
 
 
-Sidebar <div> appears on screen.
-
-After render, useEffect saves:
-
-localStorage.setItem("sidebar", "true")
 
 
-If you click again, it flips true → false, sidebar disappears, localStorage becomes "false".
 
-✅ E) When you change Language (select dropdown)
+✅ E. When you change Language (select dropdown)
 
-You select a new option (say Hindi).
+1. User interaction
+You select a new option from the dropdown (for example Hindi).
+<select value={lang} onChange={changeLang}>
 
-Browser triggers onChange event.
+2. Browser triggers change event
+The browser fires a change event on the <select> element.
 
-React calls:
-
+3. React calls the event handler
 changeLang(e)
+This function runs immediately after the selection changes.
 
+4. State update is requested
+Inside changeLang:
+setLang(e.target.value);
+What happens here:
+e.target.value is read from the DOM
+New value = "hi"
 
-Inside it:
+5. React stores the new state
+"hi" is saved in React’s internal useState slot for language
+UI does not update yet
 
-setLang(e.target.value)
+6. React re-renders the component
+React calls App() again from the top
 
+7. React enters the custom hook again
+useLocalStorage("lang", "en")
+Inside the hook during this render:
+useState returns the existing stored value → "hi"
+The initializer function does NOT run again
+useEffect is registered (but not executed yet)
 
-e.target.value becomes "hi"
+8. JSX is recalculated
+<select value={lang}>
+lang === "hi"
+Dropdown now shows Hindi as the selected option
 
-React stores "hi" in hook memory and re-renders App().
+9. React updates the UI (commit phase)
+The <select> element updates visually
+User sees Hindi selected
 
-Now lang = "hi" in JSX.
+10. useEffect runs (after UI update)
+localStorage.setItem("lang", "\"hi\"");
+Side effect runs after render is committed
+New language value is saved to localStorage
 
-<select value={lang}> shows Hindi selected.
+11. On page refresh
+useState initializer reads "hi" from localStorage
+Initial state becomes "hi"
+Dropdown remains on Hindi
 
-After render, effect saves:
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-localStorage.setItem("lang", "\"hi\"")
-
-
-Refresh page → language stays Hindi.
-
-
-
-# usefetch - 
+# 85. usefetch - 
 
 Fetching data -
 
@@ -8182,9 +8200,11 @@ Fetching data -
 
 (each component writes fetch logic itself)
 
-Users.jsx ❌ (fetch logic inside component)
 
 ```js
+
+//  Users.jsx ❌ (Fetch logic inside component.) 
+
 import { useEffect, useState } from "react";
 
 export function Users() {
@@ -8223,11 +8243,130 @@ export function Users() {
     </ul>
   );
 }
+
 ```
 
-Posts.jsx ❌ (SAME logic again)
+✅ Execution Flow
+
+
+🔵 Initial Render -
+
+State values
+data    = null
+loading = true
+error   = ""
+
+UI decision
+loading === true
+React displays:
+Loading users...
+
+
+
+🔵 Inside fetchUsers() — START PHASE
+
+Step 1: Start loading
+setLoading(true);
+setError("");
+
+What happens:
+React schedules state updates:
+loading = true
+error = ""
+These are state updates, so React prepares for a re-render
+UI does not change immediately
+
+
+
+🔵 await fetch(...) — IMPORTANT PAUSE
+
+const res = await fetch(url);
+What happens here:
+Browser starts the API call
+JavaScript engine suspends the execution of fetchUsers
+Local variables and function state are saved
+Function comes out (pauses) at this point
+
+Control is returned to:
+React
+Browser
+Event loop
+
+
+
+
+🔵 Re-render happens (because of setLoading & setError)
+
+React now re-renders the component because state updates were scheduled.
+Current state during this render
+loading = true
+error   = ""
+data    = null
+UI decision
+loading === true
+UI still displays:
+Loading users...
+(No visible change, but render DID happen)
+
+
+
+🔵 Fetch completes — function RESUMES
+
+When the API response arrives:
+const json = await res.json();
+Parsing happens
+After this line, execution becomes synchronous again
+
+🔵 Data handling phase
+Success case
+setData(json);
+React schedules:
+data = actual users data
+Error case
+setError("Something went wrong");
+React schedules:
+error = "Something went wrong"
+
+🔵 finally block — ALWAYS EXECUTES
+setLoading(false);
+Important:
+This runs whether success or failure
+React schedules:
+loading = false
+
+🔵 Final Re-render (based on updated state)
+
+React re-renders again due to:
+setData(...) or setError(...)
+setLoading(false)
+
+✅ Final UI — SUCCESS CASE
+
+Final state
+loading = false
+data    = actual users data
+error   = ""
+
+UI result
+Loading text is removed
+User list is displayed
+
+❌ Final UI — FAILURE CASE
+
+Final state
+loading = false
+data    = null
+error   = "Something went wrong"
+
+UI result
+Loading text is removed
+Error message is displayed
+
+
 
 ```js
+
+// Posts.jsx ❌ (SAME logic again)
 
 import { useEffect, useState } from "react";
 
@@ -8275,25 +8414,16 @@ export function Posts() {
 You repeated the same logic:
 
 useState for data
-
 useState for loading
-
 useState for error
-
 useEffect
-
 try / catch / finally
-
 fetch → json
-
 👉 Only the URL changed.
 
 If tomorrow:
-
 error handling changes
-
 loading logic changes
-
 ❌ You must update every component
 
 
@@ -8383,6 +8513,1436 @@ export function Posts() {
 ```
 
 
+# 86. pagination - 
+
+
+Pagination ( WITH API ) - 
+
+```js
+
+
+
+import React, { useEffect, useState } from "react";
+
+export default function SimplePagination() {
+
+  // Current page number (starts from page 1).
+
+  const [page, setPage] = useState(1);
+  
+  // Total number of pages (hardcoded for demo).
+
+  const TOTAL_PAGES = 4;   
+
+  // Number of items to show per page.
+
+  const LIMIT = 3;  
+
+  // Stores users data for the current page.
+
+  const [users, setUsers] = useState([]);   
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const res = await fetch(
+        `https://jsonplaceholder.typicode.com/users?_page=${page}&_limit=${LIMIT}`
+      );
+      const data = await res.json();
+      setUsers(data);
+    }
+
+    fetchUsers();
+  }, [page]);
+
+  return (
+    <div style={{ padding: 16 }}>
+      <h3>Simple Pagination (async/await)</h3>
+
+      <button
+        onClick={() => setPage(page - 1)}
+        disabled={page === 1}
+      >
+        Prev
+      </button>
+
+      <span style={{ margin: "0 10px" }}>
+          Page {page} of {TOTAL_PAGES}
+      </span>
+
+      <button
+        onClick={() => setPage(page + 1)}
+        disabled={page === TOTAL_PAGES}
+      >
+        Next
+      </button>
+
+      <ul>
+        {users?.map(u => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+```
+
+
+Pagination Using slice() (NO API, NO useEffect) - 
+
+
+```js
+
+import React, { useState } from "react";
+
+const USERS = [
+  { id: 1, name: "Amit" },
+  { id: 2, name: "Rahul" },
+  { id: 3, name: "Sita" },
+  { id: 4, name: "Gita" },
+  { id: 5, name: "Ramesh" },
+  { id: 6, name: "Kiran" },
+  { id: 7, name: "Neha" },
+  { id: 8, name: "Pooja" },
+  { id: 9, name: "Anil" },
+  { id: 10, name: "Sunita" }
+];
+
+export default function SimplePaginationLocal() {
+
+  const LIMIT = 3; /
+  const TOTAL_PAGES = Math.ceil(USERS.length / LIMIT);
+  const [page, setPage] = useState(1);
+
+
+  // Calculate start & end index.
+
+  const startIndex = (page - 1) * LIMIT;
+  const endIndex = startIndex + LIMIT;
+
+  // Get users for current page.
+
+  const currentUsers = USERS.slice(startIndex, endIndex);
+
+  return (
+    <div style={{ padding: 16 }}>
+      <h3>Simple Pagination (Local Data)</h3>
+
+      <button
+        onClick={() => setPage(page - 1)}
+        disabled={page === 1}
+      >
+        Prev
+      </button>
+
+      <span style={{ margin: "0 10px" }}>
+        Page {page} of {TOTAL_PAGES}
+      </span>
+
+      <button
+        onClick={() => setPage(page + 1)}
+        disabled={page === TOTAL_PAGES}
+      >
+        Next
+      </button>
+
+      <ul>
+        {currentUsers.map(u => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+```
+
+
+Core pagination formula (MEMORIZE)
+
+```js 
+
+startIndex = (page - 1) * LIMIT
+endIndex = startIndex + LIMIT
+
+```
+
+✅ Use a custom hook when:
+
+You will paginate in multiple components (Users, Posts, Products…).
+You want to reuse the same logic (page, next/prev, fetch).
+You want UI files to stay clean (component only renders UI).
+
+
+
+```js
+
+// useUsersPagination.js - custom hook 
+
+import { useEffect, useState } from "react";
+
+export function useUsersPagination(LIMIT = 3) {
+
+  const TOTAL_PAGES = 4; 
+  const [page, setPage] = useState(1);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchUsers() {
+      const res = await fetch(
+        `https://jsonplaceholder.typicode.com/users?_page=${page}&_limit=${LIMIT}`
+      );
+      const data = await res.json();
+      setUsers(data);
+    }
+
+    fetchUsers();
+  }, [page, LIMIT]);
+
+  function next() {
+    if (page < TOTAL_PAGES) setPage(page + 1);
+  }
+
+  function prev() {
+    if (page > 1) setPage(page - 1);
+  }
+
+  return { users, page, TOTAL_PAGES, next, prev };
+}
+
+```
+
+Using it in component - 
+
+```js
+
+// Component using the custom hook. 
+
+import React from "react";
+
+import { useUsersPagination } from "./useUsersPagination";
+
+export default function UsersPage() {
+  const { users, page, TOTAL_PAGES, next, prev } = useUsersPagination(3);
+
+  return (
+    <div style={{ padding: 16 }}>
+      <button onClick={prev} disabled={page === 1}>Prev</button>
+
+      <span style={{ margin: "0 10px" }}>
+        Page {page} of {TOTAL_PAGES}
+      </span>
+
+      <button onClick={next} disabled={page === TOTAL_PAGES}>Next</button>
+
+      <ul>
+        {users.map(u => (
+          <li key={u.id}>{u.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+```
+
+A custom hook extracts the logic from the component so the component can focus only on UI, while the hook handles the state and side-effects.
+
+When you move logic into a custom hook and keep the component focused on UI:
+
+👉 You are applying Data Abstraction
+👉 You are following Single Responsibility Principle (SRP)
+
+
+# 87 . Window Resizing.
+
+✅ 1️⃣ Window resize logic WITHOUT custom hook (normal way)
+
+Everything is written inside the component.
+
+```js
+
+import React, { useEffect, useState } from "react";
+
+export default function App() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    // start listening
+    window.addEventListener("resize", handleResize);
+
+    // cleanup when component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return (
+    <div>
+      <h3>Window Width</h3>
+      <p>{width}px</p>
+    </div>
+  );
+}
+
+```
+
+What's happening ?
+
+Component renders.
+width is set to current window width.
+useEffect runs once.
+Resize event updates width.
+State update → re-render → UI updates.
+
+⚠️ Problem with this approach
+
+If another component needs window size.
+You must copy-paste the same logic again ❌.
+
+
+
+✅ 2️⃣ Same logic using custom hook (recommended)
+
+```js
+
+// useWindowSize.js
+
+import { useEffect, useState } from "react";
+
+export function useWindowSize() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return width;
+}
+
+// Usage in component
+
+import { useWindowSize } from "./useWindowSize";
+
+export default function App() {
+  const width = useWindowSize();
+
+  return (
+    <div>
+      <h3>Window Width</h3>
+      <p>{width}px</p>
+    </div>
+  );
+}
+
+```
+
+The browser triggers the resize event, and when the handler updates state, React re-renders the component to show the updated width.
+
+
+# 89. Keyboard Events - 
+
+❌ Without custom hook - 👉 When user presses Escape, we log a message.
+
+```js
+
+import { useEffect } from "react";
+
+function Modal() {
+
+  useEffect(() => {
+
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        console.log("Escape pressed → Close modal");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+
+  }, []);
+
+  return <div>Press ESC</div>;
+}
+
+export default Modal;
+
+
+```
+
+❌ Attach keyboard listener ONLY after button click - without custom hook
+
+```js
+
+
+import { useEffect, useState } from "react";
+
+function Modal() {
+
+  // Track whether keyboard listening is enabled
+
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+
+    // If not enabled → do nothing
+
+    if (!enabled) return;
+
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        console.log("Escape pressed → Close modal");
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+
+  }, [enabled]);
+
+  return (
+    <div>
+      <button onClick={() => setEnabled(true)}>
+        Enable ESC Key
+      </button>
+
+      <p>Press ESC after clicking button</p>
+    </div>
+  );
+}
+
+export default Modal;
+
+
+```
+
+✅ With custom hook -
+
+```js
+
+// useEscapeKey.js 
+
+import { useEffect } from "react";
+
+function useEscapeKey() {
+  useEffect(() => {
+
+    function handleKey(e) {
+      if (e.key === "Escape") {
+        console.log("ESC pressed");
+      }
+    }
+
+    window.addEventListener("keydown", handleKey);
+
+    return () => window.removeEventListener("keydown", handleKey);
+
+  }, []);
+}
+
+export default useEscapeKey;
+
+
+
+// Component Modal using useEscape custom Hook.
+
+import useEscapeKey from "./useEscapeKey";
+
+function Modal() {
+
+  useEscapeKey();
+
+  return <div>Press ESC</div>;
+}
+
+export default Modal;
+
+
+```
+
+# 90. usePrevious hook -
+
+
+without custom hook -
+
+
+```js
+
+import { useEffect, useRef, useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const prevCountRef = useRef(); // stores previous value
+
+  useEffect(() => {
+    prevCountRef.current = count; // save current count
+  });
+
+  return (
+    <div>
+      <p>Current: {count}</p>
+      <p>Previous: {prevCountRef.current}</p>
+
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+
+export default Counter;
+
+
+```
+
+
+Using useState to store previous value  -
+
+
+```js
+
+import { useEffect, useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // ✅ previous value stored in state
+  const [prevCount, setPrevCount] = useState(undefined);
+
+  useEffect(() => {
+    // whenever count changes, store it as previous for the *next* render
+    setPrevCount(count);
+  }, [count]);
+
+  return (
+    <div>
+      <p>Current: {count}</p>
+      <p>Previous: {prevCount}</p>
+
+      <button onClick={() => setCount((c) => c + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+
+export default Counter;
+
+```
+
+
+✅ What you'll see
+
+Start: Current: 0, Previous: undefined
+
+After 1st click: Current: 1, Previous: 0
+
+After 2nd click: Current: 2, Previous: 1
+
+
+Why is state a problem for previous value?
+
+Answer: 
+
+Because updating state always triggers a re-render, even when we only want to remember a value. 
+This causes extra unnecessary renders and can hurt performance.
+
+In our case, when count changes, the component already re-renders once. 
+If we store the previous value using state inside useEffect, updating that state triggers another re-render, even though the UI does not need to change again. This causes extra unnecessary renders for every count update.
+
+
+
+
+Why is useRef suggested instead?
+
+Answer: 
+
+Because updating a ref does NOT trigger a re-render. It lets us store the previous value silently, making it the correct tool for remembering values without affecting the UI.
+
+In our case, we only need to remember the previous count before useEffect runs, not trigger another render. useRef stores the value across renders without causing a re-render, so we get the previous value correctly on the next render without any extra rendering.
+
+
+✅ Custom Hook: usePrevious
+
+```js
+
+import { useEffect, useRef } from "react";
+
+function usePrevious(value) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value; // save current value after render
+  });
+
+  return ref.current; // return previous value
+}
+
+export default usePrevious;
+
+// component using the custom hook 
+
+import { useState } from "react";
+import usePrevious from "./usePrevious";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const prevCount = usePrevious(count);
+
+  return (
+    <div>
+      <p>Current: {count}</p>
+      <p>Previous: {prevCount}</p>
+
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+
+export default Counter;
+
+/*
+
+Render:
+count = 0
+previous = undefined
+
+Click →
+Render:
+count = 1
+previous = 0
+
+Click →
+Render:
+count = 2
+previous = 1
+
+*/
+
+
+```
+
+
+
+# 91. Interval - 
+
+
+setInterval - Example: counter increases every 1 second
+
+1️⃣ Without Custom Hook.
+
+```js
+
+
+
+
+import { useEffect, useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount((c) => c + 1);
+    }, 1000);
+
+    return () => clearInterval(id); // cleanup
+  }, []);
+
+  return <div>Count: {count}</div>;
+}
+
+
+```
+
+
+Easy explanation -
+
+Component mounts → interval starts.
+Every 1 second → state updates.
+Component unmounts → interval cleared.
+
+
+
+❌ Problem (without hook)
+
+Logic sits inside component
+Repeated code in multiple components
+Component becomes noisy
+
+
+2️⃣ With Custom Hook.
+
+
+```js
+
+// Custom Hook: useCounterInterval
+
+import { useEffect, useState } from "react";
+
+function useCounterInterval(delay) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount((c) => c + 1);
+    }, delay);
+
+    return () => clearInterval(id);
+  }, [delay]);
+
+  return count;
+}
+
+export default useCounterInterval;
+
+// Component Using the Hook
+import useCounterInterval from "./useCounterInterval";
+
+function Counter() {
+  const count = useCounterInterval(1000);
+
+  return <div>Count: {count}</div>;
+}
+
+export default Counter;
+
+```
+
+
+
+
+
+# 92 . TimeOut 
+
+setTimeout - Example: message after 2 seconds
+
+1️⃣ Without Custom Hook -
+
+```js
+
+import { useEffect, useState } from "react";
+
+function Message() {
+  const [show, setShow] =  (false);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setShow(true);
+    }, 2000);
+
+    return () => clearTimeout(id); // cleanup
+  }, []);
+
+  return <div>{show ? "Hello!" : "Waiting..."}</div>;
+}
+
+export default Message;
+
+```
+
+Easy explanation -
+
+Component mounts → timeout starts.
+After 2 seconds → runs once.
+Cleanup prevents memory leaks.
+
+
+❌ Problem (without hook)
+
+Logic sits inside component.
+Repeated code in multiple components.
+Component becomes noisy.
+
+
+2️⃣ with custom hook -
+
+```js
+
+
+import { useEffect, useState } from "react";
+
+function useDelayedToggle(delay) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setShow(true);
+    }, delay);
+
+    return () => clearTimeout(id);
+  }, [delay]);
+
+  return show;
+}
+
+export default useDelayedToggle;
+
+//  Component Using the Hook
+
+import useDelayedToggle from "./useDelayedToggle";
+
+function Message() {
+  const show = useDelayedToggle(2000);
+
+  return <div>{show ? "Hello!" : "Waiting..."}</div>;
+}
+
+export default Message;
+
+
+```
+
+# 93. Handle Click outside.
+
+without custom hook - 
+
+```js
+
+
+import { useEffect, useRef, useState } from "react";
+
+function Box() {
+  const ref = useRef(null);
+  const [open, setOpen] = useState(true);
+
+  useEffect(() => {
+    const handler = (e) =>
+      ref.current && !ref.current.contains(e.target) && setOpen(false);
+
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return open ? <div ref={ref}>Box</div> : null;
+}
+
+```
+
+👉 Component renders for the first time.
+
+👉 useRef prepares a pointer for the box DOM.
+
+👉 useState(true) says "box should be visible".
+
+👉 Box is shown on the screen.
+
+👉 useEffect runs after render.
+
+👉 Click listener is added to the document.
+
+👉 User clicks anywhere on the page.
+
+👉 Click handler runs.
+
+👉 Code checks: "Does the box exist?".
+
+👉 Code checks: "Was the click outside the box?"
+
+👉 If yes → close the box.
+
+👉 State updates (open = false).
+
+👉 Component re-renders.
+
+👉 Box disappears from the UI.
+
+👉 When component unmounts → event listener is removed.
+
+
+
+
+✅ Custom Hook: useOutsideClick.
+
+```js
+
+// useOutsideClick custom hook.
+
+import { useEffect } from "react";
+
+function useOutsideClick(ref, onOutside) {
+  useEffect(() => {
+    const handler = (e) =>
+      ref.current && !ref.current.contains(e.target) && onOutside();
+
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [ref, onOutside]);
+}
+
+export default useOutsideClick;
+
+// Note - We pass a callback so the hook stays generic and reusable; otherwise the hook becomes tied to one specific UI behavior.
+
+// ✅ Component Using the Hook.
+
+import { useRef, useState } from "react";
+
+import useOutsideClick from "./useOutsideClick";
+
+function Box() {
+  const ref = useRef(null);
+  const [open, setOpen] = useState(true);
+
+  useOutsideClick(ref, () => setOpen(false));
+
+  return open ? <div ref={ref}>Box</div> : null;
+}
+
+export default Box;
+
+```
+
+✅ Custom Hook Rule for events - 
+
+The hook should NOT decide:
+
+👉 what state to change
+
+👉 what UI to close
+
+👉 what action to perform
+
+✅ In our case 
+
+The hook does NOT know:
+
+👉 what the open state represents.
+
+👉 what the ref actually refers to.
+
+👉 which UI element is being closed.
+
+👉 which state exists in the component.
+
+👉 whether it’s a modal, dropdown, tooltip, or alert.
+
+👉 Because all of this belongs to the component, not the hook.
+
+
+✅ What the hook actually knows
+
+👉 An outside click happened.
+
+👉 A ref was provided.
+
+👉 A callback was provided.
+
+
+
+Custom Hook Categories -
+
+🔴 1. Event / Listener Hook
+
+What it is: Hook only listens to an event.
+
+Hook does:
+Detects when something happens
+Calls a callback
+Hook does NOT:
+Change state
+Decide UI
+
+Rule: Hook listens, component decides
+
+Example: useOutsideClick(ref, onOutside)
+
+
+🟢 2. State / Utility Hook
+
+What it is: Hook manages state and gives a value.
+
+Hook does:
+Owns state
+Handles logic
+
+Rule: Hook gives state, component renders
+
+Example: useDelayedToggle(delay)
+
+
+
+
+# 94.  Why do we store callbacks in useRef in some custom hooks like useInterval, useEventListener?
+
+✅ Answer
+
+We store callbacks in a ref to avoid stale closures while keeping the effect stable, so we don’t re-create intervals or re-attach listeners on every render.
+
+Ref lets the long-running callback always call the latest function without re-subscribing.
+
+❌ Problem Statement - 
+
+When useEffect handles a long-running side effect like setInterval or addEventListener with an empty dependency array [], the effect runs only once after the initial render.
+
+Because of this, the callback function passed inside setInterval or addEventListener is created only once.
+If that callback uses a state variable, it takes the value from the surrounding closure at that time.
+
+Later, even though the state updates and the component re-renders, the callback keeps using the old (stale) value every time it executes.
+
+That's why the UI count keeps increasing on button clicks, but the callback still logs the old value.
+This is known as the stale closure problem.
+
+
+```js
+
+import { useEffect, useState } from "react";
+
+function Counter() {
+  
+  const [count, setCount] = useState(0);
+
+  // Callback - 
+
+  // () => {
+  //     console.log("count:", count);
+  // }
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      console.log("count:", count); // stale.
+    }, 1000);
+
+    return () => clearInterval(id);
+
+  }, []); // effect runs once.
+
+  return <button onClick={() => setCount(c => c + 1)}>+</button>;
+}
+
+export default Counter;
+
+```
+
+❌ Explanation 
+
+➡️ useEffect([]) runs only once on mount.
+
+➡️ setInterval is created once.
+
+➡️ The interval callback is defined once.
+
+➡️ That callback captures the state from that render.
+
+➡️ State updates trigger re-renders, not callback recreation.
+
+➡️ The interval keeps calling the same old function.
+
+➡️ So it keeps reading the old state value.
+
+
+✅ This is the stale closure problem.
+
+
+
+✅ Solution Explanation (Dev-friendly)
+
+Store the latest callback/state in a ref and let the interval call ref.current(), so the interval stays stable while the logic always uses fresh state.
+
+```js
+
+import { useEffect, useRef, useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  // 1. ref that will always hold the latest callback
+
+  const callbackRef = useRef(null);
+
+  // 2. update ref on every render (so it captures latest count)
+
+  callbackRef.current = () => {
+    console.log("count:", count);
+  };
+
+  // 3. set up interval once. (stable)
+
+  useEffect(() => {
+    const id = setInterval(() => {
+
+      // 4. interval calls latest callback.
+
+      callbackRef.current();
+    }, 1000);
+
+    return () => clearInterval(id);
+
+  }, []); // 5. effect runs once.
+
+  return <button onClick={() => setCount((c) => c + 1)}>+</button>;
+}
+
+export default Counter;
+
+
+
+```
+➡️ On every render, we are storing a new function reference inside callbackRef.current.
+
+➡️ Yes, on every render the new callback captures the latest count.
+
+
+👉 Result: interval stays stable ✅ + callback stays fresh ✅
+
+👉 We don't use useState because we don’t need to update the UI; we only need a place to store the latest value, and useRef is used purely for storage without causing re-renders.
+
+
+
+
+# 95.  Automatic Batching 
+
+What it means ?
+
+React groups multiple setState() calls into one render.
+
+```js
+
+setCount(c => c + 1);
+setFlag(f => !f);
+
+```
+
+Result - ✅ ONE render, not two
+
+Why it exists
+Less re-renders
+Faster UI
+
+Interview line - "React 18 batches all state updates automatically, even inside async code."
+
+
+
+# 96. Blocking vs Non-Blocking (core idea)
+
+Blocking update ❌
+setResults(bigFilter(data));
+
+
+👉 UI freezes while filtering
+
+Non-blocking update ✅
+startTransition(() => {
+  setResults(bigFilter(data));
+});
+
+
+👉 UI stays responsive
+
+This is the reason React 18 exists.
+
+
+Concurrent rendering lets React pause, resume, or drop low-priority renders so urgent UI updates (typing, clicks) stay responsive.
+
+# 97. useTransition - What it does ?
+
+
+Goal
+Typing should be instant
+Filtering a big list should not freeze UI
+
+
+❌ Without useTransition (BLOCKING UPDATES)
+
+```js
+
+import { useState } from "react";
+
+const BIG_LIST = Array.from({ length: 20000 }, (_, i) => `Item ${i}`);
+
+function filterBigList(list, query) {
+  const result = [];
+
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 0; j < 300; j++) {}  // Simulate CPU-heavy work.
+    if (list[i].includes(query)) {
+      result.push(list[i]);
+    }
+  }
+  return result;
+}
+
+export default function BlockingExample() {
+  const [text, setText] = useState("");
+  const [list, setList] = useState(BIG_LIST);
+
+  function onType(e) {
+    const value = e.target.value;
+    setText(value);          
+    setList(filterBigList(BIG_LIST, value)); 
+  }
+
+  // setText is urgent because it must show what the user types immediately—if it’s delayed, typing lags and feels broken.
+
+  // setList(...) is NOT urgent, but React treats it as urgent here because it runs during typing—so the heavy work blocks the UI and causes lag.
+
+  return (
+    <>
+      <h3>❌ Blocking update</h3>
+      <input value={text} onChange={onType} />
+      <p>Items: {list.length}</p>
+    </>
+  );
+}
+
+
+```
+
+The input field is impacted — characters appear late or get stuck because heavy filtering blocks the browser from repainting and handling keystrokes.
+
+In simple terms -
+
+❌ Typing → delayed / laggy.
+
+❌ Screen repaint → input doesn’t update instantly.
+
+❌ Event handling → browser waits until filterBigList finishes.
+
+
+❌ Problem -
+
+Initially it shows 20,000 items; the lag starts only when typing because each keypress runs a heavy synchronous filter that blocks the main thread.
+
+Browser blocks.
+
+Typing feels laggy.
+
+
+
+✅ With useTransition - (NON BLOCKING UPDATES) 
+
+
+```js
+
+import { useState, useTransition } from "react";
+
+const BIG_LIST = Array.from({ length: 20000 }, (_, i) => `Item ${i}`);
+
+function filterBigList(list, query) {
+  const result = [];
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 0; j < 300; j++) {}  // Simulate CPU-heavy work.
+    if (list[i].includes(query)) {
+      result.push(list[i]);
+    }
+  }
+  return result;
+}
+
+
+
+export default function TransitionExample() {
+  const [text, setText] = useState("");
+  const [list, setList] = useState(BIG_LIST);
+  const [isPending, startTransition] = useTransition();
+
+  function onType(e) {
+    const value = e.target.value;
+
+    setText(value); // ✅ urgent → input stays instant
+
+    startTransition(() => {
+      setList(filterBigList(BIG_LIST, value)); // ✅ low priority
+    });
+  }
+
+  return (
+    <>
+      <h3>✅ Non-blocking update (useTransition)</h3>
+
+      <input value={text} onChange={onType} />
+
+      {isPending && <p>Updating list…</p>}
+
+      <p>Items: {list.length}</p>
+    </>
+  );
+}
+
+
+```
+
+What React is doing internally ?
+
+1️⃣ Page loads → shows Items: 20000
+2️⃣ You type → text appears instantly
+3️⃣ React says "filter later" → shows Updating list…
+4️⃣ Filtering finishes → setList runs
+5️⃣ React re-renders → Items count updates correctly
+
+🔑 Key understanding -
+
+❌ useTransition does NOT make code faster.
+❌ It does NOT run on another thread.
+✅ It changes priority.
+✅ It prevents UI freezing.
+
+
+
+# 98. useDeferredValue — What it does ? When concurrency helps ? 
+
+→ Typing must be instant.
+
+→ Expensive rendering must not block UI.
+
+❌ Problem (Without useDeferredValue)
+
+→ User types into an input.
+
+→ The typed value is used to filter / render a huge list.
+
+→ Every keystroke triggers heavy re-rendering.
+
+What happens ?
+
+Key press
+
+→ state update.
+
+→ expensive render.
+
+→ browser blocked.
+
+→ typing lags.
+
+Input value and heavy UI are tied together.
+
+```js
+
+import { useState } from "react";
+
+const BIG_LIST = Array.from({ length: 20000 }, (_, i) => `Item ${i}`);
+
+function filterBigList(list, query) {
+  return list.filter(item => item.includes(query));
+}
+
+export default function BlockingExample() {
+  const [text, setText] = useState("");
+
+  const filteredList = filterBigList(BIG_LIST, text);
+
+  return (
+    <>
+      <h3>❌ Blocking render</h3>
+      <input value={text} onChange={e => setText(e.target.value)} />
+      <p>Items: {filteredList.length}</p>
+    </>
+  );
+}
+
+```
+
+
+❌ Why this blocks ?
+
+text changes
+
+React immediately re-renders
+
+filterBigList runs on every keystroke
+
+UI freezes
+
+
+
+
+✅ With useDeferredValue (NON-BLOCKING)
+
+
+Let React delay updating a derived value
+
+Input updates immediately
+
+Expensive UI uses a delayed version of the value
+
+```js
+
+import { useState, useDeferredValue } from "react";
+
+const BIG_LIST = Array.from({ length: 20000 }, (_, i) => `Item ${i}`);
+
+function filterBigList(list, query) {
+  return list.filter(item => item.includes(query));
+}
+
+export default function DeferredValueExample() {
+  const [text, setText] = useState("");
+
+  const deferredText = useDeferredValue(text);
+
+  const filteredList = filterBigList(BIG_LIST, deferredText);
+
+  return (
+    <>
+      <h3>✅ Deferred rendering</h3>
+
+      <input value={text} onChange={e => setText(e.target.value)} />
+
+      {text !== deferredText && <p>Updating list…</p>}
+
+      <p>Items: {filteredList.length}</p>
+    </>
+  );
+}
+
+```
+useDeferredValue — Process 
+
+→ At first → input and items count are shown
+
+→ When user types → React has two priorities
+
+→ High priority → input typing (must never get stuck)
+
+→ Low priority → filtering list & updating items count
+
+→ Heavy work should not block typing
+
+→ So React uses a deferred value for heavy computation
+
+→ Input updates immediately
+
+→ List update is delayed
+
+→ While text !== deferredText → show “Updating list…”
+
+→ Old count stays visible during update
+
+→ When deferred work finishes → list updates
+
+→ Now text === deferredText
+
+→ "Updating list…" disappears
+
+→ Correct items count is shown
+
+→ User experience stays smooth
 
 
 
@@ -8391,3 +9951,189 @@ export function Posts() {
 
 
 
+# 99.  Suspense basics (lazy loading) — with a condition (button)
+
+
+```js
+
+// App.jsx
+
+import React, { Suspense, lazy, useState } from "react";
+
+const Profile = lazy(() => import("./Profile"));
+
+export default function App() {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div style={{ fontFamily: "sans-serif" }}>
+      <h2>1) Suspense Basics (lazy)</h2>
+
+      <button onClick={() => setShow(true)}>
+        Load Profile
+      </button>
+
+      <hr />
+
+      <Suspense fallback={<p>Loading Profile...</p>}>
+        {show ? <Profile /> : <p>Click button to load</p>}
+      </Suspense>
+    </div>
+    );
+}
+
+
+// Profile.jsx
+
+import { useEffect } from "react";
+
+export default function Profile() {
+  useEffect(() => {
+    console.log("✅ Profile mounted (loaded and rendered)");
+  }, []);
+
+  return (
+    <div>
+      <h3>Profile Loaded ✅</h3>
+      <p>Check console to confirm load.</p>
+    </div>
+  );
+}
+
+```
+
+Explanation -
+
+Before click → <Profile /> is not rendered → not downloaded
+Click → React tries to render <Profile />
+Since it’s lazy → it downloads → fallback shows
+After download → Profile mounts → console logs
+
+Interview Qs -
+
+Q: When does a lazy component load?
+A: When React first tries to render it.
+
+Q: What does Suspense do?
+A: Shows fallback until lazy module is ready.
+
+# 100. When concurrency hurts ? In React 18 concurrency, when does useTransition hurt UX? Explain with code and why it happens.
+
+
+Concurrency is for making heavy / non-critical updates interruptible.
+
+useTransition hurts when you wrap urgent UI updates (like typing, clicking, scrolling) inside startTransition.
+Because transition updates are low priority, React may delay them during heavy renders, making the UI feel laggy (input text appears late).
+
+```js
+import React, { useMemo, useState, useTransition } from "react";
+
+const BIG_LIST = Array.from({ length: 25000 }, (_, i) => `Item ${i}`);
+
+function slowFilter(list, query) {
+  // simulate heavy CPU work
+  const res = [];
+  for (let i = 0; i < list.length; i++) {
+    for (let j = 0; j < 300; j++) {} // burn CPU
+    if (list[i].toLowerCase().includes(query.toLowerCase())) {
+      res.push(list[i]);
+    }
+  }
+  return res;
+}
+
+export default function App() {
+  const [text, setText] = useState("");
+  const [, startTransition] = useTransition();
+
+  // ✅ heavy render work depends on text
+  const filtered = useMemo(() => slowFilter(BIG_LIST, text), [text]);
+
+  function onType(e) {
+    const value = e.target.value;
+
+    // ❌ BAD: typing is urgent, but we made it non-urgent
+
+    startTransition(() => {
+      setText(value);
+    });
+  }
+
+  return (
+    <div style={{ fontFamily: "sans-serif" }}>
+      <h2>When concurrency hurts (BAD)</h2>
+
+      {/* Controlled input: it shows React state */}
+
+      <input value={text} onChange={onType} placeholder="Type fast..." />
+
+      <p>Results: {filtered.length}</p>
+
+      <ul>
+        {filtered.slice(0, 10).map((x) => (
+          <li key={x}>{x}</li>
+        ))}
+      </ul>
+
+      <p>Typing may feel delayed ❌</p>
+    </div>
+  );
+}
+
+
+```
+
+This code hurts UX because it wraps urgent input state (setText) inside startTransition, allowing React to delay the update during heavy rendering, which makes controlled input typing feel laggy.
+
+
+# 101. priority updates -
+
+Priority updates in React 18 allow React to differentiate between urgent and non-urgent state updates. User interactions like typing or clicking are treated as high priority, while expensive rendering work can be deferred so the UI stays responsive. React achieves this using concurrent rendering, and developers can explicitly mark non-urgent updates using APIs like useTransition.
+
+
+# 102. priority updates vs Progressive Rendering  
+
+
+1️⃣ Priority Updates = WHEN ( Priority updates decide when React renders.)
+
+Think like this - "Should this happen NOW or LATER?"
+
+Example -
+
+You are typing in a search box.
+Typing → must update NOW
+Filtering 10,000 items → can update LATER
+
+
+So React says:
+Typing → do it NOW
+Heavy work → wait
+
+
+This decision is Priority Updates. It decides when React runs an update.
+
+
+
+
+2️⃣ Progressive Rendering = WHAT ( Progressive rendering decides WHAT React renders first.)
+
+Think like this  "What can I show the user RIGHT NOW?"
+
+
+Example -
+
+A page has:
+Header
+Profile
+Posts (slow API)
+
+React says:
+
+Show Header now
+Show Profile loader now
+Show Posts later
+
+
+✅ This decision is Progressive Rendering.
+
+👉 It decides WHAT React shows first
