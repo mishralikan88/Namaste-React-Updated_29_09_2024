@@ -10136,4 +10136,5 @@ Show Posts later
 
 ✅ This decision is Progressive Rendering.
 
-👉 It decides WHAT React shows first
+👉 It decides WHAT React shows first.
+

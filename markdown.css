@@ -1,0 +1,22 @@
+/* Main section */
+h1 {
+  color: #FFD700;   /* Gold */
+  font-weight: bold;
+}
+
+/* Sub-sections */
+h2 {
+  color: #FF9F1C;   /* Orange */
+  font-weight: bold;
+}
+
+/* Smaller headings */
+h3 {
+  color: #6BCB77;   /* Green */
+}
+
+/* Optional: improve readability */
+body {
+  font-family: Consolas, monospace;
+  line-height: 1.6;
+}
