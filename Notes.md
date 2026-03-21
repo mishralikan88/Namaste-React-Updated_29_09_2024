@@ -11533,6 +11533,7 @@ export function Users() {
     </ul>
   );
 }
+
 ```
 
 Posts.jsx ❌ (SAME logic again)
@@ -11644,6 +11645,7 @@ export function useFetch(url) {
 
   return { data, loading, error };
 }
+
 ```
 
 Users.jsx ✅ (clean & simple)

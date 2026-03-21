@@ -5558,7 +5558,7 @@ A component re-renders whenever React detects a change in state, props, context,
 
 # 57. Parent re-renders, child re-renders too. How do I stop child re-render ?
 
-Wrap the child with React.memo and keep props stable using useCallback and useMemo so references don’t change.
+Wrap the child with React.memo and keep props stable using useCallback and useMemo so references don't change.
 
 ```js 
 
@@ -8611,9 +8611,10 @@ const USERS = [
 
 export default function SimplePaginationLocal() {
 
-  const LIMIT = 3; /
-  const TOTAL_PAGES = Math.ceil(USERS.length / LIMIT);
-  const [page, setPage] = useState(1);
+  
+  const [page, setPage] = useState(1); // page index 
+  const LIMIT = 3;  // items per page
+  const TOTAL_PAGES = Math.ceil(USERS.length / LIMIT); // Total pages
 
 
   // Calculate start & end index.
