@@ -10,8 +10,7 @@ Client–Server = separation of responsibility.
 
 ![alt text](image-7.png)
 
-
-Answer - 
+Answer -
 
 The client–server model separates concerns: the client handles user interaction, and the server handles business logic & data.
 
@@ -30,7 +29,6 @@ Add more servers when users grow
 
 Because servers can be scaled independently to handle more users.
 
-
 2. Allows independent development - Client and server can be built and changed separately.
 
 Simple explanation:
@@ -42,7 +40,6 @@ Backend team works on APIs
 They communicate via contracts (APIs)
 
 Interview line: Client and server teams can work independently without blocking each other.
-
 
 3. Keeps clients lightweight
 
@@ -56,32 +53,24 @@ Server handles logic, data, security
 
 Interview line: "Clients remain simple while servers handle complex processing."
 
-
-####  Counter-Question: Can a database be a client?
+#### Counter-Question: Can a database be a client?
 
 "No. A database is a server-side component that responds to requests."
-
 
 ❌ Common mistake — Saying client = frontend only.
 ✅ Correct — Client = any request initiator.
 
-
-
 ## 2.2 END-TO-END REQUEST–RESPONSE LIFECYCLE (VERY IMPORTANT)
-
 
 ![alt text](image-4.png)
 
-
 ![alt text](image-5.png)
-
 
 ![alt text](image-6.png)
 
-
 ### Interview Question — Explain a web request end to end.
 
-Answer - 
+Answer -
 
 User performs an action (click, submit)
 
@@ -101,14 +90,11 @@ Server sends HTTP response with status code
 
 Client renders the response
 
-
 One-line version - A user action triggers an HTTP request that flows through backend logic and data layers and returns a response to the client.
 
 #### Counter-Question: Where does authentication happen?
 
 "At the backend, usually before business logic execution."
-
-
 
 ## 2.3 STATELESS VS STATEFUL SYSTEMS
 
@@ -122,13 +108,9 @@ Every request looks like a new request.
 
 Server forgets the user after responding.
 
-So if the server needs to: 
-    - Know who the user is
-    - Remember what they did earlier 
-    - Maintain ongoing interactions
+So if the server needs to: - Know who the user is - Remember what they did earlier - Maintain ongoing interactions
 
 👉 It needs session data.
-
 
 ### What kind of things are stored in session data?
 
@@ -138,7 +120,6 @@ User login status.
 Shopping cart contents.
 User preferences (temporary).
 Permissions for the session.
-
 
 Concrete example -
 
@@ -153,7 +134,6 @@ With session data ✅
 User logs in.
 Server stores session ID + data.
 Next requests → server recognizes the user.
-
 
 ### Interview Question — What is a stateless system?
 
@@ -180,7 +160,6 @@ Forgets client after responding.
 
 Example - REST APIs are stateless because each request contains all the information needed.
 
-
 ### Interview Question — What is a stateful system?
 
 Answer - "A stateful system stores client state on the server across requests."
@@ -188,7 +167,6 @@ Answer - "A stateful system stores client state on the server across requests."
 Stateful characteristics.
 
 Session stored on server.
-
 
 ### Why are stateful systems harder to scale?
 
@@ -200,8 +178,6 @@ That data lives on one server.
 
 👉 The client now depends on that server.
 
-
-
 1️⃣ User growth problem (scaling storage)
 
 What happens when users grow ?
@@ -211,8 +187,6 @@ One server cannot store all session data.
 Memory and storage become a bottleneck.
 
 So we try to: 👉 Add new servers to handle more users.
-
-
 
 2️⃣ State sharing problem (core issue)
 
@@ -229,7 +203,6 @@ To fix this, we must: Share session data between servers.
 Use a central session store (Redis / DB)
 
 This adds: Extra network calls, Latency, Complexity
-
 
 3️⃣ Load balancer limitation (your exact point)
 
@@ -251,15 +224,13 @@ Harder failover - When one server fails, it is difficult to move users to anothe
 
 👉 This is why stateful systems don't scale smoothly.
 
-
 4️⃣ Single Point of Failure (SPOF)
 
 If session data lives on one server, Server crashes → session data lost → Users are logged out → In-progress actions break (cart, checkout)
 
 Even with shared storage: Central session store can also become SPOF → Needs replication, backups, monitoring → More complexity again.
 
-
-Example -  Shopping Cart Stored on Server
+Example - Shopping Cart Stored on Server
 
 ### Why is this stateful?
 
@@ -273,14 +244,9 @@ Example - User adds items → cart is saved on the server → retrieved on next 
 
 Interview line - "Shopping carts stored on the server are a common example of stateful systems."
 
-
-
 #### Counter-Question: Which is better? stateless or stateful.
 
 "Stateless systems scale better; stateful systems are simpler but limit scalability."
-
-
-
 
 ## 2.4 SYNCHRONOUS VS ASYNCHRONOUS COMMUNICATION
 
@@ -290,13 +256,11 @@ Answer - "Synchronous communication means the client waits until the server resp
 
 Examples: Login , Fetch user profile , Checkout confirmation
 
-
 ### Interview Question — What is asynchronous communication?
-
 
 Answer — "Asynchronous communication allows the client to continue without waiting for the task to finish."
 
-1. Email sending - 
+1. Email sending -
 
 What happens
 User clicks "Sign up"
@@ -313,7 +277,6 @@ User should not wait for email to be sent
 
 One-liner - "Email sending is async because it’s slow and not required for immediate user response."
 
-
 2. Notifications
 
 What happens
@@ -326,7 +289,6 @@ User action is already completed.
 
 👉 Notification is not blocking the main flow.
 One-liner - "Notifications are async because they are secondary actions and should not block user flow."
-
 
 3. File processing
 
@@ -344,15 +306,10 @@ One-liner - "File processing is async because it is time-consuming and should no
 
 #### Counter-Question: Why use async?
 
-
 "To avoid blocking users for long-running tasks and improve system responsiveness."
-
 
 ❌ Common mistake — Making everything async
 ✅ Correct — Use async only where immediate response is not required.
-
-
-
 
 ## 2.5 REST API BASICS (ARCHITECT LEVEL)
 
@@ -362,12 +319,12 @@ Answer —"REST is an architectural style where systems communicate using standa
 
 HTTP METHODS (ONLY THESE MATTER)
 
-GET	    →  Read data
-POST    →  Create data
-PUT 	→  Update data
-DELETE  →  Remove data
+GET → Read data
+POST → Create data
+PUT → Update data
+DELETE → Remove data
 
-REQUEST / RESPONSE BASICS - 
+REQUEST / RESPONSE BASICS -
 
 Request contains:
 Method
@@ -381,21 +338,19 @@ Body
 
 STATUS CODES (BASIC AWARENESS)
 
-200	Success
-201	Created
-400	Bad request
-401	Unauthorized
-403	Forbidden
-404	Not found
-500	Server error
+200 Success
+201 Created
+400 Bad request
+401 Unauthorized
+403 Forbidden
+404 Not found
+500 Server error
 
-
-####  Counter-Question: Do architects need to memorize all codes?
+#### Counter-Question: Do architects need to memorize all codes?
 
 "No. Architects need awareness, not memorization."
 
-
-✅ SECTION 2 — CHECKPOINT (Memorize this) 
+✅ SECTION 2 — CHECKPOINT (Memorize this)
 
 "A client sends an HTTP request triggered by user action.
 
