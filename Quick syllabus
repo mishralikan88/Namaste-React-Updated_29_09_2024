@@ -1,0 +1,81 @@
+
+Tier 1 — Must Master (Highest Priority) 🔥
+
+These are used almost every day in real React projects.
+
+Phase 3 – Components
+Functional Components
+Props
+Component Composition
+Children
+Function as Prop
+Phase 4 – State Management ✅ (You are here)
+useState
+Functional Updates
+State Batching
+Parent ↔ Child Communication
+Lifting State Up
+Local vs Shared vs Global State
+Phase 5 – React Rendering
+Re-render
+Render Triggers
+Virtual DOM
+Reconciliation
+Render vs Commit
+Phase 6 – Hooks Mastery
+useEffect
+useRef
+useMemo
+useCallback
+useReducer
+Phase 10 – Routing
+Routes
+Nested Routes
+useNavigate
+Protected Routes
+Phase 11 – Data Fetching
+Fetch API
+Loading/Error States
+AbortController
+Pagination
+Phase 12 – Context API
+useContext
+Context Architecture
+Context Performance
+Phase 13 – Redux Toolkit
+createSlice
+createAsyncThunk
+RTK Query
+
+These 8 phases alone cover 80–90% of real-world React development.
+
+Tier 2 — Important for Senior Level ⭐
+Phase 15 – Performance Optimization
+React.memo
+useMemo
+useCallback
+Code Splitting
+Profiler
+Phase 17 – Error Handling
+Error Boundaries
+Async Errors
+Phase 18 – Portals & Refs
+useRef
+forwardRef
+Portals
+Phase 19 – Testing
+Jest
+React Testing Library
+
+Most React interviews for 5–10 years experience heavily focus on these topics.
+
+Tier 3 — Staff Engineer Level 🚀
+Phase 20 – React Internals
+Phase 21 – Reconciliation Internals
+Phase 22 – Concurrent React
+Phase 23 – Suspense Internals
+Phase 24 – SSR & Hydration
+Phase 25 – React Server Components
+Phase 26 – React 19
+
+These are what separate a Senior from a Staff/Principal Engineer.
