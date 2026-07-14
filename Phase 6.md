@@ -12178,6 +12178,3887 @@ Updated After Every Render
 
 🔥 Once you understand these two worlds, you'll understand almost everything in React Hooks.
 
+# >>>>>>>>
+
+
+6.22 – Infinite Loops
+🤔 Let's Start With A Question
+
+Look at this code.
+
+function App() {
+
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+
+        setCount(count + 1);
+
+    });
+
+    return <h1>{count}</h1>;
+
+}
+
+Question.
+
+What happens?
+
+Will it stop at
+
+1
+
+or
+
+2
+
+or
+
+100
+
+The answer is...
+
+It never stops.
+
+This is called an Infinite Loop.
+
+Why Does It Happen?
+
+Let's follow React's thinking.
+
+Render 1
+count = 0
+        ↓
+Render Phase
+        ↓
+Commit Phase
+        ↓
+useEffect Runs
+
+Inside the effect
+
+setCount(1);
+
+Question.
+
+What does setCount() do?
+
+It schedules another render.
+
+Render 2
+count = 1
+        ↓
+Render Phase
+        ↓
+Commit Phase
+        ↓
+useEffect Runs Again
+
+Again
+
+setCount(2);
+
+Another render.
+
+Render 3
+count = 2
+        ↓
+Effect Runs
+        ↓
+setCount(3)
+
+Again.
+
+Complete Flow
+Render
+      ↓
+useEffect
+      ↓
+setState()
+      ↓
+Render
+      ↓
+useEffect
+      ↓
+setState()
+      ↓
+Render
+      ↓
+...
+
+It never ends.
+
+The Real Reason
+
+Notice something.
+
+The problem is not useEffect.
+
+The problem is
+
+Effect
+        ↓
+Updates State
+        ↓
+State Causes Render
+        ↓
+Render Runs Effect Again
+
+The effect keeps triggering itself.
+
+Easy Rule
+
+An infinite loop happens when
+
+Effect
+        ↓
+Changes A Dependency
+        ↓
+Dependency Causes Re-render
+        ↓
+Effect Runs Again
+
+It's a circle.
+
+Visualize It
+useEffect
+      ↓
+setState()
+      ↓
+Re-render
+      ↓
+useEffect
+      ↓
+setState()
+      ↓
+Re-render
+      ↓
+...
+
+React is trapped in a cycle.
+
+Example 1 — No Dependency Array
+useEffect(() => {
+
+    setCount(count + 1);
+
+});
+
+No dependency array means
+
+Every Render
+        ↓
+Run Effect
+
+Effect updates state.
+
+State causes render.
+
+Loop.
+
+Example 2 — Wrong Dependency
+useEffect(() => {
+
+    setCount(count + 1);
+
+}, [count]);
+
+Question.
+
+What is React watching?
+
+count
+
+Inside the effect,
+
+you change
+
+count
+
+React compares
+
+Previous Count
+
+↓
+
+Current Count
+
+↓
+
+Changed
+
+↓
+
+Run Effect Again
+
+Loop again.
+
+Why Doesn't [] Cause A Loop?
+useEffect(() => {
+
+    setCount(count + 1);
+
+}, []);
+
+Timeline
+
+First Render
+      ↓
+Effect Runs
+      ↓
+setState()
+      ↓
+Second Render
+      ↓
+Dependencies Checked
+      ↓
+Nothing Changed
+      ↓
+Skip Effect
+
+Only one extra render.
+
+No loop.
+
+Internal Working
+
+React does something like
+
+Commit Phase
+      ↓
+Run Effect
+      ↓
+Did Effect Call setState?
+      ↓
+Yes
+      ↓
+Schedule Render
+      ↓
+Render Finished
+      ↓
+Check Dependencies
+      ↓
+Should Effect Run?
+
+If the answer is always Yes,
+
+React keeps repeating the cycle.
+
+How To Prevent Infinite Loops
+
+Ask one question.
+
+Does This Effect
+Change One Of Its Own Dependencies?
+
+If
+
+YES
+
+be careful.
+
+You may create a loop.
+
+Mental Model
+Effect
+      ↓
+Updates State
+      ↓
+State Changes Dependency
+      ↓
+Dependency Triggers Effect
+      ↓
+Repeat
+Senior Engineer Thinking
+
+A beginner says
+
+"useEffect caused an infinite loop."
+
+A senior says
+
+"The effect updated state, which triggered another render. Since the effect's dependencies changed, React executed the effect again, creating a render-effect cycle."
+
+Notice.
+
+React isn't broken.
+
+The dependency cycle is.
+
+Common Mistakes
+
+❌
+
+useEffect(() => {
+
+    setCount(count + 1);
+
+});
+
+Runs after every render.
+
+❌
+
+useEffect(() => {
+
+    setCount(count + 1);
+
+}, [count]);
+
+Effect changes the same dependency it watches.
+
+🎯 Interview Questions
+What causes an infinite loop in useEffect?
+
+An infinite loop occurs when an effect updates state, causing a re-render, and the effect runs again because its dependencies changed.
+
+Why doesn't [] create an infinite loop?
+
+Because the effect runs only on the initial render. After the second render, React compares the empty dependency list and skips the effect.
+
+Can setState() inside useEffect cause an infinite loop?
+
+Yes, if that state update changes a dependency that causes the same effect to run again.
+
+📝 Revision Card
+INFINITE LOOP
+
+Effect
+      ↓
+setState()
+      ↓
+Re-render
+      ↓
+Dependencies Changed
+      ↓
+Run Effect Again
+      ↓
+Repeat
+
+=========================
+
+Rule
+
+Does The Effect
+Update One Of
+Its Own Dependencies?
+
+↓
+
+YES
+
+↓
+
+Possible Infinite Loop
+
+
+# >>>>>>>>>>>>
+
+
+🤔 What Problem Is React Trying To Solve?
+
+Imagine you have a search box.
+
+Every time the user types,
+
+you call an API.
+
+A
+ ↓
+API Call
+
+Am
+ ↓
+API Call
+
+Ama
+ ↓
+API Call
+
+Amar
+ ↓
+API Call
+
+Question.
+
+Which result should the user see?
+
+Obviously,
+
+Amar
+
+because that's the latest search.
+
+The Problem
+
+Suppose this happens.
+
+Search "A"
+        ↓
+API Request 1
+
+---------------------
+
+Search "Amar"
+        ↓
+API Request 2
+
+Now imagine the network.
+
+Request 1
+        ↓
+Slow
+
+Request 2
+        ↓
+Fast
+
+Timeline
+
+Search "A"
+        ↓
+Request 1 Sent
+
+Search "Amar"
+        ↓
+Request 2 Sent
+
+↓
+
+Request 2 Finishes ✅
+
+↓
+
+UI Shows "Amar"
+
+↓
+
+Request 1 Finishes ❌
+
+↓
+
+UI Shows "A"
+
+Question.
+
+Is the UI correct?
+
+❌ No.
+
+The user searched
+
+Amar
+
+but now sees
+
+A
+Why Is This Called A Race Condition?
+
+Think of two runners.
+
+Runner 1
+
+Runner 2
+
+Both start running.
+
+Question.
+
+Who will reach first?
+
+You don't know.
+
+They are racing.
+
+Similarly,
+
+API Request 1
+
+API Request 2
+
+are racing to finish.
+
+The one that finishes last is not necessarily the newest request.
+
+Real-Life Example
+
+Suppose you order food.
+
+12:00 PM
+
+Pizza 🍕
+
+↓
+
+12:01 PM
+
+Burger 🍔
+
+The restaurant understands
+
+your latest choice is
+
+Burger
+
+Now imagine
+
+Burger arrives first ✅
+
+↓
+
+You start eating
+
+↓
+
+10 minutes later
+
+Pizza arrives
+
+↓
+
+Waiter throws away your burger
+
+↓
+
+Gives you pizza ❌
+
+Would that make sense?
+
+No.
+
+The latest order should win.
+
+React has the same problem with API requests.
+
+React Example
+useEffect(() => {
+
+    fetch(`/users?search=${search}`)
+        .then(res => res.json())
+        .then(data => {
+
+            setUsers(data);
+
+        });
+
+}, [search]);
+
+Question.
+
+Suppose
+
+search = "A"
+
+API starts.
+
+Before it finishes,
+
+user types
+
+search = "Amar"
+
+Another API starts.
+
+Now two requests are running.
+
+Request 1
+
+↓
+
+Request 2
+
+React cannot control
+
+which one finishes first.
+
+Why Does This Happen?
+
+Because
+
+JavaScript
+
+↓
+
+Starts Request
+
+↓
+
+Continues Running
+
+It doesn't wait.
+
+Multiple requests can be active at the same time.
+
+Internal Working
+
+Timeline
+
+Render 1
+        ↓
+Effect Runs
+        ↓
+Request 1 Starts
+
+==================
+
+Render 2
+        ↓
+Effect Runs
+        ↓
+Request 2 Starts
+
+==================
+
+Request 2 Finishes
+        ↓
+setState()
+
+==================
+
+Request 1 Finishes
+        ↓
+setState() ❌
+
+The older request updates the UI after the newer one.
+
+That's the bug.
+
+How Do We Solve It?
+
+Simple rule.
+
+Old Request
+
+↓
+
+Ignore It
+
+OR
+
+Cancel It
+
+We'll usually do this by:
+
+Cleanup Function
+AbortController
+
+We'll learn the implementation when we build API projects.
+
+Right now, understand the problem.
+
+Mental Model
+Request 1
+      ↓
+Slow
+
+Request 2
+      ↓
+Fast
+
+↓
+
+Request 2 Updates UI ✅
+
+↓
+
+Request 1 Updates UI ❌
+
+↓
+
+Wrong Data Displayed
+Easy Rule
+
+A Race Condition happens when
+
+Multiple Async Tasks
+        ↓
+Finish In An Unexpected Order
+        ↓
+Old Result Replaces New Result
+Senior Engineer Thinking
+
+A beginner says
+
+"My API returned the wrong data."
+
+A senior says
+
+"Multiple asynchronous requests were active at the same time. An older request finished after a newer request and updated the state with stale data."
+
+Notice.
+
+React isn't causing the problem.
+
+The asynchronous requests are.
+
+🎯 Interview Questions
+What is a Race Condition?
+
+A race condition happens when multiple asynchronous operations are running at the same time, and an older operation finishes after a newer one, causing outdated data to be displayed.
+
+Does React create race conditions?
+
+No.
+
+React only runs the effects.
+
+The race condition happens because asynchronous tasks (like API calls) finish in an unpredictable order.
+
+How do we prevent race conditions?
+Ignore outdated responses.
+Or cancel old requests using cleanup (for example, with AbortController).
+📝 Revision Card
+RACE CONDITION
+
+Request 1
+      ↓
+Slow
+
+Request 2
+      ↓
+Fast
+
+↓
+
+Request 2 Updates UI ✅
+
+↓
+
+Request 1 Updates UI ❌
+
+=========================
+
+Rule
+
+Latest Request
+
+↓
+
+Should Update UI
+
+Older Request
+
+↓
+
+Ignore Or Cancel
+
+
+
+# 📖 Phase 6 – React Hooks Mastery
+
+# 🟢 Chapter 3 – useEffect
+
+# 6.23 – Race Conditions
+
+---
+
+# 🤔 What Problem Is React Trying To Solve?
+
+Imagine we have a search box.
+
+The user types very fast.
+
+```text
+A
+
+↓
+
+Amar
+```
+
+Every time the search changes,
+
+React sends an API request.
+
+```text
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+-------------------------
+
+Search = "Amar"
+
+↓
+
+Request 2 Starts
+```
+
+Now both requests are running together.
+
+Suppose the network behaves like this.
+
+```text
+Request 1 Starts
+(Search = "A")
+
+↓
+
+Request 2 Starts
+(Search = "Amar")
+
+↓
+
+Request 2 Finishes First ✅
+
+↓
+
+UI Shows "Amar" Search Results ✅
+
+↓
+
+Request 1 Finishes Later ❌
+
+↓
+
+UI Shows "A" Search Results ❌
+```
+
+Question.
+
+Is this correct?
+
+❌ No.
+
+The user's latest search is
+
+```text
+Amar
+```
+
+but the UI is showing
+
+```text
+"A" Search Results
+```
+
+This problem is called a **Race Condition**.
+
+---
+
+# Easy Meaning
+
+A Race Condition happens when
+
+```text
+Old Request
+
+↓
+
+New Request
+
+↓
+
+New Request Updates UI
+
+↓
+
+Old Request Finishes Later
+
+↓
+
+Old Search Results Replace Latest Search Results
+
+↓
+
+Wrong UI ❌
+```
+
+---
+
+# ⭐ When Does It Happen?
+
+It **does NOT happen every time.**
+
+It only happens when **multiple requests are running together.**
+
+---
+
+## Case 1 – User Types Slowly ✅
+
+User types
+
+```text
+A
+```
+
+React sends Request 1.
+
+```text
+Request 1 Starts
+
+↓
+
+Request 1 Finishes ✅
+
+↓
+
+UI Shows "A" Search Results
+```
+
+Now the user types
+
+```text
+Amar
+```
+
+React sends Request 2.
+
+```text
+Request 2 Starts
+
+↓
+
+Request 2 Finishes ✅
+
+↓
+
+UI Shows "Amar" Search Results
+```
+
+Question.
+
+Did both requests run together?
+
+❌ No.
+
+Only one request was running.
+
+So there is **no Race Condition.**
+
+---
+
+## Case 2 – User Types Fast ❌
+
+User types
+
+```text
+A
+
+↓
+
+Amar
+```
+
+React sends two requests.
+
+```text
+Request 1 Starts
+
+↓
+
+Request 2 Starts
+```
+
+Now both requests are running together.
+
+If Request 1 finishes later,
+
+it can replace the latest search results.
+
+Now we have a **Race Condition.**
+
+---
+
+# Easy Rule
+
+```text
+One Active Request
+
+↓
+
+Safe ✅
+
+=====================
+
+Multiple Active Requests
+
+↓
+
+Possible Race Condition ⚠️
+```
+
+---
+
+# 💻 Problem Code
+
+```jsx
+import { useEffect, useState } from "react";
+
+function SearchUsers({ search }) {
+
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+
+        async function getUsers() {
+
+            const response = await fetch(
+                `/users?search=${search}`
+            );
+
+            const data = await response.json();
+
+            setUsers(data);
+
+        }
+
+        getUsers();
+
+    }, [search]);
+
+    return (
+        <div>
+            {users.length} Users
+        </div>
+    );
+
+}
+```
+
+---
+
+# 🔍 Code Explanation
+
+### Step 1
+
+```jsx
+useEffect(() => {
+
+}, [search]);
+```
+
+Whenever
+
+```text
+search
+```
+
+changes,
+
+React runs this effect again.
+
+---
+
+### Step 2
+
+```jsx
+async function getUsers()
+```
+
+Create a function to call the API.
+
+---
+
+### Step 3
+
+```jsx
+await fetch(...)
+```
+
+Send the request.
+
+---
+
+### Step 4
+
+```jsx
+await response.json()
+```
+
+Convert the response into JavaScript data.
+
+---
+
+### Step 5
+
+```jsx
+setUsers(data)
+```
+
+Update the UI.
+
+Looks correct...
+
+But there is one problem.
+
+If another request is already running,
+
+both requests can call
+
+```jsx
+setUsers()
+```
+
+Whichever finishes last wins.
+
+That creates the Race Condition.
+
+---
+
+# ⚙️ Internal Working
+
+```text
+Search = "A"
+
+↓
+
+Effect Runs
+
+↓
+
+Request 1 Starts
+
+======================
+
+Search Changes
+
+↓
+
+Effect Runs Again
+
+↓
+
+Request 2 Starts
+
+======================
+
+Both Requests Are Running
+
+↓
+
+Request 2 Finishes
+
+↓
+
+UI Shows "Amar" Search Results
+
+↓
+
+Request 1 Finishes Later
+
+↓
+
+UI Shows "A" Search Results ❌
+```
+
+---
+
+# ✅ Solution 1 – Ignore The Old Response
+
+## Idea
+
+Don't stop the old request.
+
+Let it finish.
+
+Just don't allow it to update the UI.
+
+---
+
+# 💻 Full Code
+
+```jsx
+import { useEffect, useState } from "react";
+
+function SearchUsers({ search }) {
+
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+
+        let ignore = false;
+
+        async function getUsers() {
+
+            const response = await fetch(
+                `/users?search=${search}`
+            );
+
+            const data = await response.json();
+
+            if (!ignore) {
+
+                setUsers(data);
+
+            }
+
+        }
+
+        getUsers();
+
+        return () => {
+
+            ignore = true;
+
+        };
+
+    }, [search]);
+
+    return (
+        <div>
+            {users.length} Users
+        </div>
+    );
+
+}
+```
+
+---
+
+# 🔍 Code Explanation
+
+### Step 1
+
+```jsx
+let ignore = false;
+```
+
+Initially,
+
+this request is valid.
+
+```text
+ignore = false
+
+↓
+
+Allow UI Update
+```
+
+---
+
+### Step 2
+
+```jsx
+await fetch(...)
+```
+
+Start the API request.
+
+---
+
+### Step 3
+
+Before this request finishes,
+
+the user searches again.
+
+React runs cleanup.
+
+```jsx
+return () => {
+
+    ignore = true;
+
+}
+```
+
+Now this request becomes
+
+```text
+Old Request
+```
+
+---
+
+### Step 4
+
+React starts another effect.
+
+```text
+New Search
+
+↓
+
+New Request Starts
+
+↓
+
+New ignore = false
+```
+
+---
+
+### Step 5
+
+Request 2 finishes first.
+
+React checks
+
+```jsx
+if (!ignore)
+```
+
+```text
+ignore = false
+
+↓
+
+Update UI ✅
+```
+
+---
+
+### Step 6
+
+Later,
+
+Request 1 finishes.
+
+Again React checks
+
+```jsx
+if (!ignore)
+```
+
+Now
+
+```text
+ignore = true
+
+↓
+
+Skip setUsers()
+
+↓
+
+Ignore Old Search Results ✅
+```
+
+---
+
+# ⚙️ Internal Working
+
+```text
+Request 1 Starts
+
+↓
+
+User Searches Again
+
+↓
+
+Cleanup Runs
+
+↓
+
+ignore = true
+
+↓
+
+Request 2 Starts
+
+↓
+
+Request 2 Finishes
+
+↓
+
+UI Shows "Amar" Search Results ✅
+
+↓
+
+Request 1 Finishes
+
+↓
+
+ignore = true
+
+↓
+
+Skip setUsers()
+
+↓
+
+Old Search Results Ignored ✅
+```
+
+---
+
+# 🧠 Mental Model
+
+```text
+Old Request
+
+↓
+
+Still Finishes
+
+↓
+
+React Checks ignore
+
+↓
+
+ignore = true
+
+↓
+
+Don't Update UI
+```
+
+
+
+Case 2 -
+
+
+Step 1 — Problem Code
+useEffect(() => {
+
+    async function getUsers() {
+
+        const response = await fetch(
+            `/users?search=${search}`
+        );
+
+        const data = await response.json();
+
+        setUsers(data);
+
+    }
+
+    getUsers();
+
+}, [search]);
+
+Suppose
+
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+Before it finishes,
+
+the user types
+
+Search = "Amar"
+
+↓
+
+Request 2 Starts
+
+Now
+
+Request 1
+
+AND
+
+Request 2
+
+are both running.
+
+We already know this creates a Race Condition.
+
+Step 2 — What Do We Want?
+
+Instead of letting Request 1 continue,
+
+we want to stop it.
+
+Something like
+
+Request 1 Starts
+
+↓
+
+Search Changes
+
+↓
+
+STOP Request 1 ❌
+
+↓
+
+Start Request 2
+
+Question.
+
+How can JavaScript stop a fetch request?
+
+Answer:
+
+AbortController
+Step 3 — Creating an AbortController
+const controller = new AbortController();
+
+Think of it like a remote control.
+
+TV
+
+↓
+
+Remote
+
+The remote controls the TV.
+
+Similarly,
+
+Fetch Request
+
+↓
+
+AbortController
+
+The controller controls the request.
+
+Step 4 — Connect the Controller
+fetch(url, {
+
+    signal: controller.signal
+
+});
+
+Question.
+
+Why are we passing
+
+controller.signal
+
+?
+
+Because we're telling fetch:
+
+"This request belongs to this controller."
+
+Think of it like
+
+Controller
+
+↓
+
+Request 1
+
+Now the controller knows which request to stop.
+
+Step 5 — User Searches Again
+Search = "Amar"
+
+Dependency changes.
+
+React runs cleanup.
+
+return () => {
+
+    controller.abort();
+
+}
+
+Question.
+
+What happens?
+
+Controller
+
+↓
+
+Abort()
+
+↓
+
+Request 1 Stops ❌
+
+The request never reaches
+
+await response.json();
+
+because it was cancelled.
+
+Step 6 — New Request Starts
+
+React creates a new render.
+
+Render 2
+
+↓
+
+New Controller
+
+↓
+
+Request 2 Starts
+
+Now only Request 2 is active.
+
+Request 2
+
+↓
+
+Finishes
+
+↓
+
+setUsers()
+
+↓
+
+Latest Search Results Displayed ✅
+Internal Working
+Render 1
+search = "A"
+
+↓
+
+Controller 1 Created
+
+↓
+
+Request 1 Starts
+Render 2
+search = "Amar"
+
+↓
+
+Cleanup Runs
+
+↓
+
+Controller 1.abort()
+
+↓
+
+Request 1 Cancelled
+
+↓
+
+Controller 2 Created
+
+↓
+
+Request 2 Starts
+
+Notice something.
+
+Every render has
+
+its own
+
+Controller
+
+just like every render had its own
+
+ignore
+Easy Memory Diagram
+Render 1
+
+search = "A"
+
+controller = Controller 1
+
+Request 1
+
+======================
+
+Render 2
+
+search = "Amar"
+
+controller = Controller 2
+
+Request 2
+
+Cleanup of Render 1 only calls
+
+Controller 1.abort()
+
+It does not affect Controller 2.
+
+One Question For You 😊
+
+Before we continue,
+
+tell me if you understand this sentence:
+
+Every render creates its own AbortController, and the cleanup function only aborts the controller created by that render.
+
+Case 1 — User Types Fast ✅ (Most Common)
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+↓
+
+Immediately
+
+↓
+
+Search = "Amar"
+
+↓
+
+Request 2 Starts
+
+Now two requests are running together.
+
+👉 This is the most common reason for race conditions.
+
+Case 2 — Slow Internet ❌ (Even if the user types normally)
+
+Suppose the user types normally.
+
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+The internet is very slow.
+
+After 2 seconds, the user searches again.
+
+Search = "Amar"
+
+↓
+
+Request 2 Starts
+
+Request 1 is still running because the server is slow.
+
+Now both requests are running together.
+
+👉 Race condition can still happen.
+
+Case 3 — User Clicks Refresh Many Times
+Click Refresh
+
+↓
+
+Request 1
+
+↓
+
+Click Refresh Again
+
+↓
+
+Request 2
+
+Again, two requests are running together.
+
+👉 Race condition.
+
+⭐ The Real Rule
+
+Don't remember:
+
+❌ "Fast typing causes race conditions."
+
+Remember this:
+
+Multiple Requests Running At The Same Time
+
+↓
+
+Possible Race Condition
+
+That's the real rule.
+
+When do we need AbortController or ignore?
+
+Whenever this happens:
+
+Request 1 Starts
+
+↓
+
+Before It Finishes
+
+↓
+
+Request 2 Starts
+
+↓
+
+Both Requests Are Running
+
+Then you should think:
+
+"Hmm... I may need to ignore or cancel the old request."
+
+Interview Rule ⭐
+Fast Typing
+        ↓
+Can Cause Multiple Requests
+
+Slow Server
+        ↓
+Can Cause Multiple Requests
+
+Multiple Button Clicks
+        ↓
+Can Cause Multiple Requests
+
+==============================
+
+Multiple Active Requests
+
+↓
+
+Possible Race Condition
+
+So speed typing is just one example. The real cause is multiple active asynchronous requests, regardless of why they overlap. That's the concept interviewers are looking for.
+
+
+the cleanup runs while the old fetch() is waiting at await.
+
+Look at this:
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function getUsers() {
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+      });
+
+      const data = await response.json();
+
+      setUsers(data);
+    } catch (error) {
+      if (error.name === "AbortError") {
+        return;
+      }
+    }
+  }
+
+  getUsers();
+
+  return () => {
+    controller.abort();
+  };
+}, [search]);
+What happens step by step?
+Request 1 starts
+Effect 1 runs
+→
+Controller 1 created
+→
+fetch() starts
+→
+Code waits at await fetch()
+
+Important: await does not block React.
+
+The async function pauses there, but React and JavaScript can continue handling other work.
+
+getUsers() paused at await
+→
+React is free
+→
+User can type again
+User changes the search
+search = "Amar"
+→
+Component renders again
+→
+Before React runs Effect 2
+→
+React runs Effect 1 cleanup
+
+Cleanup calls:
+
+controller.abort();
+
+Because Controller 1 was connected to Request 1 through:
+
+signal: controller.signal
+
+the browser cancels Request 1.
+
+Controller 1.abort()
+→
+Signal tells fetch to stop
+→
+await fetch() rejects
+→
+Control jumps to catch
+
+So it does not continue normally to:
+
+const data = await response.json();
+
+Instead:
+
+await fetch() throws AbortError
+→
+catch runs
+→
+return
+→
+Old request finishes without setUsers()
+Full flow
+Request 1 Starts
+→
+Waiting at await fetch()
+→
+Search Changes
+→
+Cleanup Runs
+→
+controller.abort()
+→
+fetch throws AbortError
+→
+catch handles it
+→
+response.json() is skipped
+→
+setUsers() is skipped
+
+Then React runs the new effect:
+
+Effect 2
+→
+Controller 2
+→
+Request 2
+→
+Latest search results update UI
+One important detail
+
+When you write:
+
+const response = await fetch(...)
+
+response does not exist yet while the request is pending. JavaScript is waiting for fetch() to resolve.
+
+If cleanup aborts during that waiting period, fetch() rejects, so JavaScript jumps directly to catch.
+
+await fetch()
+→
+Success: response received → continue to response.json()
+
+OR
+
+→
+Abort: throws error → jump to catch
+
+That is exactly how cleanup can stop the old request before the code reaches response.json()
+
+
+"If the fetch() request is still pending and the user searches again, React runs cleanup and aborts the old request."
+
+Case 1 — Request is Still Pending ✅
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+↓
+
+Still Waiting...
+
+↓
+
+User Searches "Amar"
+
+↓
+
+Cleanup Runs
+
+↓
+
+controller.abort()
+
+↓
+
+Request 1 Cancelled ❌
+
+↓
+
+Request 2 Starts
+
+This is where AbortController works.
+
+Case 2 — Request Already Finished ❌
+Search = "A"
+
+↓
+
+Request 1 Starts
+
+↓
+
+Response Received ✅
+
+↓
+
+response.json()
+
+↓
+
+setUsers()
+
+↓
+
+User Searches "Amar"
+
+↓
+
+Cleanup Runs
+
+Question.
+
+Can React abort Request 1 now?
+
+No.
+
+Why?
+
+Because Request 1 has already finished.
+
+There is nothing left to abort.
+
+Easy Rule
+Request Pending
+
+↓
+
+Can Abort ✅
+
+=====================
+
+Request Finished
+
+↓
+
+Cannot Abort ❌
+Internal Timeline
+Pending Request
+fetch()
+
+↓
+
+Waiting...
+
+↓
+
+User Types Again
+
+↓
+
+Cleanup
+
+↓
+
+Abort
+
+↓
+
+Request Stops
+Finished Request
+fetch()
+
+↓
+
+Response Received
+
+↓
+
+response.json()
+
+↓
+
+setUsers()
+
+↓
+
+User Types Again
+
+↓
+
+Cleanup
+
+↓
+
+Too Late To Abort
+⭐ One Important Point
+
+When you write
+
+const response = await fetch(...);
+
+JavaScript is paused at await.
+
+While it's paused:
+
+React
+↓
+
+Can Render Again
+
+↓
+
+Can Run Cleanup
+
+↓
+
+Can Abort Request
+
+That's why cleanup gets a chance to cancel the request.
+
+🎯 Interview Answer
+
+AbortController can only cancel a request while it is still pending. If the request has already completed and the response has been received, calling abort() has no effect because there is nothing left to cancel.
+
+# >>>>>>>>>
+
+
+
+6.24 – Stale Closures
+🤔 First Question
+
+Look at this code.
+
+function App() {
+
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+
+        console.log(count);
+
+    }, []);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+            {count}
+        </button>
+    );
+}
+
+Question.
+
+Initially
+
+count = 0
+
+Now click the button.
+
+count = 5
+
+Question.
+
+Will the effect print
+
+5
+
+?
+
+No.
+
+It prints
+
+0
+
+Question.
+
+Why?
+
+Before React...
+
+Let's understand JavaScript first.
+
+function person(name) {
+
+    return function() {
+
+        console.log(name);
+
+    };
+
+}
+
+const greet = person("Amarnath");
+
+Question.
+
+Where does
+
+name
+
+come from?
+
+The function remembers it.
+
+Even after
+
+person()
+
+finishes.
+
+This is called a
+
+Closure
+
+A closure remembers the variables that existed when it was created.
+
+Now Let's Come Back To React
+
+Render 1
+
+count = 0
+
+React executes
+
+useEffect(() => {
+
+    console.log(count);
+
+}, []);
+
+Question.
+
+What does JavaScript create?
+
+A function.
+
+Inside that function
+
+count = 0
+
+is remembered.
+
+Think of it like taking a photo.
+
+📸 Snapshot
+
+count = 0
+
+The effect now owns this snapshot.
+
+Later...
+
+User clicks.
+
+count = 1
+
+Render again.
+
+Question.
+
+Will the old effect change?
+
+No.
+
+That old effect already has
+
+📸 Snapshot
+
+count = 0
+
+It cannot magically change to
+
+count = 1
+
+because the photo was already taken.
+
+Real-Life Example 📸
+
+Imagine you take a family photo.
+
+Father
+Mother
+Child (Age 5)
+
+Five years later,
+
+the child is now
+
+Age 10
+
+Question.
+
+Does the old photo automatically update?
+
+No.
+
+The photo always shows
+
+Age 5
+
+because it captured that moment.
+
+A closure is exactly like that.
+
+It captures variables at one moment in time.
+
+React Is Doing The Same Thing
+
+Render 1
+
+count = 0
+
+↓
+
+Create Effect
+
+↓
+
+📸 Snapshot
+
+count = 0
+
+Render 2
+
+count = 1
+
+Question.
+
+Does React edit the old snapshot?
+
+No.
+
+Instead,
+
+React creates a new render.
+
+That render has
+
+📸 New Snapshot
+
+count = 1
+
+But...
+
+Our dependency array is
+
+[]
+
+React says
+
+"Don't run the new effect."
+
+So the only effect that ever runs is the old one, which remembers count = 0.
+
+Why Is It Called "Stale"?
+
+Question.
+
+What does
+
+Stale
+
+mean?
+
+It means
+
+Old
+
+Outdated
+
+Not Fresh
+
+The closure is using
+
+an old snapshot.
+
+That's why it's called
+
+Stale Closure.
+
+Internal Working
+
+Render 1
+
+count = 0
+        ↓
+Create Effect
+        ↓
+Closure Stores count = 0
+
+Render 2
+
+count = 1
+        ↓
+New Closure Created
+
+Question.
+
+Does React run it?
+
+No.
+
+Because
+
+[]
+
+means
+
+Skip
+
+The old closure is still the active one.
+
+How Do We Fix It?
+
+Instead of
+
+[]
+
+write
+
+[count]
+
+Now
+
+every time
+
+count
+
+changes,
+
+React creates a new effect
+
+and runs it.
+
+Now the closure always has
+
+the latest value.
+
+Mental Model
+Render 1
+        ↓
+count = 0
+        ↓
+📸 Snapshot
+
+====================
+
+Render 2
+        ↓
+count = 1
+        ↓
+📸 New Snapshot
+
+====================
+
+Which Snapshot Runs?
+
+↓
+
+Depends On Dependency Array
+Easy Rule
+
+A stale closure happens when
+
+Old Effect
+        ↓
+Old Snapshot
+        ↓
+Still Running
+        ↓
+Uses Old Values
+Senior Engineer Thinking
+
+A beginner says
+
+"useEffect is getting the wrong value."
+
+A senior says
+
+"The effect callback closed over the state from an older render. Because the effect didn't re-run, it continued using that older snapshot."
+
+Notice...
+
+React didn't lose the new value.
+
+The old closure is still being used.
+
+🎯 Interview Questions
+What is a stale closure?
+
+A stale closure happens when a function continues using variables captured from an older render instead of the latest values.
+
+Why does it happen in React?
+
+Because every render creates new variables and new closures. If an effect doesn't re-run, React continues using the older closure.
+
+How do we fix stale closures?
+
+Usually by including the required dependencies in the dependency array so React creates and runs a new effect with a fresh closure.
+
+📝 Revision Card
+STALE CLOSURE
+
+Render 1
+      ↓
+Create Effect
+      ↓
+📸 Snapshot
+count = 0
+
+====================
+
+Render 2
+      ↓
+count = 1
+
+↓
+
+Old Effect Still Active
+
+↓
+
+Still Uses
+
+count = 0
+
+====================
+
+Rule
+
+Old Closure
+
+↓
+
+Old Snapshot
+
+↓
+
+Old Values
+
+
+Step 1 — First Render
+
+Suppose
+
+const count = 0;
+
+Now React sees
+
+useEffect(() => {
+
+    console.log(count);
+
+}, [count]);
+
+JavaScript creates a function.
+
+That function remembers
+
+count = 0
+
+Think of it like this.
+
+Render 1
+      ↓
+count = 0
+      ↓
+Function Created
+      ↓
+Remembers count = 0
+Step 2 — User Clicks
+setCount(1);
+
+React renders again.
+
+Now
+
+const count = 1;
+
+Question.
+
+Can React change the old function?
+
+No.
+
+A function cannot be edited after it is created.
+
+So React creates a new function.
+
+Render 2
+      ↓
+count = 1
+      ↓
+New Function Created
+      ↓
+Remembers count = 1
+
+Now React has
+
+Old Function
+↓
+
+count = 0
+
+----------------
+
+New Function
+↓
+
+count = 1
+Now The Important Part
+
+React asks
+
+Should I use
+
+Old Function
+
+OR
+
+New Function?
+
+The answer depends on the dependency array.
+
+Case 1 — Dependency Changed
+useEffect(() => {
+
+    console.log(count);
+
+}, [count]);
+
+Previous
+
+count = 0
+
+Current
+
+count = 1
+
+React says
+
+Changed
+      ↓
+Use New Function ✅
+
+The new function remembers
+
+count = 1
+
+So it prints
+
+1
+Case 2 — Empty Dependency Array
+useEffect(() => {
+
+    console.log(count);
+
+}, []);
+
+Render 1
+
+Function 1
+
+↓
+
+count = 0
+
+Render 2
+
+Function 2
+
+↓
+
+count = 1
+
+Question.
+
+Does React use Function 2?
+
+No.
+
+Because
+
+[]
+
+means
+
+Don't Run Again
+
+So React keeps using
+
+Function 1
+
+↓
+
+count = 0
+
+That's why it's called a stale closure.
+
+Easy Diagram
+With [count]
+Render 1
+      ↓
+Function 1
+(count = 0)
+
+↓
+
+Click
+
+↓
+
+Render 2
+      ↓
+Function 2
+(count = 1)
+
+↓
+
+count Changed?
+
+↓
+
+YES
+
+↓
+
+Run Function 2 ✅
+With []
+Render 1
+      ↓
+Function 1
+(count = 0)
+
+↓
+
+Click
+
+↓
+
+Render 2
+      ↓
+Function 2
+(count = 1)
+
+↓
+
+React says
+
+[]
+
+↓
+
+Don't Run Again
+
+↓
+
+Keep Using Function 1 ❌
+
+↓
+
+Prints 0
+⭐ The One Sentence You Should Remember
+Every render creates a new useEffect function.
+
+React decides whether to run the NEW function or keep using the OLD function based on the dependency array.
+
+That's it.
+
+Don't think about "closures" first.
+
+Think about functions.
+
+Every render creates a new function.
+
+The dependency array decides which function React executes.
+
+Once you understand that, the word closure simply means:
+
+"The values remembered by that particular function."
+
+
+Look at this
+function App() {
+
+    const [count] = useState(0);
+
+    useEffect(() => {
+
+        console.log(count);
+
+    }, []);
+
+}
+
+Question.
+
+Where is
+
+count
+
+declared?
+
+Outside the callback.
+
+const [count] = useState(0);   ← Outside
+
+useEffect(() => {
+
+    console.log(count);         ← Inside
+
+}, []);
+Can the callback use count?
+
+Yes.
+
+Why?
+
+Because JavaScript allows an inner function to access variables from its outer function.
+
+This is called a closure.
+
+Think of it like this
+App()
+
+↓
+
+count = 0
+
+↓
+
+Create useEffect callback
+
+↓
+
+Callback remembers count = 0
+
+The callback "captures" the variable.
+
+First Render
+App()
+      ↓
+count = 0
+      ↓
+Create Callback
+      ↓
+Callback remembers count = 0
+Second Render
+
+After
+
+setCount(1);
+
+React executes the component again.
+
+App()
+      ↓
+count = 1
+      ↓
+Create NEW Callback
+      ↓
+New Callback remembers count = 1
+
+Now there are two callbacks (conceptually).
+
+Old Callback
+↓
+
+count = 0
+
+-------------------
+
+New Callback
+↓
+
+count = 1
+Now React Decides
+
+If
+
+[count]
+Dependency Changed
+        ↓
+Run NEW Callback ✅
+
+If
+
+[]
+Don't Run Again
+        ↓
+Keep Using OLD Callback ❌
+
+That's why the old callback still prints
+
+count = 0
+So Your Sentence...
+
+You said:
+
+"We are referring to the variable outside of this function. Is that closure?"
+
+✅ Yes!
+
+A slightly better way to say it is:
+
+"The useEffect callback accesses (captures) the count variable from the outer component function. This behavior is called a closure."
+
+Or even simpler:
+
+Outer Function
+      ↓
+count
+
+↓
+
+Inner Function (useEffect callback)
+
+↓
+
+Uses count
+
+↓
+
+This is called a Closure.
+
+
+⭐ One Important Point
+
+The closure does not store a pointer to a variable that keeps changing.
+
+It remembers the variable from that specific render.
+
+That's why we call it a snapshot.
+
+Render 1
+      ↓
+count = 0
+      ↓
+Callback remembers 0
+
+===================
+
+Render 2
+      ↓
+count = 1
+      ↓
+NEW Callback remembers 1
+
+Each render creates a new callback with a new closure.
+
+🎯 Interview Answer
+
+A closure is created because the useEffect callback is an inner function that accesses variables (count, user, theme, etc.) from the outer component function. Every render creates a new callback, and each callback closes over the variables from that specific render.
+
+💯 This is actually JavaScript behavior, not React behavior. React simply creates a new callback on every render, and JavaScript automatically creates the closure for that callback. That's why understanding closures is essential to understanding React Hooks.
+
+
+# >>>>>>>
+
+
+
+6.25 – Effect Ordering
+🤔 First Question
+
+Suppose we write
+
+function App() {
+
+    useEffect(() => {
+        console.log("Effect 1");
+    });
+
+    useEffect(() => {
+        console.log("Effect 2");
+    });
+
+    useEffect(() => {
+        console.log("Effect 3");
+    });
+
+}
+
+Question.
+
+What prints?
+
+Effect 2
+Effect 3
+Effect 1
+
+OR
+
+Effect 3
+Effect 1
+Effect 2
+
+OR
+
+Effect 1
+Effect 2
+Effect 3
+React's Rule
+
+React is very simple.
+
+It executes effects
+
+in the same order they are written.
+
+Top
+ ↓
+Bottom
+
+So the output is
+
+Effect 1
+↓
+
+Effect 2
+↓
+
+Effect 3
+Why?
+
+Think about reading a book.
+
+Page 1
+↓
+
+Page 2
+↓
+
+Page 3
+
+Do you read
+
+Page 3
+
+↓
+
+Page 1
+
+?
+
+No.
+
+React also reads your component from
+
+Top
+
+↓
+
+Bottom
+
+It registers the effects in that order.
+
+After the Commit Phase, it runs them in the same order.
+
+Internal Working
+
+Suppose
+
+useEffect(() => {
+    console.log("A");
+});
+
+useEffect(() => {
+    console.log("B");
+});
+
+During the Render Phase
+
+React does
+
+Register Effect A
+
+↓
+
+Register Effect B
+
+Nothing executes yet.
+
+After the Commit Phase
+
+React says
+
+Run Effect A
+
+↓
+
+Run Effect B
+
+Exactly the same order.
+
+Example
+function App() {
+
+    useEffect(() => {
+        console.log("Fetch Users");
+    });
+
+    useEffect(() => {
+        console.log("Update Title");
+    });
+
+}
+
+Timeline
+
+Render Phase
+      ↓
+Register Fetch Users
+      ↓
+Register Update Title
+
+====================
+
+Commit Phase
+      ↓
+Run Fetch Users
+      ↓
+Run Update Title
+What About Cleanup?
+
+Question.
+
+Suppose both effects return cleanup functions.
+
+useEffect(() => {
+
+    console.log("Effect 1");
+
+    return () => {
+        console.log("Cleanup 1");
+    };
+
+});
+
+useEffect(() => {
+
+    console.log("Effect 2");
+
+    return () => {
+        console.log("Cleanup 2");
+    };
+
+});
+
+React also keeps track of their cleanup functions.
+
+When the effects need to be replaced or the component unmounts, each effect's cleanup runs before that effect is replaced or removed.
+
+For your interviews, the important thing to remember is:
+
+Effect 1
+↓
+
+Effect 2
+
+↓
+
+Each effect manages
+its own cleanup.
+
+We'll study the exact cleanup ordering in the React Internals phase, because it makes much more sense after learning Fiber.
+
+Mental Model
+Component
+
+↓
+
+useEffect 1
+
+↓
+
+useEffect 2
+
+↓
+
+useEffect 3
+
+====================
+
+Commit Phase
+
+↓
+
+Run 1
+
+↓
+
+Run 2
+
+↓
+
+Run 3
+Easy Rule
+React executes useEffect callbacks
+from top to bottom,
+in the same order they appear.
+
+No magic.
+
+No priorities.
+
+Just top → bottom.
+
+Senior Engineer Thinking
+
+A beginner says
+
+"React randomly runs my effects."
+
+A senior says
+
+"React registers effects during the Render Phase and executes them after the Commit Phase in declaration order."
+
+🎯 Interview Questions
+In what order are multiple useEffects executed?
+
+They execute in the same order they are declared in the component (top to bottom), after the Commit Phase.
+
+Why does React follow declaration order?
+
+Because React registers effects while rendering the component from top to bottom and later executes them in that same sequence.
+
+📝 Revision Card
+EFFECT ORDERING
+
+Render Phase
+
+Register Effect 1
+      ↓
+Register Effect 2
+      ↓
+Register Effect 3
+
+====================
+
+Commit Phase
+
+Run Effect 1
+      ↓
+Run Effect 2
+      ↓
+Run Effect 3
+
+====================
+
+Remember
+
+Top
+ ↓
+Bottom
+
+
+# >>>>>>>>
+
+
+
+6.26 – Common Mistakes
+🤔 Why Did React Team Create This Rule?
+
+React gives us a lot of freedom.
+
+But with freedom comes mistakes.
+
+Most useEffect bugs fall into 6 common mistakes.
+
+If you avoid these, you're already writing better React than many developers.
+
+❌ Mistake 1 — Missing Dependencies
+useEffect(() => {
+    console.log(count);
+}, []);
+
+Question.
+
+Will this print the latest count?
+
+❌ No.
+
+It prints the old value because the effect never runs again.
+
+Why?
+Effect
+      ↓
+Old Closure
+      ↓
+Old Snapshot
+      ↓
+Old Value
+Fix
+useEffect(() => {
+    console.log(count);
+}, [count]);
+❌ Mistake 2 — Creating Infinite Loops
+useEffect(() => {
+    setCount(count + 1);
+}, [count]);
+What happens?
+Effect
+      ↓
+Update count
+      ↓
+count changed
+      ↓
+Run effect again
+      ↓
+Repeat forever
+Fix
+
+Ask yourself:
+
+Does this effect
+change one of
+its own dependencies?
+
+↓
+
+YES
+
+↓
+
+Possible Infinite Loop
+❌ Mistake 3 — Forgetting Cleanup
+useEffect(() => {
+
+    window.addEventListener("resize", handleResize);
+
+}, []);
+
+Question.
+
+When the component is removed,
+
+who removes the listener?
+
+Nobody.
+
+The listener stays alive.
+
+Fix
+return () => {
+
+    window.removeEventListener(
+        "resize",
+        handleResize
+    );
+
+};
+
+Easy rule:
+
+If You Start Something
+
+↓
+
+You Should Stop It
+
+Examples:
+
+Event listeners
+Timers
+WebSockets
+Subscriptions
+❌ Mistake 4 — Using useEffect For Derived Data
+const [fullName, setFullName] = useState("");
+
+useEffect(() => {
+    setFullName(firstName + " " + lastName);
+}, [firstName, lastName]);
+
+Question.
+
+Do we really need an effect?
+
+No.
+
+fullName is already available.
+
+Better
+const fullName =
+    firstName + " " + lastName;
+
+Easy rule:
+
+Can I calculate it
+during rendering?
+
+↓
+
+YES
+
+↓
+
+Don't use useEffect.
+
+Remember:
+
+Derived data should not be stored in state.
+
+❌ Mistake 5 — Too Much Logic In One Effect
+
+Bad
+
+useEffect(() => {
+
+    fetchUsers();
+
+    updateTitle();
+
+    addEventListener();
+
+    startTimer();
+
+}, []);
+
+Question.
+
+If one part changes,
+
+what happens?
+
+Everything runs again.
+
+Hard to debug.
+
+Better
+useEffect(() => {
+    fetchUsers();
+}, []);
+
+useEffect(() => {
+    updateTitle();
+}, [title]);
+
+useEffect(() => {
+    startTimer();
+}, []);
+
+Easy rule
+
+One Effect
+
+↓
+
+One Responsibility
+
+Exactly like functions.
+
+❌ Mistake 6 — Thinking useEffect Replaces Normal JavaScript
+
+Many beginners write
+
+useEffect(() => {
+
+    const fullName =
+        firstName + lastName;
+
+}, [firstName, lastName]);
+
+No.
+
+useEffect is not for calculations.
+
+It is for side effects.
+
+Ask one question.
+
+Does this code
+talk to something
+outside React?
+
+↓
+
+YES
+
+↓
+
+useEffect
+
+↓
+
+NO
+
+↓
+
+Normal JavaScript
+
+Examples of side effects:
+
+API calls
+Timers
+Browser title
+Local Storage
+Event listeners
+WebSockets
+Mental Model
+
+Before writing useEffect, ask yourself:
+
+Is this a Side Effect?
+
+↓
+
+YES
+
+↓
+
+useEffect
+
+------------------------
+
+NO
+
+↓
+
+Normal JavaScript
+Senior Engineer Thinking
+
+A beginner asks:
+
+"Can I put this inside useEffect?"
+
+A senior asks:
+
+"Does this code synchronize my component with something outside React?"
+
+If the answer is No, you probably don't need useEffect.
+
+🎯 Interview Questions
+What are common mistakes with useEffect?
+Missing dependencies
+Infinite loops
+Forgetting cleanup
+Using useEffect for derived state
+Putting unrelated logic in one effect
+Using useEffect when normal JavaScript is enough
+How do you know if you need useEffect?
+
+Ask:
+
+"Am I synchronizing with something outside React?"
+
+If yes, use useEffect.
+
+If no, you probably don't need it.
+
+📝 Revision Card
+COMMON MISTAKES
+
+❌ Missing Dependencies
+↓
+
+Stale Closure
+
+-------------------
+
+❌ Updating Own Dependency
+↓
+
+Infinite Loop
+
+-------------------
+
+❌ No Cleanup
+↓
+
+Memory Leak
+
+-------------------
+
+❌ Derived Data In Effect
+↓
+
+Calculate During Render
+
+-------------------
+
+❌ One Huge Effect
+↓
+
+Split Effects
+
+-------------------
+
+❌ Using useEffect For Everything
+↓
+
+Only Use It For Side Effects
+
+
+⭐ One improvement to your mental model
+
+Don't think of useEffect as a place to "put code after rendering."
+
+Think of it like this:
+
+Render
+      ↓
+Need To Synchronize
+With Outside World?
+
+        ↓
+
+YES → useEffect
+
+NO  → Normal React Code
+
+If you always ask this one question before writing an effect, you'll naturally avoid most useEffect mistakes without memorizing rules.
+
+# >>>>>>>
+
+
+6.27 – Best Practices
+🤔 What Is A Best Practice?
+
+A best practice is not a React rule.
+
+It's a habit that makes your code:
+
+Easier to read
+Easier to debug
+Easier to maintain
+✅ Best Practice 1
+Don't Use useEffect Unless You Need It
+
+Bad
+
+const [fullName, setFullName] = useState("");
+
+useEffect(() => {
+    setFullName(firstName + " " + lastName);
+}, [firstName, lastName]);
+
+Good
+
+const fullName = firstName + " " + lastName;
+Rule
+Can I calculate it during render?
+
+↓
+
+YES
+
+↓
+
+Don't use useEffect.
+✅ Best Practice 2
+One Effect = One Responsibility
+
+Bad
+
+useEffect(() => {
+
+    fetchUsers();
+
+    updateTitle();
+
+    startTimer();
+
+    addEventListener();
+
+}, []);
+
+Good
+
+useEffect(() => {
+    fetchUsers();
+}, []);
+
+useEffect(() => {
+    updateTitle();
+}, [title]);
+
+useEffect(() => {
+    startTimer();
+}, []);
+Rule
+One Effect
+
+↓
+
+One Job
+✅ Best Practice 3
+Always Clean Up
+
+If you start something
+
+Timer
+
+Listener
+
+WebSocket
+
+Subscription
+
+Stop it.
+
+Start
+
+↓
+
+Cleanup
+
+↓
+
+Remove
+✅ Best Practice 4
+Always Write Correct Dependencies
+
+Don't try to fool React.
+
+Bad
+
+useEffect(() => {
+
+    console.log(count);
+
+}, []);
+
+Good
+
+useEffect(() => {
+
+    console.log(count);
+
+}, [count]);
+
+Rule
+
+If the effect uses a value,
+
+↓
+
+That value usually belongs
+in the dependency array.
+✅ Best Practice 5
+Keep Effects Small
+
+Bad
+
+useEffect(() => {
+
+    // 100 lines of code
+
+});
+
+Good
+
+useEffect(() => {
+
+    fetchUsers();
+
+}, []);
+
+Small effects are easier to:
+
+Read
+Test
+Debug
+✅ Best Practice 6
+Don't Put Everything In State
+
+Bad
+
+const [fullName, setFullName] = useState("");
+
+Good
+
+const fullName =
+    firstName + " " + lastName;
+
+Only store data that changes independently.
+
+✅ Best Practice 7
+Think Before Writing useEffect
+
+Before writing an effect,
+
+ask yourself:
+
+Does this code
+communicate with
+something outside React?
+
+↓
+
+YES
+
+↓
+
+useEffect
+
+-------------------
+
+NO
+
+↓
+
+Normal JavaScript
+
+This one question will prevent most mistakes.
+
+Easy Mental Model
+Need Side Effect?
+
+↓
+
+YES
+
+↓
+
+useEffect
+
+--------------------
+
+NO
+
+↓
+
+Normal React Code
+Senior Engineer Thinking
+
+A beginner asks:
+
+"Where should I put this code?"
+
+A senior asks:
+
+"Is this a side effect?"
+
+If the answer is No,
+
+they don't write useEffect.
+
+🎯 Interview Questions
+What are the best practices for useEffect?
+Use it only for side effects.
+Keep effects focused.
+Always clean up resources.
+Write correct dependencies.
+Avoid derived state inside effects.
+Split unrelated logic into separate effects.
+When should you avoid useEffect?
+
+When the value can be calculated during rendering or when normal JavaScript is enough.
+
+📝 Final Revision Card
+BEST PRACTICES
+
+✔ Use Only For Side Effects
+
+✔ One Effect = One Job
+
+✔ Always Cleanup
+
+✔ Correct Dependencies
+
+✔ Keep Effects Small
+
+✔ Don't Store Derived Data
+
+✔ Think Before Using useEffect
+
+
+
+
+
+
+
+
+
 
 
 

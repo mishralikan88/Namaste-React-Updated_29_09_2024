@@ -150,12 +150,12 @@ Rendering Process
 ⏳ 6.19 Effect Lifecycle          - ✔️ Completed 
 ⏳ 6.20 Cleanup Functions         - ✔️ Completed 
 ⏳ 6.21 Dependency Arrays         - ✔️ Completed 
-⏳ 6.22 Infinite Loops
-⏳ 6.23 Race Conditions
-⏳ 6.24 Stale Closures
-⏳ 6.25 Effect Ordering
-⏳ 6.26 Common Mistakes
-⏳ 6.27 Best Practices
+⏳ 6.22 Infinite Loops            - ✔️ Completed
+⏳ 6.23 Race Conditions           - ✔️ Completed 
+⏳ 6.24 Stale Closures            - ✔️ Completed
+⏳ 6.25 Effect Ordering           - ✔️ Completed
+⏳ 6.26 Common Mistakes           - ✔️ Completed
+⏳ 6.27 Best Practices            - ✔️ Completed
 
 🟢 Chapter 4 – useRef
 
@@ -227,7 +227,6 @@ useId
 ⏳ 6.76 Dependency Comparison
 ⏳ 6.77 Cleanup Internal Working
 ⏳ 6.78 Complete Hook Execution Pipeline
-
 
 
 
