@@ -159,11 +159,11 @@ Rendering Process
 
 🟢 Chapter 4 – useRef
 
-⏳ 6.28 Why useRef?
-⏳ 6.29 DOM References
-⏳ 6.30 Mutable Values
-⏳ 6.31 useRef vs useState
-⏳ 6.32 Best Practices
+⏳ 6.28 Why useRef ?             - ✔️ Completed
+⏳ 6.29 DOM References           - ✔️ Completed
+⏳ 6.30 Mutable Values           - ✔️ Completed
+⏳ 6.31 useRef vs useState       - ✔️ Completed 
+⏳ 6.32 Best Practices           - ✔️ Completed
 
 🟢 Chapter 5 – useContext
 
@@ -298,20 +298,44 @@ Advanced Routing
 
 
 📖 Phase 11: Data Fetching
-Data Fetching
+
+🟢 Data Fetching Fundamentals
+✅ Why Data Fetching?
 ✅ Fetch API
 ⭐ Axios
-React Data Fetching
+⭐ Axios Instance
+
+🟢 React Data Fetching
 ✅ Loading States
 ✅ Error States
+✅ Empty States
 ✅ Skeleton Screens
-Advanced Fetching
+
+🟢 Advanced Fetching
 ✅ AbortController
 ✅ Request Cancellation
 ✅ Retry Logic
 ✅ Polling
 ✅ Pagination
-Optional
+✅ Infinite Scroll
+✅ Optimistic Updates
+
+🟢 Authentication
+⭐ Authorization Headers
+⭐ JWT Token
+⭐ Refresh Token
+⭐ Axios Interceptors
+
+🟢 Real-Time Communication
+🔴 WebSocket Basics
+🔴 WebSocket Lifecycle
+🔴 Chat Example
+🔴 Live Notifications
+🔴 Live Stock Prices
+🔴 Auto Reconnection
+🔴 Heartbeat (Ping/Pong)
+
+🟢 Modern Libraries
 ⭐ TanStack Query (React Query)
 
 
@@ -321,11 +345,13 @@ Context Fundamentals
 ✅ Provider
 ✅ Consumer
 ✅ useContext
+
 Advanced Context
 ✅ Context Architecture
 ✅ Context Splitting
 ✅ Context Selectors
 ✅ Context Performance
+
 Comparison
 ✅ Context vs Redux
 
